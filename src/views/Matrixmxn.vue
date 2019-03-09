@@ -1,19 +1,21 @@
 <template>
   <div>
-    <Nav />
-    <div class="page">
-      <h1>This is an about page</h1>
-    </div>
+  
+      <Nav />
+      <Matrixmxn />
+  
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
+import Matrixmxn from '@/components/Matrixmxn.vue'
 import Nav from '@/components/Nav.vue'
 
 export default {
-  name: 'about',
+  name: 'matrixmxn',
   components: {
+    Matrixmxn,
     Nav
   }
 }
