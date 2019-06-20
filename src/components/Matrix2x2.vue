@@ -16,37 +16,47 @@
        <section class="method"><span id="method">{{ method }}</span></section>
 
         <section class="determinant">
-            <span class="value">Determinant</span><h3  v-show="showDeterminant">{{ det }}</h3>
+            <span class="value">Determinant</span><h4 v-show="showDeterminant">{{ det }}</h4>
         </section>
 
-        <section class="eigenValues"><span class="value">Eigenvalues</span></section>
-        <section class="rank"><span class="value">Rank</span><h3 v-show="showRank">{{ rank }}</h3></section>
+        <section class="eigenValues">
+            <span class="value">Eigenvalues</span>
+            <h6 v-show="showEigenvalues">{{ lambda1_2 }}</h6>
+            <h6 v-show="showEigenvaluesScalarProd">{{ lambdaScalarProd1_2 }}</h6>
+        </section>
+        <section class="rank"><span class="value">Rank</span><h6 v-show="showRank">{{ rank }}</h6></section>
 
-        <section class="scalar"><input id="scalar" type="number" size="4" v-show="showScalarInputMatrix" v-model.number="scalar" maxlength="3" v-on:keyup="getScalarProduct()" placeholder="scalar"></section>
+        <section class="scalar">
+            <aside class="doubleMatrixName" v-show="showDoubleInputMatrix">
+                <h6>{{ matrixA }}</h6>
+                <h6>{{ matrixB }}</h6>
+            </aside>
+            <input id="scalar" type="number" size="2" v-show="showScalarInputMatrix" v-model.number="scalar" maxlength="3" v-on:keyup="getScalarProduct()" step="1" min="1" placeholder="scalar" class="entry">
+        </section>
         
         <section class="matrix">
-            <section class="w3-row" v-show="showDoubleInputMatrix">
-                <aside class="w3-col s5 m3 w3-center table_sec">
+            <section class="doubleMatrix" v-show="showDoubleInputMatrix">
+                <aside class="w3-col s5 m3 table_sec">
                     <table id="first_By2" class="w3-animate-zoom w3-card-4 w3-black w3-centered tr">
                         <tbody>
                             <tr>
-                            <td><input type="number" v-model.number="M1_a" size="4" placeholder="x11" required></td><td><input type="number" v-model.number="M1_b" size="4" placeholder="x12" required></td>
+                            <td><input :type="type" v-model.number="M1_a" size="4" placeholder="x11" class="entry" required></td><td><input :type="type" v-model.number="M1_b" size="4" placeholder="x12" class="entry" required></td>
                             </tr>
                             <tr>
-                            <td><input type="number" v-model.number="M1_c" size="4" placeholder="x21" required></td><td><input type="number" v-model.number="M1_d" size="4" placeholder="x22" required></td>
+                            <td><input :type="type" v-model.number="M1_c" size="4" placeholder="x21" class="entry" required></td><td><input :type="type" v-model.number="M1_d" size="4" placeholder="x22" class="entry" required></td>
                             </tr>
                         </tbody>
                     </table>
                 </aside>
                 <aside class="w3-col s1 m1 w3-center table_sec opr"><v-icon>{{opr}}</v-icon></aside>
-                <aside class="w3-col s5 m3 w3-center table_sec">
+                <aside class="w3-col s5 m3 table_sec">
                     <table id="sec_By2" class="w3-animate-zoom w3-card-4 w3-black w3-centered tr">
                         <tbody>
                             <tr>
-                            <td><input type="number" v-model.number="M2_a" size="4" placeholder="x11" required></td><td><input type="number" v-model.number="M2_b" size="4" placeholder="x12" required></td>
+                            <td><input :type="type" v-model.number="M2_a" size="4" placeholder="x11" class="entry" required></td><td><input :type="type" v-model.number="M2_b" size="4" placeholder="x12" class="entry" required></td>
                             </tr>
                             <tr>
-                            <td><input type="number" v-model.number="M2_c" size="4" placeholder="x21" required></td><td><input type="number" v-model.number="M2_d" size="4" placeholder="x22" required></td>
+                            <td><input :type="type" v-model.number="M2_c" size="4" placeholder="x21" class="entry" required></td><td><input :type="type" v-model.number="M2_d" size="4" placeholder="x22" class="entry" required></td>
                             </tr>
                         </tbody>
                     </table>
@@ -56,49 +66,62 @@
             <table id="twoBy2" class="w3-animate-zoom w3-card-4 w3-black w3-centered tr" v-show="showSingleInputMatrix">
                 <tbody>
                     <tr>
-                        <td><input type="number" size="4" v-model.number="a" maxlength="3" placeholder="x11" required></td><td><input type="number" size="4" v-model.number="b" maxlength="3" placeholder="x12" required></td>
+                        <td><input size="4" v-model.number="a" maxlength="3" placeholder="x11" class="entry" required></td><td><input size="4" v-model.number="b" maxlength="3" placeholder="x12" class="entry" required></td>
                     </tr>
                     <tr>
-                        <td><input type="number" size="4" v-model.number="c" maxlength="3" placeholder="x21" required></td><td><input type="number" size="4" v-model.number="d" maxlength="3" placeholder="x22" required></td>
+                        <td><input size="4" v-model.number="c" maxlength="3" placeholder="x21" class="entry" required></td><td><input size="4" v-model.number="d" maxlength="3" placeholder="x22" class="entry" required></td>
                     </tr>
                 </tbody>
             </table>
         </section>
 
-        <section class="buttons">
-            <aside class="w3-row w3-row-bottom w3-center w3-animate-bottom w3-small">
-                <aside class="w3-bar">
-                    <button id="detBtn" class="w3-btn theme-l3" v-on:click="getDeterminant()" :class="isDisabled">| <i>X</i> |</button>
-                    <button id="detBtn" class="w3-btn theme-l3" v-on:click="getRank()" :class="isDisabled"> <i>Rnk</i> </button>
-                    <button id="clrBtn" class="w3-btn theme-l3" v-on:click="clear()">CLR</button>
-                    <button id="trnBtn" class="w3-btn theme-l3" v-on:click="getTranspose()" :class="isDisabled"><i>X</i><sup>T</sup></button>
-                    <button id="adjBtn" class="w3-btn theme-l3" v-on:click="getAdjoint()" :class="isDisabled">ADJ</button>
-                    <button id="invBtn" class="w3-btn theme-l3" v-on:click="getInverse()" :class="isDisabled"><i>X</i><sup>-1</sup></button>
-                </aside>
-                <aside class="w3-bar">
-                    <button id="clrBtn" class="w3-btn w3-red" v-on:click="doubleOperations()">{{ modeBtn }}</button>
-                    <button id="addBtn" class="w3-btn w3-teal" v-on:click="matAdd()" :class="isDoubleDisabled"><i>+</i></button>
-                    <button id="addBtn" class="w3-btn w3-teal" v-on:click="matSubtract()" :class="isDoubleDisabled"><i>-</i></button>
-                    <button id="scalarMultiplyBtn" class="w3-btn w3-teal" v-on:click="scalarMultiply()" :class="isDisabled"><strong>k</strong><i>X</i></button>
-                </aside>
-                <aside class="w3-bar">
-                    <button id="matMultiplyBtn" class="w3-btn w3-teal" v-on:click="matMultiply()" :class="isDoubleDisabled"><i>x</i></button>
-                    <button id="matSquaredBtn" class="w3-btn w3-teal" v-on:click="matSquared()" :class="isDisabled"><i>X</i><sup>2</sup></button>
-                </aside>
-            </aside>
+        <section class="buttons w3-animate-bottom w3-small">
+            <!--<aside class="w3-animate-bottom w3-small"> -->
+            <div class="blank1"></div>    
+            <button id="addBtn" class="minus w3-btn" v-on:click="matSubtract()" :class="isDoubleDisabled"><i>-</i></button>
+            <button id="detBtn" class="fn w3-btn" v-on:click="getDeterminant()" :class="isDisabled">| <i>X</i> |</button>
+            <button id="detBtn" class="fn w3-btn" v-on:click="getRank()" :class="isDisabled"> <i>Rnk</i> </button>
+            <button id="detBtn" class="fn w3-btn" v-on:click="getEigenValues()" :class="isDisabled"> <i>λ</i> </button>
+            <button id="trnBtn" class="fn w3-btn" v-on:click="getTranspose()" :class="isDisabled"><i>X</i><sup>T</sup></button>
+            <button id="clrBtn" class="clear special w3-btn w3-blue" v-on:click="clear()">CLR</button>
+            <section class="blank2"></section>
+
+            <button id="matMultiplyBtn" class="matMultiply w3-btn" v-on:click="matMultiply()" :class="isDoubleDisabled"><i>x</i></button>
+            <button id="adjBtn" class="fn w3-btn" v-on:click="getAdjoint()" :class="isDisabled">ADJ</button>
+            <button id="matSquaredBtn" class="fn w3-btn" v-on:click="matSquared()" :class="isDisabled"><i>X</i><sup>2</sup></button>
+            <button id="invBtn" class="fn w3-btn" v-on:click="getInverse()" :class="isDisabled"><i>X</i><sup>-1</sup></button>
+            <button id="scalarMultiplyBtn" class="fn w3-btn" v-on:click="scalarMultiply()" :class="isDisabled"><strong>k</strong><i>X</i></button>
+            <button id="invBtn" class="answer special w3-btn w3-blue" v-on:click="getAnswer()"><i>ANS</i></button>
+          
+            <button id="addBtn" class="plus w3-btn" v-on:click="matAdd()" :class="isDoubleDisabled"><i>+</i></button>
+            <button id="invBtn" class="identity w3-btn" v-on:click="getIdentity()"><i>I</i></button>
+            <button id="clrBtn" class="swap w3-btn w3-blue" v-on:click="swapMatrices()" :class="isDoubleDisabled">{{ swap }}</button>
+            <button id="clrBtn" class="double special w3-btn w3-red" v-on:click="doubleOperations()">{{ modeBtn }}</button>
+            <section class="blank2"></section>
+
+            <!-- </aside> -->
         </section>
     </v-container>
 </template>
 
 <script>
+import {find_rational} from '../special_functions/find_rational.js'
+import {square} from '../special_functions/squares.js'
+import {det2x2} from '../special_functions/determinant.js'
+import {eigenvalues2x2} from '../special_functions/eigenvalues.js'
+
 export default {
-  name: 'Matrix2x2',
-  data() {
-      return {
+    name: 'Matrix2x2',
+    data() {
+        return {
             a: "",
             b: "",
             c: "",
             d: "",
+            A: "",
+            B: "",
+            C: "",
+            D: "",
             a11: "",
             b12: "",
             c21: "",
@@ -111,9 +134,15 @@ export default {
             M2_b: "",
             M2_c: "",
             M2_d: "",
+            type: "number",
+            matrixA: "A",
+            matrixB: "B",
             scalar: "",
             det: "",
+            DET: "",
             rank: "",
+            lambda1_2: "",
+            lambdaScalarProd1_2: "",
             method: "",
             opr: "",
             showSingleInputMatrix: true,
@@ -121,16 +150,19 @@ export default {
             showAnsMatrix: false,
             showDeterminant: false,
             showRank: "",
+            showEigenvalues: "",
             showScalarInputMatrix: false,
+            showEigenvaluesScalarProd: false,
             isDisabled: "",
             isDoubleDisabled: "w3-disabled",
-            modeBtn: "DBL"
-
+            modeBtn: "DBL",
+            swap: "A <=> B",
         }
     },
 
     methods: {
         getDeterminant() {
+
             if (this.showDoubleInputMatrix === true) { // If in double operations mode, do nothing
                 return
             } else if (this.a === "" || this.b === "" || this.c === "" || this.d === "") { // If any input is missing...
@@ -140,13 +172,37 @@ export default {
                 this.method = ""
                 alert("Every entry is required")
             } else {
-                this.det = (this.a * this.d) - (this.b * this.c)
+
+                // Convert numeric string to number and assign to holding variable
+                this.A = eval(this.a)
+                this.B = eval(this.b)
+                this.C = eval(this.c)
+                this.D = eval(this.d)
+               
+                let detArr = [[this.A, this.B], [this.C, this.D]]
+
+                // Compute determinant
+                this.det = det2x2(detArr)
+
+                // Convert result back to rational numeric string
+                this.det = find_rational(this.det).join(" / ")
+
+                // Display only relevant value(s)
+                this.scalar = ""
                 this.method = ""
                 this.rank = ""
                 this.showDeterminant = true
+                this.showEigenvalues = ""
+                this.showEigenvaluesScalarProd = ""
+                this.a11 = "" 
+                this.b12 = ""
+                this.c21 = ""
+                this.d22 = ""
+                
+                
             }
         },
-
+        
         getRank() {
            if (this.showDoubleInputMatrix === true) { // If in double operations mode, do nothing
                 return
@@ -164,7 +220,8 @@ export default {
                 this.showRank = false
             } else {
                 // Else compute determinant
-                this.det = (this.a * this.d) - (this.b * this.c)
+                this.det = (eval(this.a) * eval(this.d)) - (eval(this.b) * eval(this.c))
+                this.det = find_rational(this.det).join(" / ")
                 if (this.det !== 0) {
                     this.rank = 2
                     this.method = ""
@@ -183,6 +240,12 @@ export default {
        },
 
         getTranspose() {
+
+            this.A = eval(this.a)
+            this.B = eval(this.b)
+            this.C = eval(this.c)
+            this.D = eval(this.d)
+
             if (this.showDoubleInputMatrix === true) { // If in double operations mode, do nothing
                 return
             } else if (this.a === "" || this.b === "" || this.c === "" || this.d === "") {  // If any input is missing...
@@ -193,28 +256,30 @@ export default {
                 alert("Every entry is required")
             } else if (this.showScalarInputMatrix === false) { // If scalar field is inactive...
                 // ... do regular transpose
-                this.a11 = this.a 
-                this.c21 = this.b 
-                this.b12 = this.c
-                this.d22 = this.d
+
+                this.a11 = find_rational(this.A).join("/")
+                this.c21 = find_rational(this.B).join("/") 
+                this.b12 = find_rational(this.C).join("/")
+                this.d22 = find_rational(this.D).join("/")
 
                 this.method = "Transpose"
                 this.showAnsMatrix = true
             } else if (this.showScalarInputMatrix === true && (this.scalar === "" || this.scalar === undefined || this.scalar === isNaN)) { // If scalar is not set...
                 // ... do regular transpose
-                this.a11 = this.a 
-                this.c21 = this.b 
-                this.b12 = this.c
-                this.d22 = this.d
+
+                this.a11 = find_rational(this.A).join("/")
+                this.c21 = find_rational(this.B).join("/") 
+                this.b12 = find_rational(this.C).join("/")
+                this.d22 = find_rational(this.D).join("/")
 
                 this.method = "Transpose"
                 this.showAnsMatrix = true
             } else if (this.showScalarInputMatrix === true && (this.scalar !== "" || this.scalar !== undefined)) { // If scalar is set...
                 // ... do scalar multiplication of transpose
-                this.a11 = this.a * this.scalar
-                this.c21 = this.b * this.scalar
-                this.b12 = this.c * this.scalar
-                this.d22 = this.d * this.scalar
+                this.a11 = find_rational(this.A * eval(this.scalar)).join("/")
+                this.c21 = find_rational(this.B * eval(this.scalar)).join("/")
+                this.b12 = find_rational(this.C * eval(this.scalar)).join("/")
+                this.d22 = find_rational(this.D * eval(this.scalar)).join("/")
 
                 this.method = this.scalar + " x Transpose"
                 this.showAnsMatrix = true
@@ -223,7 +288,13 @@ export default {
         },
 
         getAdjoint() {
+            this.showEigenvaluesScalarProd = false
+            this.showEigenvalues = false
+            this.showScalarInputMatrix = false
             if (this.showDoubleInputMatrix === true) { // If in double operations mode, do nothing
+                return
+            } else if (this.showScalarInputMatrix = false) { // If scalar is not set
+                this.showEigenvaluesScalarProd = false
                 return
             } else if (this.a === "" || this.b === "" || this.c === "" || this.d === "") {  // If any input is missing...
                 // ...show alert and do nothing
@@ -233,16 +304,23 @@ export default {
                 alert("Every entry is required")
             } else {
                 this.a11 = this.d 
-                this.b12 = -1 * this.b 
-                this.c21 = -1 * this.c
+                this.B = -1 * eval(this.b)
+                this.b12 = find_rational(this.B).join(" / ") 
+                this.C = -1 * eval(this.c)
+                this.c21 = find_rational(this.C).join(" / ")
                 this.d22 = this.a
+
+                this.showScalarInputMatrix = false
                 this.method = "Adjoint"
                 this.showAnsMatrix = true
+                this.scalar = ""
+                this.showEigenvalues = ""
+                this.showEigenvaluesScalarProd = ""
             }
 
         },
 
-         getInverse() {
+        getInverse() {
              if (this.showDoubleInputMatrix === true) { // If in double operations mode, do nothing
                 return
             } else if (this.a === "" || this.b === "" || this.c === "" || this.d === "") {  // If any input is missing...
@@ -254,26 +332,6 @@ export default {
                 return
             } 
 
-            // Convert final answer to rational numbers
-            let find_rational = function(value) {
-                let best_numer = 1
-                let best_denom = 1
-                let best_err = Math.abs(value - best_numer / best_denom)
-                for (let denom = 1; best_err > 0 && denom <= 10000; denom++) {
-                    let numer = Math.round(value * denom)
-                    let err = Math.abs(value - numer / denom)
-                    if (err < best_err) {
-                        best_numer = numer
-                        best_denom = denom
-                        best_err = err;
-                        console.log(best_numer + " / " + best_denom + " = " + (best_numer/best_denom) + " error " + best_err)
-                    }
-                }
-                if (best_denom === 1) {
-                    return [best_numer]
-                }
-                return [best_numer, best_denom]
-            }
 
             function scalarMultiply(arr) {return arr *= num }
 
@@ -287,8 +345,14 @@ export default {
             
             
             let newMat = []
-            let mat2By2 = [[this.a, this.b],[this.c, this.d]]
-            let det = (this.a * this.d) - (this.b * this.c)
+
+            this.A = eval(this.a)
+            this.B = eval(this.b)
+            this.C = eval(this.c)
+            this.D = eval(this.d)
+
+            let mat2By2 = [[this.A, this.B],[this.C, this.D]]
+            let det = (this.A * this.D) - (this.B * this.C)
             let num = (1/det)
             let rows = 2
             
@@ -308,10 +372,78 @@ export default {
                 this.c21 = rationalC.join(" / ")
                 this.a11 = rationalD.join(" / ")
 
+                this.showScalarInputMatrix = false
                 this.method = "Inverse"
+                // this.showEigenvaluesScalarProd = false
                 this.showAnsMatrix = true
             }
             
+        },
+
+
+        getEigenValues() {
+            this.a11 = ""
+            this.b12 = ""
+            this.c21 = ""
+            this.d22 = ""
+
+            // Comvert numeric string to number and assign into holding variables
+            this.A = eval(this.a)
+            this.B = eval(this.b)
+            this.C = eval(this.c)
+            this.D = eval(this.d)
+
+            let Arr = [[this.A, this.B], [this.C, this.D]]
+
+
+            if (this.showDoubleInputMatrix === true) { // If in double operations mode, do nothing
+                return
+            } else if (this.a === "" || this.b === "" || this.c === "" || this.d === "") {  // If any input is missing...
+                // ...show alert and do nothing
+                this.showEigenvalues = false
+                this.method = ""
+                alert("Every entry is required")
+            } else if (this.showScalarInputMatrix === false) { // If scalar field is inactive...
+                // ... do regular eigenvalues
+
+                this.lambda1_2 = eigenvalues2x2(Arr).join(", ")
+
+                this.showEigenvalues = true
+                this.showEigenvaluesScalarProd = false
+                this.method = ""
+            
+            } else if (this.showScalarInputMatrix === true && (this.scalar === "" || this.scalar === undefined || this.scalar === isNaN)) { // If scalar is not set...
+                // ... do regular eigenvalues
+
+                this.lambda1_2 = eigenvalues2x2(Arr).join(", ")
+
+                this.showEigenvalues = true
+                this.showEigenvaluesScalarProd = false
+                this.method = ""
+
+            } else if (this.showScalarInputMatrix === true && (this.scalar !== "" || this.scalar !== undefined)) { // If scalar is set...
+                // ... do scalar multiplication of and find eigenvalues of scalar product
+                this.a11 = this.A * eval(this.scalar)
+                this.b12 = this.B * eval(this.scalar)
+                this.c21 = this.C * eval(this.scalar)
+                this.d22 = this.D * eval(this.scalar)
+
+                Arr = [[this.a11, this.b12], [this.c21, this.d22]] 
+
+                this.lambda1_2 = eigenvalues2x2(Arr).join(", ")
+
+                // Reconvert answer matrix elements back to string rationals
+                this.a11 = find_rational(this.A * eval(this.scalar)).join("/")
+                this.b12 = find_rational(this.B * eval(this.scalar)).join("/")
+                this.c21 = find_rational(this.C * eval(this.scalar)).join("/")
+                this.d22 = find_rational(this.D * eval(this.scalar)).join("/")
+
+                this.showEigenvalues = false
+                this.showEigenvaluesScalarProd = true
+                this.method = "Eigenvalues of " + this.scalar + " x Matrix"
+                this.showAnsMatrix = true
+
+            } 
         },
 
         clear() {
@@ -320,6 +452,8 @@ export default {
             this.b12 = "" 
             this.c21 = ""
             this.d22 = ""
+            this.lambda1_2 = ""
+            this.lambdaScalarProd1_2 = ""
             this.method = ""
             this.showAnsMatrix = false
 
@@ -331,6 +465,7 @@ export default {
                 this.d = ""
                 this.det = ""
                 this.scalar = ""
+                this.rank = ""
                 this.showScalarInputMatrix = false
 
             // Clear binary operations matrices
@@ -349,6 +484,7 @@ export default {
 
         doubleOperations() {        
             this.det = ""
+            this.rank = ""
             this.method = ""
             this.showAnsMatrix = false
             this.showScalarInputMatrix = false
@@ -357,6 +493,11 @@ export default {
 
             // Enable buttons and view for binary operations when on double matrices mode
             if (this.showDoubleInputMatrix === true) {
+                // Clear out single operations variables
+                this.a = this.b = this.c = this.d = ""
+
+                this.lambda1_2 = ""
+                this.lambdaScalarProd1_2 = ""
                 this.isDisabled = "w3-disabled"
                 this.isDoubleDisabled = !this.isDoubleDisabled
                 this.modeBtn = "SGL"
@@ -364,6 +505,11 @@ export default {
 
             // Disable buttons and view for binary operations when on single matrix mode
             } else if (this.showDoubleInputMatrix === false) {
+                // Clear out double operations variables
+                this.M1_a = this.M1_b = this.M1_c = this.M1_d = ""
+                this.M2_a = this.M2_b = this.M2_c = this.M2_d = ""
+
+
                 this.isDisabled = !this.isDisabled
                 this.isDoubleDisabled = "w3-disabled"
                 this.modeBtn = "DBL"
@@ -454,15 +600,23 @@ export default {
                 alert("Every entry is required")
             } else {
                 // ...else proceed with matrix squared
-                this.a11 = (this.a * this.a) + (this.b * this.c)
-                this.b12 = (this.a * this.b) + (this.b * this.d)
-                this.c21 = (this.c * this.a) + (this.d * this.c)
-                this.d22 = (this.c * this.b) + (this.d * this.d)
+                this.A = (eval(this.a) * eval(this.a)) + (eval(this.b) * eval(this.c))
+                this.B = (eval(this.a) * eval(this.b)) + (eval(this.b) * eval(this.d))
+                this.C = (eval(this.c) * eval(this.a)) + (eval(this.d) * eval(this.c))
+                this.D = (eval(this.c) * eval(this.b)) + (eval(this.d) * eval(this.d))
+
+                this.a11 = find_rational(this.A).join(" / ")
+                this.b12 = find_rational(this.B).join(" / ")
+                this.c21 = find_rational(this.C).join(" / ")
+                this.d22 = find_rational(this.D).join(" / ")
 
                 this.showAnsMatrix = true
                 
-                this.opr = "clear"
+                this.showScalarInputMatrix = false
+                //this.opr = "clear"
                 this.method = "Matrix Squared"
+                this.showEigenvalues = ""
+                this.showEigenvaluesScalarProd = ""
             }
         },
 
@@ -480,40 +634,53 @@ export default {
             if (this.scalar === undefined || this.scalar === "" || this.scalar === isNaN) {
                 return
             } else if (this.a === "" || this.b === "" || this.c === "" || this.d === "") {  
-                //...else if any entry is missing or invalid, show akert and do nothing
+                //...else if any entry is missing or invalid, show alert and do nothing
                 alert("Every entry is required")
                 return
             } else if ((this.showScalarInputMatrix === true && this.scalar !== undefined && this.scalar !== isNaN) || this.scalar === 0) {
                 //...else if scalar is provided and valid, proceed with scalar multiplication
-                let arr = [[this.a, this.b], [this.c, this.d]]
+
+                this.A = eval(this.a)
+                this.B = eval(this.b)
+                this.C = eval(this.c)
+                this.D = eval(this.d)
+
+                let arr = [[this.A, this.B],[this.C, this.D]]
 
                 for (let i = 0; i < 2; i++) {
                     for (let j = 0; j < 2; j++) {
-                        arr[i][j] = this.scalar * arr[i][j]
+                        arr[i][j] = eval(this.scalar) * arr[i][j]
                     }
                 }
 
 
-                this.a11 = arr[0][0] 
-                this.b12 = arr[0][1] 
-                this.c21 = arr[1][0]
-                this.d22 = arr[1][1]
+                this.a11 = find_rational(arr[0][0]).join(" / ") 
+                this.b12 = find_rational(arr[0][1]).join(" / ")
+                this.c21 = find_rational(arr[1][0]).join(" / ")
+                this.d22 = find_rational(arr[1][1]).join(" / ")
 
                 this.method = "Scalar Multiplication"
                 this.showAnsMatrix = true
-            }
+            } 
         },
 
         /**
          * Scalar multiplication on keyup from scalar input field
          */
         getScalarProduct() {
+            this.A = eval(this.a)
+            this.B = eval(this.b)
+            this.C = eval(this.c)
+            this.D = eval(this.d)
+
+            let arr = [[this.A, this.B],[this.C, this.D]]
+
             if (this.showDoubleInputMatrix === true) { // If in double operations mode, do nothing
                 return
             } 
 
-            // If scalar is missing, non-numeric or undefined, do nothing...
-            if (this.scalar === "" || this.a === "" || this.b === "" || this.c === "" || this.d === "") {
+            // If scalar is non-numeric or undefined, do nothing...
+            if (this.scalar === undefined || this.scalar === isNaN || this.a === "" || this.b === "" || this.c === "" || this.d === "") {
                 this.a11 = "" 
                 this.b12 = "" 
                 this.c21 = ""
@@ -521,24 +688,209 @@ export default {
                 return
             }
 
+            // If scalalr is missing, update eigenvalues accordingly
+            if (this.showScalarInputMatrix === true && this.scalar === "") {
+
+                this.lambda1_2 = eigenvalues2x2(arr).join(", ")
+
+                // ...and display relevant values
+                this.showEigenvalues = true
+                this.showEigenvaluesScalarProd = false
+                this.method = ""
+
+                this.a11 = this.a 
+                this.b12 = this.b 
+                this.c21 = this.c
+                this.d22 = this.d
+            
+                return
+            }
+
             //...else if scalar is provided and valid, proceed with scalar multiplication
             if ((this.showScalarInputMatrix === true && this.scalar !== undefined && this.scalar !== isNaN) || this.scalar === 0) {
-                let arr = [[this.a, this.b], [this.c, this.d]]
 
                 for (let i = 0; i < 2; i++) {
                     for (let j = 0; j < 2; j++) {
-                        arr[i][j] = this.scalar * arr[i][j]
+                        arr[i][j] = eval(this.scalar) * arr[i][j]
                     }
                 }
 
+                // Eigenvalues of scalar product matrix
+                this.lambdaScalarProd1_2 = eigenvalues2x2(arr).join(", ")
 
-                this.a11 = arr[0][0] 
-                this.b12 = arr[0][1] 
-                this.c21 = arr[1][0]
-                this.d22 = arr[1][1]
+                // Display scalar product matrix with string rational elements
+                this.a11 = find_rational(arr[0][0]).join(" / ") 
+                this.b12 = find_rational(arr[0][1]).join(" / ")
+                this.c21 = find_rational(arr[1][0]).join(" / ")
+                this.d22 = find_rational(arr[1][1]).join(" / ")
 
+                this.showDeterminant = false
                 this.method = "Scalar Multiplication"
                 this.showAnsMatrix = true
+                this.showEigenvalues === false
+
+                if (this.showEigenvalues === false && this.showEigenvaluesScalarProd === false) { 
+                    // If eigenbalues are NOT already displayed, leave them undisplayed 
+                    this.showEigenvalues = false
+                    this.showEigenvaluesScalarProd = false
+                } else if ((this.showEigenvalues === false && this.showEigenvaluesScalarProd === true) || (this.showEigenvalues === true && this.showEigenvaluesScalarProd === false)) {
+                    // However, if displayed, update them accordingly
+                    this.showEigenvalues = false
+                    this.showEigenvaluesScalarProd = true
+                }
+            }
+        },
+        getIdentity() {
+            if (this.showDoubleInputMatrix !== true && (this.a === "" && this.b === "" && this.c === "" && this.d === "")) {
+                this.a = 1
+                this.b = 0
+                this.c = 0
+                this.d = 1
+
+                this.scalar = ""
+                this.det = ""
+                this.rank = ""
+                return
+            } else if (this.showDoubleInputMatrix !== true && (this.a !== 1 && this.d !== 1)) {
+                this.a = 1
+                this.b = 0
+                this.c = 0
+                this.d = 1
+
+                this.a11 = ""
+                this.b12 = ""
+                this.c21 = ""
+                this.d22 = ""
+
+                this.scalar = ""
+                this.det = ""
+                this.rank = ""
+                return
+            } else if (this.showDoubleInputMatrix !== true && (this.a === 1 && this.b === 0 && this.c === 0 && this.d === 1)) {
+                this.a11 = this.a
+                this.b12 = this.b
+                this.c21 = this.c
+                this.d22 = this.d
+
+                this.scalar = ""
+                return
+            } else if (this.showDoubleInputMatrix === true) {
+                this.M2_a = 1
+                this.M2_b = 0
+                this.M2_c = 0
+                this.M2_d = 1
+            }
+        },
+
+        swapMatrices() {
+            if (this.showSingleInputMatrix === true) { // If in single operations mode, do nothing
+                return
+            } else if (this.showSingleInputMatrix === false && this.swap === "A <=> B") {
+                this.swap = "B <=> A"
+
+                this.a = this.M1_a
+                this.b = this.M1_b
+                this.c = this.M1_c
+                this.d = this.M1_d
+
+                this.M1_a = this.M2_a
+                this.M1_b = this.M2_b
+                this.M1_c = this.M2_c
+                this.M1_d = this.M2_d
+
+                this.M2_a = this.a
+                this.M2_b = this.b
+                this.M2_c = this.c
+                this.M2_d = this.d
+
+                this.a = this.b = this.c = this.d = ""
+                this.a11 = this.b12 = this.c21 = this.d22 = ""
+
+                this.opr = ""
+                this.method = ""
+                this.matrixA = "B"
+                this.matrixB = "A"
+
+                return
+            } else if (this.showSingleInputMatrix === false && this.swap === "B <=> A") {
+                this.swap = "A <=> B"
+
+                this.a = this.M1_a
+                this.b = this.M1_b
+                this.c = this.M1_c
+                this.d = this.M1_d
+
+                this.M1_a = this.M2_a
+                this.M1_b = this.M2_b
+                this.M1_c = this.M2_c
+                this.M1_d = this.M2_d
+
+                this.M2_a = this.a
+                this.M2_b = this.b
+                this.M2_c = this.c
+                this.M2_d = this.d
+
+                this.a = this.b = this.c = this.d = ""
+                this.a11 = this.b12 = this.c21 = this.d22 = ""
+                
+                this.opr = ""
+                this.method = ""
+                this.matrixA = "A"
+                this.matrixB = "B"
+                return
+            }
+        },
+
+         getAnswer() {
+            if (this.showDoubleInputMatrix === false) {
+                // Move answer matrix to input matrix (for further manipulation)...
+
+                this.A = eval(this.a11)
+                this.B = eval(this.b12)
+                this.C = eval(this.c21)
+                this.D = eval(this.d22)
+
+                this.a = find_rational(this.A).join(" / ")
+                this.b = find_rational(this.B).join(" / ")
+                this.c = find_rational(this.C).join(" / ")
+                this.d = find_rational(this.D).join(" / ")
+
+                // this.a = this.a11
+                // this.b = this.b12
+                // this.c = this.c21
+                // this.d = this.d22
+
+                // this.a = this.A
+                // this.b = this.B
+                // this.c = this.C
+                // this.d = this.D
+
+
+
+                // Clear values based up of previous input matrix
+                this.scalar = ""
+                this.det = ""
+                this.rank = ""
+
+                // ..and clear answer matrix
+                this.a11 = ""
+                this.b12 = ""
+                this.c21 = ""
+                this.d22 = ""
+            } else if (this.showDoubleInputMatrix === true) {
+                // Move answer matrix to matrix A (for further manipulation)
+                this.M1_a = this.a11
+                this.M1_b = this.b12
+                this.M1_c = this.c21
+                this.M1_d = this.d22
+
+                // ..and clear answer matrix and matrix B
+                this.a11 = this.M2_a = ""
+                this.b12 = this.M2_b = ""
+                this.c21 = this.M2_c = ""
+                this.d22 = this.M2_d = ""
+
+                this.method = this.opr = ""
             }
         }
     }
@@ -547,14 +899,17 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
+// Default styling for mobile 
 *{
         margin: 0;
         padding: 0;
     }
+
+    // Main grid
     .grid {
         display: grid;
         grid-template-columns: 1fr 1fr 1fr;
-        grid-template-rows: 130px 20px 90px 30px 1fr 80px;
+        grid-template-rows: 110px 15px 80px 20px 160px auto;
         grid-template-areas: 
         "answerPanel answerPanel answerPanel"
         "method method method"
@@ -566,12 +921,16 @@ export default {
 
     .answerPanel {
         grid-area: answerPanel;
+        grid-row-start: 1;
+        grid-row-end: 1;
         background-color: #ccc;
         padding: 15px;
     }
 
     .method {
         grid-area: method;
+        font-size: 12px;
+        color: white;
         background-color: #555555;
     }
 
@@ -589,26 +948,77 @@ export default {
 
     .scalar {
         grid-area: scalar;
+        font-size: 10px;
         background-color: #555555;
     }
 
     .matrix {
         grid-area: matrix;
         background-color: #ccc; 
-        height: 200px;          // rgb(252, 213, 105);
+         // rgb(252, 213, 105);
     }
 
+    // Button as subgrid
     .buttons {
+        display: grid;
+        grid-template-columns:0px repeat(5, 1fr) 80px; 
+        grid-template-rows: auto auto auto;
+        grid-template-areas: 
+        "blank1 minus fn fn fn fn clear"
+        "blank1 matMultiply fn fn fn fn answer"
+        "blank1 plus fn fn fn fn double";
         grid-area: buttons;
         background-color: #ccc;
         vertical-align: bottom;
     }
 
-    #method {
+    .clear {
+        grid-area: clear;
+    }
+
+    .answer {
+        grid-area: answer;
+    }
+
+    .double {
+        grid-area: double;
+    }
+
+    .plus {
+        grid-area: plus;
+        background-color: gray;
         color: white;
     }
 
-    .theme-l3 {
+    .minus {
+        grid-area: minus;
+        background-color: gray;
+        color: white;
+    }
+
+    .matMultiply {
+        grid-area: matMultiply;
+        background-color: gray;
+        color: white;
+    }
+
+    .swap {
+        grid-column: 5 / 7;
+    }
+
+    .identity {
+        grid-column: 3 / 5;
+        background-color: gray;
+        color: white;
+    }
+
+
+    #method {
+        color: white;
+        //background-color: aqua;
+    }
+
+    .fn {
         background-color: rgb(252, 213, 105);
     }
 
@@ -629,10 +1039,10 @@ export default {
     input {
         margin: 5px;
         padding: 5px 5px 5px 5px;
-        width: 70px;
+        width: 90%;   //55px;
         border: 0;
         text-align: center;
-        font-size: 15px;
+        font-size: 10px;
         border-radius: 4px;
         color: #ffffff;
         background-color: #000000;
@@ -648,15 +1058,41 @@ export default {
     }
 
     input#scalar {
-        width: 120px;
+        width: 60px;
         margin-top: 0;
         margin-bottom: 0;
     }
 
+    // Remove scrollbar from number input fields
+    .entry::-webkit-inner-spin-button,
+    .entry::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
     #first_By2, #sec_By2 {
+        width: 100%;      //100px;
         border-radius: 5px;
         margin-top: 16px !important;
         background-color: #ffffff !important;
+    }
+
+    .doubleMatrix {
+        width: 100%;
+        display: flex;
+        flex-flow: row wrap;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .doubleMatrixName {
+        width: 100%;
+        color: aliceblue;
+        font: 14px sans-serif;
+        display: flex;
+        flex-flow: row wrap;
+        justify-content: space-evenly;
+        align-items: center;
     }
     
     #twoBy2 {
@@ -680,30 +1116,70 @@ export default {
        
     }
 
+    // Styling for large screens
      @media screen and (min-width: 736px)
     {
         input {
-            width: 60%;
+            width: 70%;
+            font-size: 12px;
         }
 
             
         #twoBy2 {
-            width: 30%;
+            width: 26%;
             float: center;
-            margin-left: 35%;
-            margin-right: 35%;
+            margin-left: 37%;
+            margin-right: 37%;
             border-radius: 5px;
             margin-top: 16px !important;
             background-color: #ffffff !important;
         }
 
         #twoBy2B {
-            width: 50%;
+            width: 30%;
             float: center;
-            margin-left: 25%;
-            margin-right: 25%;
+            margin-left: 35%;
+            margin-right: 35%;
             border-radius: 5px;
-        
+            margin-top: 16px !important;
+            background-color: #131212 !important;
+        }
+
+        // .grid {
+        //     grid-template-columns: 1fr 60% 1fr;
+        //     grid-template-rows: 130px 20px 90px 30px 160px auto;
+            
+        //     grid-template-areas: 
+        //     "blank1 buttons blank2";
+        // }
+
+        .buttons {
+            display: grid;
+            grid-template-columns:2fr repeat(5, 1fr) 150px 2fr;
+            grid-template-areas: 
+            "blank1 minus fn fn fn fn clear blank2"
+            "blank1 matMultiply fn fn fn fn answer blank2"
+            "blank1 plus fn fn fn fn double blank2";
+        }
+
+        .blank1 {
+            grid-area: blank1;
+            background-color: #ccc;
+        }
+
+        .blank2 {
+            grid-area: blank2;
+            background-color: #ccc;
+        }
+
+        .swap {
+        grid-column: 5 / 7;
+        }
+
+        .identity {
+            grid-column: 3 / 5;
+            background-color: gray;
+            color: white;
         }
 
     }
