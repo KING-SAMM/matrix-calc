@@ -167,29 +167,65 @@ export default {
                 this.Ansexpression += `${number}`
                 
 
-            } // Pressing the later numbers of an expression
+            } 
+            
             else if (!this.operatorClicked && this.expression !== "") { 
                 this.expression += `${number}`
                 this.currentExpr += `${number}`
                 this.currentDigit = `${number}`
 
-                if (this.currentOpr == "!") {
-                    // If factorial was pressed BEFORE this number
-                    // let this number be the new currentNumber,
-                    // then multiply last value by new currentNumber
+                // SUCCESSIVE FACTORIALS (after an initial factorial operation)
+                if (this.currentOpr == "sin(") {
+                /**
+                 * If factorial was pressed BEFORE this number
+                 * let this number be the new currentNumber,
+                 * then multiply last value by new currentNumber
+                 */ 
+                    //this.previousNumber = this.currentNumber
+                    //this.currentNumber = ""
+                    this.currentNumber += `${number}`
+                    // this.Ansexpression += `${number}`
+                    var sineOfCurrentNumberHolder = Math.sin(this.currentNumber * Math.PI/180)
+                    var AnsexpressionHolder = this.Ansexpression
+                    this.Ansexpression = eval(AnsexpressionHolder + sineOfCurrentNumberHolder)
+                    return
+                } else {
+                    this.currentNumber += `${number}`
+                    this.Ansexpression += `${number}`
+                    return
+                } 
+            
+            }   
+        
+            
+            
+            // Pressing the later numbers of an expression
+            else if (!this.operatorClicked && this.expression !== "") { 
+                this.expression += `${number}`
+                this.currentExpr += `${number}`
+                this.currentDigit = `${number}`
 
+                // SUCCESSIVE FACTORIALS (after an initial factorial operation)
+                if (this.currentOpr == "!") {
+                /**
+                 * If factorial was pressed BEFORE this number
+                 * let this number be the new currentNumber,
+                 * then multiply last value by new currentNumber
+                 */ 
                     this.previousNumber = this.currentNumber
                     this.currentNumber = ""
                     this.currentNumber += `${number}`
                     this.Ansexpression += "*" + `${number}`
+                    return
                 } else {
                     this.currentNumber += `${number}`
                     this.Ansexpression += `${number}`
-                }
+                    return
+                } 
             
-                
-            }
-
+            }   
+        
+    
             else if (!this.operatorClicked && (this.expression == '+')) { 
                 this.expression += `${number}`
                 this.currentExpr += `${number}`
@@ -206,50 +242,14 @@ export default {
                 this.currentNumber = `${-1 * number}`
                 
             } 
-
-            //this.previousNumber = this.currentNumber
             
-            /** This happens after pressing an operator.
+            /** 
+             * This happens after pressing an operator.
              * Note that currentNumber and currentDigit are 
              * cleared anytime an operator is clicked; 
              * only the mathematical expression is retained.
              */
             
-            var expressionLength = this.expression.length
-            if ((this.expression.substr(`${expressionLength - 1}`) === "!") || this.currentOpr === "!") {
-                //this.previousNumber = this.currentNumber = ""
-                //this.currentNumber = ""
-                // this.currentDigit = `${number}`
-
-                // this.Ansexpression = times(opr)
-                // this.answer = fact(this.currentDigit)
-
-                // var numHolder = "*" + `${number}`
-                // this.Ansexpression += eval(numHolder) 
-
-                
-
-                // this.currentOpr = `${opr}`   
-                // this.expression += `${opr}`   // Append factorial symbol to math expression
-            
-                // // Get lengths of Ansexpression and currentNumber
-                // var AnsexpressionLength = this.Ansexpression.length
-                // var currentNumberLength = this.currentNumber.length
-
-                // // Get factorial of currentNumber
-                // var factorial = `${fact(this.currentNumber)}`
-
-                // // Remove the currentNumber from Ansexpression
-                // this.Ansexpression = this.Ansexpression.substr(0, `${AnsexpressionLength - currentNumberLength}`)
-               
-                // // Replace it with its factorial value
-                // this.Ansexpression += factorial
-
-                // // Evaluate
-                // this.answer = eval(this.Ansexpression)
-
-            }
-
             if (this.operatorClicked) { 
                 this.expression += `${number}`        
                 this.operatorClicked = false
@@ -260,36 +260,43 @@ export default {
                 this.currentDigit = `${number}`
                 this.Ansexpression *= `${number}`
             } 
-            else if (this.currentOpr === "sin(" && this.sinClicked === true) {
-                //sin(`${number}`)
-                //var previousNumber = this.currentNumber
-                //this.currentNumber = ""
-                var expressionHolder = this.expression
-                var sineOfCurrentNumberHolder = Math.sin(this.currentNumber * Math.PI / 180)  // + ")"
+            // else if (this.currentOpr === "sin(" && this.sinClicked === true) {
+            //     //sin(`${number}`)
+            //     //var previousNumber = this.currentNumber
+            //     //this.currentNumber = ""
+            //     this.currentNumber = `${number}`
+            //     var expressionHolder = this.expression
+            //     var sineOfCurrentNumberHolder = Math.sin(this.currentNumber * Math.PI / 180)  // + ")"
                 
-                // Perform the following operations between sin(number) and previousNumber
-                if (this.previousOpr === '+') {
-                    this.Ansexpression = eval(this.previousNumber) + eval(sineOfCurrentNumberHolder)
-                } else if (this.previousOpr === '-') {
-                    this.Ansexpression = this.previousNumber - `${sineOfCurrentNumberHolder}`
-                } else if (this.previousOpr === '÷') {
-                    this.Ansexpression = this.previousNumber / `${sineOfCurrentNumberHolder}`
-                } else {
-                    this.Ansexpression = this.previousNumber * `${sineOfCurrentNumberHolder}`
-                }
+            //     // if (this.previousOpr === "") {
+            //     //     this.Ansexpression = eval(this.previousNumber) + eval(sineOfCurrentNumberHolder)
+            //     // }
+            //     // Perform the following operations between sin(number) and previousNumber
+            //     if (this.previousOpr === '+') {
+            //         this.Ansexpression = eval(this.previousNumber) + eval(sineOfCurrentNumberHolder)
+            //         return
+            //     } else if (this.previousOpr === '-') {
+            //         this.Ansexpression = this.previousNumber - `${sineOfCurrentNumberHolder}`
+            //         return
+            //     } else if (this.previousOpr === '÷') {
+            //         this.Ansexpression = this.previousNumber / `${sineOfCurrentNumberHolder}`
+            //         return
+            //     } else {
+            //         this.Ansexpression = this.previousNumber * `${sineOfCurrentNumberHolder}`
+            //     }
                 
                 
                 
-                this.expression = "sin(" + this.currentNumber //+ ")"
-                this.currentExpr = "sin(" + this.currentNumber
-                this.expression = expressionHolder //+ this.expression
+            //     this.expression = "sin(" + this.currentNumber //+ ")"
+            //     this.currentExpr = "sin(" + this.currentNumber
+            //     this.expression = expressionHolder //+ this.expression
 
-                if (this.currentNumber == "180" || this.currentNumber == "360") {
-                    this.answer = "0"
-                    return
-                }
+            //     if (this.currentNumber == "180" || this.currentNumber == "360") {
+            //         this.answer = "0"
+            //         return
+            //     }
                 
-            }
+            // }
 
             else if (this.currentDigit === "cos(" && this.cosClicked === true) {
                 this.Ansexpression = "Math.cos(" + `${this.currentNumber * Math.PI / 180}` + ")"
@@ -378,36 +385,7 @@ export default {
             this.answer = eval(this.Ansexpression)
         },
         
-        // setCummulative() {
-        //     this.previous = this.current
-        //     this.previous = `${eval(this.previous) + eval(this.current)}`
-
-        //     // this.previous = this.current
-        //     // this.previous += `${eval(this.previous)}`
-            
-        //     this.operatorClicked = true
-        //     this.equalClicked = false
-        // },
-
-        // setPrevious() {
-        //     this.previous = this.current
-        //     //this.previous = `${eval(this.previous) + eval(this.previous)}`
-            
-        //     this.operatorClicked = true
-        //    // this.equalClicked = false
-        // },
-
-        // setAnswer() {
-        //     this.prevAnswer = `${eval(this.previous) + eval(this.current)}`
-        //     //this.answer = ""
-        //     //this.equalClicked = true
-        // },
-
-        // setCummulative() {
-        //         //this.cummulative += this.cummulative
-        //         this.answer += this.answer
-        // },
-
+        
         plus(opr) {
             this.equalClicked = true
             //this.operatorClicked = true
@@ -505,23 +483,20 @@ export default {
             // No immediate times after times or divide symbols
             if (this.expression.substr(`${expressionLength - 1}`) === '÷' 
                 || this.expression.substr(`${expressionLength - 1}`) === 'x') {
-                // this.Ansexpression = this.Ansexpression
-                // this.expression = this.expression
                 return
             }
+
             // No immediate times after plus or minus symbols
             else if (this.expression.substr(`${expressionLength - 1}`) === '+' 
-                || this.expression.substr(`${expressionLength - 1}`) === '-') {
-                // this.Ansexpression = this.Ansexpression
-                // this.expression = this.expression
-                return
-            } else {
+                || this.expression.substr(`${expressionLength - 1}`) === '-') {   
+                return    
+            } 
+            
+            else {
                 this.currentOpr = `${opr}`
                 this.Ansexpression += "*"
                 this.expression += `${opr}`
             }
-            // this.operator = (a, b) => a * b
-            // this.setPrevious()
         },
 
         divide(opr) {
@@ -535,24 +510,18 @@ export default {
             // No immediate divide after times or divide symbols
             if (this.expression.substr(`${expressionLength - 1}`) === '÷' 
                 || this.expression.substr(`${expressionLength - 1}`) === 'x') {
-                // this.Ansexpression = this.Ansexpression
-                // this.expression = this.expression
                 return
             }
+
             // No immediate divide after plus or minus symbols
             else if (this.expression.substr(`${expressionLength - 1}`) === '+' 
                 || this.expression.substr(`${expressionLength - 1}`) === '-') {
-                // this.Ansexpression = this.Ansexpression
-                // this.expression = this.expression
                 return
             } else {
                 this.currentOpr = `${opr}`
                 this.Ansexpression += "/"
                 this.expression += `${opr}`
             }
-
-            // this.operator = (a, b) => a / b
-            // this.setPrevious()
         },
 
         pi(symbol) {
@@ -560,12 +529,11 @@ export default {
             this.expression += `${symbol}`
 
             // If pi is the first button pressed
-            if(this.Ansexpression === "") {
+            if (this.Ansexpression === "") {
                 this.Ansexpression = `${Math.PI}`
-            } else if(this.Ansexpression !== "") {
+            } else if (this.Ansexpression !== "") {
                 this.Ansexpression *= `${Math.PI}`
-            }
-            
+            } 
         },
 
         equal() {
@@ -620,6 +588,27 @@ export default {
                  return
              }
 
+            //  else {
+            //      this.currentOpr = `${opr}`   
+            //     this.expression += `${opr}`   // Append factorial symbol to math expression
+            
+            //     // Get lengths of Ansexpression and currentNumber
+            //     var AnsexpressionLength = this.Ansexpression.length
+            //     var currentNumberLength = this.currentNumber.length
+
+            //     // Get factorial of currentNumber
+            //     var sineOfCurrentNumberHolder = `${Math.sin(this.currentNumber * Math.PI/180)}`
+
+            //     // // Remove the currentNumber from Ansexpression
+            //     // this.Ansexpression = this.Ansexpression.substr(0, `${AnsexpressionLength - currentNumberLength}`)
+               
+            //     // Replace it with its factorial value
+            //     this.Ansexpression += s
+
+            //     // Evaluate
+            //     this.answer = eval(this.Ansexpression)
+            // }
+
             //  // If minus is present and a sine is pressed...
             // else if (this.expression.substr(`${expressionLength - 1}`) === '-') {
             //     this.currentOpr = "-"        
@@ -642,7 +631,29 @@ export default {
         },
 
         cos(symbol) {
-            this.cosClicked === true
+            this.equalClicked = true
+            //var expressionLength = this.expression.length
+            //  this.previousNumber = this.currentNumber
+            this.previousOpr = this.currentOpr
+             this.currentNumber = ""
+             this.currentExpr =`${symbol}`
+             
+             var expressionLength = this.expression.length
+             
+            // this.Ansexpression += `${symbol}`
+
+            if (this.expression.substr(-4) === 'cos(') {   
+                return    
+            }
+              else if (this.expression.substr(-4) !== 'cos(') {
+                   //this.currentNumber =`${symbol}`
+                 this.expression += `${symbol}`
+                 this.sinClicked = true
+                 
+                 this.currentOpr = `${symbol}`
+    
+                 return
+             }
         },
 
         tan(symbol) {

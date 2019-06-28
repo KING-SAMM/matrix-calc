@@ -7,3 +7,10 @@ export function fact(x) {
         return x * fact(x - 1)
     }
 }
+export function combination(n, r) {
+    return fact(n)/(fact(n - r) * fact(r))
+}
+
+export function permutation(n, r) {
+    return fact(n)/fact(n - r) 
+}
