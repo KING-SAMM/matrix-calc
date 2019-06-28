@@ -42,7 +42,7 @@
         <!--Letters-->
         <button class="w3-btn">∑ƒ𝑥</button>
         <button class="w3-btn">∑ƒ𝑥²</button>
-        <button class="w3-btn">z</button>
+        <button class="w3-btn" v-on:click="factorial()">!</button>
         <button class="w3-btn">π</button>
         <button class="w3-btn">θ</button>
         <button class="w3-btn">Enter</button>

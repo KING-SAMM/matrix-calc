@@ -8,6 +8,7 @@
                    <tr><td> expr: {{ expression }}</td><td>currentExpr: {{ currentExpr }}</td><td>currentOpr: {{ currentOpr }}</td></tr>
                    <tr><td> currentNumber: {{ currentNumber }}</td><td>previousNumber: {{ previousNumber }}</td><td>currentDigit: {{ currentDigit }}</td></tr>
                    <tr><td> Ansexpression: {{ Ansexpression }}</td><td> {{ answer || "0" }}</td><td>previousOpr: {{ previousOpr }}</td></tr>
+                   <tr><td> AnsexpHolder: {{ AnsexpressionHolder }}</td><td> Factl: {{ factorial }}</td></tr>
                </tbody>
            </table> 
         </section>
@@ -47,7 +48,7 @@
         <!--Letters-->
         <button class="w3-btn">∑ƒ𝑥</button>
         <button class="w3-btn">∑ƒ𝑥²</button>
-        <button class="w3-btn">z</button>
+        <button class="w3-btn" v-on:click="factorial('!')">!</button>
         <button class="w3-btn" v-on:click="pi('π')">π</button>
         <button class="w3-btn">θ</button>
         <button class="w3-btn" v-on:click="del()">DEL</button>
@@ -89,6 +90,7 @@
 <script>
 import {globalAnswer, makeCurrentValueNegative, storeAnswer, clearCurrentValue, replaceTimesAndDivides} from '../special_functions/calculator.js'
 import {clickButton, addSymbolToAnswer, storeAndReset, equals} from '../special_functions/calculator.js'
+import {fact} from '../special_functions/factorial.js'
 
 export default {
     name: 'BasicScientific',
@@ -107,6 +109,8 @@ export default {
             sinClicked: false,
             expression: "",
             Ansexpression: "",
+            AnsexpressionHolder: "",
+            //factorial: "",
             currentExpr: "",
             currentDigit: ""
         }
@@ -120,6 +124,8 @@ export default {
             this.prevAnswer = ""
             this.expression = ""
             this.Ansexpression = ""
+            //this.factorial = ""
+            this.AnsexpressionHolder = ""
             this.currentDigit = ""
             this.currentNumber = ""
             this.currentExpr = ""
@@ -151,6 +157,7 @@ export default {
         
 
         append(number) {
+            var expressionLength = this.expression.length
             // Pressing any number initially
             if (!this.operatorClicked && this.expression === "") { 
                 this.currentNumber = `${number}`
@@ -158,15 +165,47 @@ export default {
                 this.currentExpr = `${number}`
                 this.expression = `${number}`
                 this.Ansexpression += `${number}`
+                
 
             } // Pressing the later numbers of an expression
             else if (!this.operatorClicked && this.expression !== "") { 
                 this.expression += `${number}`
                 this.currentExpr += `${number}`
                 this.currentDigit = `${number}`
-                this.currentNumber += `${number}`
-                this.Ansexpression += `${number}`
+
+                if (this.currentOpr == "!") {
+                    // If factorial was pressed BEFORE this number
+                    // let this number be the new currentNumber,
+                    // then multiply last value by new currentNumber
+
+                    this.previousNumber = this.currentNumber
+                    this.currentNumber = ""
+                    this.currentNumber += `${number}`
+                    this.Ansexpression += "*" + `${number}`
+                } else {
+                    this.currentNumber += `${number}`
+                    this.Ansexpression += `${number}`
+                }
+            
+                
             }
+
+            else if (!this.operatorClicked && (this.expression == '+')) { 
+                this.expression += `${number}`
+                this.currentExpr += `${number}`
+                this.currentDigit = `${number}`
+                this.currentNumber = `${number}`
+                this.Ansexpression = `${number}`
+                
+            }
+            else if (!this.operatorClicked && (this.expression == '-')) { 
+                this.expression += `${number}`
+                this.currentExpr += `${number}`
+                this.currentDigit = `${number}`
+                this.Ansexpression = `${-1 * number}`
+                this.currentNumber = `${-1 * number}`
+                
+            } 
 
             //this.previousNumber = this.currentNumber
             
@@ -175,17 +214,52 @@ export default {
              * cleared anytime an operator is clicked; 
              * only the mathematical expression is retained.
              */
+            
+            var expressionLength = this.expression.length
+            if ((this.expression.substr(`${expressionLength - 1}`) === "!") || this.currentOpr === "!") {
+                //this.previousNumber = this.currentNumber = ""
+                //this.currentNumber = ""
+                // this.currentDigit = `${number}`
+
+                // this.Ansexpression = times(opr)
+                // this.answer = fact(this.currentDigit)
+
+                // var numHolder = "*" + `${number}`
+                // this.Ansexpression += eval(numHolder) 
+
+                
+
+                // this.currentOpr = `${opr}`   
+                // this.expression += `${opr}`   // Append factorial symbol to math expression
+            
+                // // Get lengths of Ansexpression and currentNumber
+                // var AnsexpressionLength = this.Ansexpression.length
+                // var currentNumberLength = this.currentNumber.length
+
+                // // Get factorial of currentNumber
+                // var factorial = `${fact(this.currentNumber)}`
+
+                // // Remove the currentNumber from Ansexpression
+                // this.Ansexpression = this.Ansexpression.substr(0, `${AnsexpressionLength - currentNumberLength}`)
+               
+                // // Replace it with its factorial value
+                // this.Ansexpression += factorial
+
+                // // Evaluate
+                // this.answer = eval(this.Ansexpression)
+
+            }
 
             if (this.operatorClicked) { 
                 this.expression += `${number}`        
                 this.operatorClicked = false
             }
+            
 
             if (this.currentDigit === "π") {
                 this.currentDigit = `${number}`
                 this.Ansexpression *= `${number}`
             } 
-            
             else if (this.currentOpr === "sin(" && this.sinClicked === true) {
                 //sin(`${number}`)
                 //var previousNumber = this.currentNumber
@@ -256,7 +330,49 @@ export default {
             }
         },
 
+        factorial(opr) {
+            this.equalClicked = true
+            //this.operatorClicked = true
+            //this.previousNumber = this.currentNumber
+            this.previousOpr = this.currentOpr
+            //this.currentExpr = this.currentNumber = this.currentDigit = ""
+            var expressionLength = this.expression.length
+
+
+            // No immediate factorial after factorial, plus, minus, times or divide symbol
+            if (this.expression.substr(`${expressionLength - 1}`) === '÷' 
+            || this.expression.substr(`${expressionLength - 1}`) === 'x'
+            || this.expression.substr(`${expressionLength - 1}`) === '+'
+            || this.expression.substr(`${expressionLength - 1}`) === '-'
+            || this.expression.substr(`${expressionLength - 1}`) === '!') {
+                this.Ansexpression = this.Ansexpression
+                this.expression = this.expression
+                return
+            }
+            else {
+                this.currentOpr = `${opr}`   
+                this.expression += `${opr}`   // Append factorial symbol to math expression
+            
+                // Get lengths of Ansexpression and currentNumber
+                var AnsexpressionLength = this.Ansexpression.length
+                var currentNumberLength = this.currentNumber.length
+
+                // Get factorial of currentNumber
+                var factorial = `${fact(this.currentNumber)}`
+
+                // Remove the currentNumber from Ansexpression
+                this.Ansexpression = this.Ansexpression.substr(0, `${AnsexpressionLength - currentNumberLength}`)
+               
+                // Replace it with its factorial value
+                this.Ansexpression += factorial
+
+                // Evaluate
+                this.answer = eval(this.Ansexpression)
+            }
+        },
+
         del() {
+            this.currentNumber = this.previousNumber = currentOpr = previousOpr = currentDigit = ""
             this.expression = this.expression.substr(0, this.expression.length - 1)
             this.Ansexpression = this.Ansexpression.substr(0, this.Ansexpression.length - 1)
             this.answer = eval(this.Ansexpression)
@@ -293,7 +409,8 @@ export default {
         // },
 
         plus(opr) {
-            this.equalClicked === true
+            this.equalClicked = true
+            //this.operatorClicked = true
             this.previousNumber = this.currentNumber
             this.previousOpr = this.currentOpr
             this.currentExpr = this.currentNumber = this.currentDigit = ""
@@ -333,11 +450,16 @@ export default {
         },
 
         minus(opr) {
-            this.equalClicked === true
+            this.equalClicked = true
+            //this.operatorClicked = true
             this.previousNumber = this.currentNumber
             this.previousOpr = this.currentOpr
-            this.currentExpr =this.currentNumber = this.currentDigit = ""
+            this.currentExpr = this.currentNumber = this.currentDigit = ""
             var expressionLength = this.expression.length
+
+            if (this.expression === "") {
+                this.currentNumber = `${opr}`
+            }
 
             // No immediate minus after times or divide symbols
             if (this.expression.substr(`${expressionLength - 1}`) === '÷' 
@@ -373,7 +495,8 @@ export default {
         },
 
         times(opr) {
-            this.equalClicked === true
+            this.equalClicked = true
+            //this.operatorClicked = true
             this.previousNumber = this.currentNumber
             this.previousOpr = this.currentOpr
             this.currentExpr = this.currentNumber = this.currentDigit = ""
@@ -402,7 +525,8 @@ export default {
         },
 
         divide(opr) {
-            this.equalClicked === true
+            this.equalClicked = true
+            //this.operatorClicked = true
             this.previousNumber = this.currentNumber
             this.previousOpr = this.currentOpr
             this.currentExpr = this.currentNumber = this.currentDigit = ""
