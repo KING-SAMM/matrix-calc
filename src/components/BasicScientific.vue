@@ -164,15 +164,9 @@ export default {
             } else {
                 this.answer = `${eval(this.answer)/100}`
             }
-
-            
-            // if (this.answer === "0") {
-            //     this.current = `${eval(this.current)/100}`
-            //     this.answer = this.current
-            // }
         },
 
-        
+        /** CLICKING A NUMBER */
 
         append(number) {
             var expressionLength = this.expression.length
@@ -189,7 +183,6 @@ export default {
                 this.expression = `${number}`
                 this.Ansexpression += `${number}`
                 return
-
             } 
             
             else if (!this.operatorClicked && this.expression !== "") { 
@@ -197,59 +190,158 @@ export default {
                 this.currentExpr += `${number}`
                 this.currentDigit = `${number}`
                 
-
-                // SUCCESSIVE FACTORIALS (after an initial factorial operation)
+                /** Sine of currentNumber */ 
                 if (this.currentOpr == "sin(") {
-                    /**
-                     * If sine was pressed BEFORE this number
-                     * let this number be the new currentNumber,
-                     * then multiply last value by new currentNumber
-                     */ 
                     
                     this.currentNumber += `${number}`
                     this.AnsexpressionHolder = this.Ansexpression
+
+                    /**
+                     * If sine was pressed BEFORE this number
+                     * this becomes currentNumber,
+                     * then evaluate sin(currentNumber)
+                     * e.g sin(x)
+                     */ 
+
+                    if (this.previousNumber === "") {
+                        // sine of 180 and 360 is 0
+                        if (this.currentNumber === "180" || this.currentNumber === "360") {
+                            this.sineOfCurrentNumberHolder = ""
+                            this.sineOfCurrentNumberHolder = "0"
+                            this.answer = "0"
+                            return
+                        } else {
+                            this.dELETcurrentNumForTrigRatio = this.currentNumber.substr(0, this.currentNumLength+1)
+                            this.sineOfCurrentNumberHolder = `${Math.sin(this.dELETcurrentNumForTrigRatio * Math.PI/180)}`
+                            this.answer = this.sineOfCurrentNumberHolder
+                            return
+                        }
+                    }
+                                    
+                    /**
+                     * If sine was pressed BEFORE this number
+                     * let this number be the new currentNumber,
+                     * then evaluate last value and sin(currentNumber)
+                     * e.g, a + sin(x)
+                     */ 
 
                     do {
                         this.dELETcurrentNumForTrigRatio = this.currentNumber.substr(0, this.currentNumLength+1)
                         this.sineOfCurrentNumberHolder = `${Math.sin(this.dELETcurrentNumForTrigRatio * Math.PI/180)}`
-                        this.answer = eval(`${this.AnsexpressionHolder + this.sineOfCurrentNumberHolder}`)
-                        this.currentNumberLengthHolder++
+                        if (this.currentNumber === "180" || this.currentNumber === "360") {
+                            this.sineOfCurrentNumberHolder = ""
+                            this.sineOfCurrentNumberHolder = "0"
+                            this.answer = eval(`${this.AnsexpressionHolder + this.sineOfCurrentNumberHolder}`)
+                            this.currentNumberLengthHolder++
+                            return
+                        } else {
+                            this.answer = eval(`${this.AnsexpressionHolder + this.sineOfCurrentNumberHolder}`)
+                            this.currentNumberLengthHolder++
+                            return
+                        }
                     } while (this.currentNumLength > (this.currentNumberLengthHolder))
 
+                /** Cosine of currentNumber */
                 } else if (this.currentOpr == "cos(") {
+                
+                    this.currentNumber += `${number}`
+                    this.AnsexpressionHolder = this.Ansexpression
+
+                    /**
+                     * If cosine was pressed BEFORE this number
+                     * this becomes currentNumber,
+                     * then evaluate cos(currentNumber)
+                     * e.g cos(x)
+                     */ 
+
+                    if (this.previousNumber == "") {
+                        // cosine of 90 and 270 is 0
+                        if (this.currentNumber === "90" || this.currentNumber === "270") {
+                            this.cosOfCurrentNumberHolder = ""
+                            this.cosOfCurrentNumberHolder = "0"
+                            this.answer = "0"
+                            return
+                        } else {
+                            this.dELETcurrentNumForTrigRatio = this.currentNumber.substr(0, this.currentNumLength+1)
+                            this.cosOfCurrentNumberHolder = `${Math.cos(this.dELETcurrentNumForTrigRatio * Math.PI/180)}`
+                            this.answer = this.cosOfCurrentNumberHolder
+                            return
+                        }
+                    }
+
                     /**
                      * If cosine was pressed BEFORE this number
                      * let this number be the new currentNumber,
                      * then multiply last value by new currentNumber
+                     * e.g, a + cos(x)
                      */ 
-                    
-                    this.currentNumber += `${number}`
-                    this.AnsexpressionHolder = this.Ansexpression
 
                     do {
                         this.dELETcurrentNumForTrigRatio = this.currentNumber.substr(0, this.currentNumLength+1)
                         this.cosOfCurrentNumberHolder = `${Math.cos(this.dELETcurrentNumForTrigRatio * Math.PI/180)}`
-                        this.answer = eval(`${this.AnsexpressionHolder + this.cosOfCurrentNumberHolder}`)
-                        this.currentNumberLengthHolder++
+                        if (this.currentNumber === "90" || this.currentNumber === "270") {
+                            this.cosOfCurrentNumberHolder = ""
+                            this.cosOfCurrentNumberHolder = "0"
+                            this.answer = eval(`${this.AnsexpressionHolder + this.cosOfCurrentNumberHolder}`)
+                            this.currentNumberLengthHolder++
+                            return
+                        } else {
+                            this.answer = eval(`${this.AnsexpressionHolder + this.cosOfCurrentNumberHolder}`)
+                            this.currentNumberLengthHolder++
+                            return
+                        }
                     } while (this.currentNumLength > (this.currentNumberLengthHolder))
 
+                /** Tangent of currentNumber */
                 } else if (this.currentOpr == "tan(") {
+
+                    this.currentNumber += `${number}`
+                    this.AnsexpressionHolder = this.Ansexpression
+
+                    /**
+                     * If tangent was pressed BEFORE this number
+                     * this becomes currentNumber,
+                     * then evaluate cos(currentNumber)
+                     * e.g tan(x)
+                     */ 
+
+                    if (this.previousNumber == "") {
+                        // tangent of 180 and 360 is 0
+                        if (this.currentNumber === "180" || this.currentNumber === "360") {
+                            this.tanOfCurrentNumberHolder = ""
+                            this.tanOfCurrentNumberHolder = "0"
+                            this.answer = "0"
+                            return
+                        } else {
+                            this.dELETcurrentNumForTrigRatio = this.currentNumber.substr(0, this.currentNumLength+1)
+                            this.tanOfCurrentNumberHolder = `${Math.tan(this.dELETcurrentNumForTrigRatio * Math.PI/180)}`
+                            this.answer = this.tanOfCurrentNumberHolder
+                            return
+                        }
+                    }
+
                     /**
                      * If tangent was pressed BEFORE this number
                      * let this number be the new currentNumber,
                      * then multiply last value by new currentNumber
+                     * e.g, a + tan(x)
                      */ 
-                    
-                    this.currentNumber += `${number}`
-                    this.AnsexpressionHolder = this.Ansexpression
 
                     do {
                         this.dELETcurrentNumForTrigRatio = this.currentNumber.substr(0, this.currentNumLength+1)
                         this.tanOfCurrentNumberHolder = `${Math.tan(this.dELETcurrentNumForTrigRatio * Math.PI/180)}`
-                        this.answer = eval(`${this.AnsexpressionHolder + this.tanOfCurrentNumberHolder}`)
-                        this.currentNumberLengthHolder++
+                        if (this.currentNumber === "180" || this.currentNumber === "360") {
+                            this.tanOfCurrentNumberHolder = ""
+                            this.tanOfCurrentNumberHolder = "0"
+                            this.answer = eval(`${this.AnsexpressionHolder + this.tanOfCurrentNumberHolder}`)
+                            this.currentNumberLengthHolder++
+                            return
+                        } else {
+                            this.answer = eval(`${this.AnsexpressionHolder + this.tanOfCurrentNumberHolder}`)
+                            this.currentNumberLengthHolder++
+                            return
+                        }
                     } while (this.currentNumLength > (this.currentNumberLengthHolder))
-
                 } 
                 
                 else {
@@ -257,18 +349,16 @@ export default {
                     this.Ansexpression += `${number}`
                     return
                 } 
-            
             }   
         
-            
-            
+              
             // Pressing the later numbers of an expression
             else if (!this.operatorClicked && this.expression !== "") { 
                 this.expression += `${number}`
                 this.currentExpr += `${number}`
                 this.currentDigit = `${number}`
 
-                // SUCCESSIVE FACTORIALS (after an initial factorial operation)
+                /** SUCCESSIVE FACTORIALS (after an initial factorial operation) */ 
                 if (this.currentOpr == "!") {
                 /**
                  * If factorial was pressed BEFORE this number
@@ -285,10 +375,8 @@ export default {
                     this.Ansexpression += `${number}`
                     return
                 } 
-            
             }   
         
-    
             else if (!this.operatorClicked && (this.expression == '+')) { 
                 this.expression += `${number}`
                 this.currentExpr += `${number}`
@@ -318,80 +406,12 @@ export default {
                 this.operatorClicked = false
             }
             
-
             if (this.currentDigit === "π") {
                 this.currentDigit = `${number}`
                 this.Ansexpression *= `${number}`
             } 
-            // else if (this.currentOpr === "sin(" && this.sinClicked === true) {
-            //     //sin(`${number}`)
-            //     //var previousNumber = this.currentNumber
-            //     //this.currentNumber = ""
-            //     this.currentNumber = `${number}`
-            //     var expressionHolder = this.expression
-            //     var sineOfCurrentNumberHolder = Math.sin(this.currentNumber * Math.PI / 180)  // + ")"
-                
-            //     // if (this.previousOpr === "") {
-            //     //     this.Ansexpression = eval(this.previousNumber) + eval(sineOfCurrentNumberHolder)
-            //     // }
-            //     // Perform the following operations between sin(number) and previousNumber
-            //     if (this.previousOpr === '+') {
-            //         this.Ansexpression = eval(this.previousNumber) + eval(sineOfCurrentNumberHolder)
-            //         return
-            //     } else if (this.previousOpr === '-') {
-            //         this.Ansexpression = this.previousNumber - `${sineOfCurrentNumberHolder}`
-            //         return
-            //     } else if (this.previousOpr === '÷') {
-            //         this.Ansexpression = this.previousNumber / `${sineOfCurrentNumberHolder}`
-            //         return
-            //     } else {
-            //         this.Ansexpression = this.previousNumber * `${sineOfCurrentNumberHolder}`
-            //     }
-                
-                
-                
-            //     this.expression = "sin(" + this.currentNumber //+ ")"
-            //     this.currentExpr = "sin(" + this.currentNumber
-            //     this.expression = expressionHolder //+ this.expression
-
-            //     if (this.currentNumber == "180" || this.currentNumber == "360") {
-            //         this.answer = "0"
-            //         return
-            //     }
-                
-            // }
-
-            else if (this.currentDigit === "cos(" && this.cosClicked === true) {
-                this.Ansexpression = "Math.cos(" + `${this.currentNumber * Math.PI / 180}` + ")"
-                this.expression = "cos(" + this.currentNumber + ")"
-                
-                // if (this.currentNumber == "180" || this.currentNumber == "360") {
-                //     this.answer = "0"
-                //     return
-                // }
-            }
-
-            else if (this.currentDigit === "tan(" && this.tanClicked === true) {
-                this.Ansexpression = "Math.tan(" + `${this.currentNumber * Math.PI / 180}` + ")"
-                this.expression = "tan(" + this.currentNumber + ")"
-                
-                // if (this.currentNumber == "180" || this.currentNumber == "360") {
-                //     this.answer = "0"
-                //     return
-                // }
-            }
-            
-
-            // //this.current = `${this.current}${number}`
-            // // this.currentDigit = `${number}`
-         
-            // //this.Ansexpression += `${number}`
-            // else {
-            //     return
-            // }
-            
+             
             this.answer = eval(this.Ansexpression)
-        
         }, 
 
         dot() {
@@ -402,8 +422,6 @@ export default {
 
         factorial(opr) {
             this.equalClicked = true
-            //this.operatorClicked = true
-            //this.previousNumber = this.currentNumber
             this.previousOpr = this.currentOpr
             //this.currentExpr = this.currentNumber = this.currentDigit = ""
             var expressionLength = this.expression.length
@@ -443,10 +461,7 @@ export default {
 
         square(opr) {
             this.equalClicked = true
-            //this.operatorClicked = true
-            //this.previousNumber = this.currentNumber
             this.previousOpr = this.currentOpr
-            //this.currentExpr = this.currentNumber = this.currentDigit = ""
             var expressionLength = this.expression.length
 
 
@@ -512,27 +527,17 @@ export default {
             // If minus is present and a plus is pressed...
             else if (this.expression.substr(`${expressionLength - 1}`) === '-') {
                 this.currentOpr = "-"        
-                // this.expression = this.expression.substr(0, `${expressionLength - 1}`) // ...remove previous minus
-                // this.Ansexpression = this.expression    // ...duplicate in Ansexpression
-                // this.expression += "-"       //...and maintain minus
-                // this.Ansexpression += "-"        
                 return
+            }
             // If plus is present and second plus is pressed...
-            } else if (this.expression.substr(`${expressionLength - 1}`) === '+') {
-                this.currentOpr = "+"        
-                // this.expression = this.expression.substr(0, `${expressionLength - 1}`) // ...remove previous plus
-                // this.Ansexpression = this.expression    // ...duplicate in Ansexpression
-                // this.expression += "+"       //...and reassign plus
-                // this.Ansexpression += "+"        
+             else if (this.expression.substr(`${expressionLength - 1}`) === '+') {
+                this.currentOpr = "+"           
                 return
             } else {
                 this.currentOpr = `${opr}`
                 this.expression += `${opr}`
                 this.Ansexpression += `${opr}`
             }
-            // this.operator = (a, b) => a + b
-            // this.setPrevious()
-
         },
 
         minus(opr) {
@@ -576,8 +581,6 @@ export default {
                 this.expression += `${opr}`
                 this.Ansexpression += `${opr}`
             }
-            // this.operator = (a, b) => a - b
-            // this.setPrevious()
         },
 
         times(opr) {
@@ -661,18 +664,14 @@ export default {
 
         },
 
+        /** TRIGONOMETRIC RATIOS */
+
         sin(symbol) {
             this.equalClicked = true
-            //var expressionLength = this.expression.length
-            //  this.previousNumber = this.currentNumber
             this.previousOpr = this.currentOpr
-             //this.currentNumber = ""
-             this.currentExpr =`${symbol}`
+            this.currentExpr =`${symbol}`
+            var expressionLength = this.expression.length
              
-             var expressionLength = this.expression.length
-             
-            // this.Ansexpression += `${symbol}`
-
             if (this.expression.substr(expressionLength-4) === 'sin(') {  
                 return    
             }
@@ -685,260 +684,109 @@ export default {
                     this.expression += `${symbol}`
                     this.sinClicked = true 
                     this.currentOpr = `${symbol}`
-                    return    
+                   return    
                 } 
-
+                // e.g, a.sin(x)
+                else if (this.expression.substr(`${expressionLength - 1}`) !== '÷' 
+                || this.expression.substr(`${expressionLength - 1}`) !== 'x'
+                || this.expression.substr(`${expressionLength - 1}`) !== '+'
+                || this.expression.substr(`${expressionLength - 1}`) !== '-') {
+                    this.currentOpr = `${symbol}`
+                    this.Ansexpression += "*" 
+                }
 
                 this.previousNumber = this.currentNumber
                 this.currentNumber = ""
-                //this.currentNumber =`${symbol}`
-                 this.expression += `${symbol}`
-                 this.sinClicked = true
-                 
-                 //this.previousNumber = this.currentNumber
-                 //this.Ansexpression += `${symbol}`
-                 //this.answer = eval(this.Ansexpression)
-                 this.currentOpr = `${symbol}`
-               // this.Ansexpression += "Math.sin(" + this.currentNumber
                 
-                 return
+                this.expression += `${symbol}`
+                this.sinClicked = true
+        
+                this.currentOpr = `${symbol}`
+                return
              }
         },
 
         cos(symbol) {
             this.equalClicked = true
-            //var expressionLength = this.expression.length
-            //  this.previousNumber = this.currentNumber
             this.previousOpr = this.currentOpr
-             this.currentNumber = ""
-             this.currentExpr =`${symbol}`
-             
-             var expressionLength = this.expression.length
-             
-            // this.Ansexpression += `${symbol}`
+            this.currentExpr =`${symbol}`
+            var expressionLength = this.expression.length
 
             if (this.expression.substr(-4) === 'cos(') {   
                 return    
             }
               else if (this.expression.substr(-4) !== 'cos(') {
-                   //this.currentNumber =`${symbol}`
-                 this.expression += `${symbol}`
-                 this.cosClicked = true
-                 
-                 this.currentOpr = `${symbol}`
-    
-                 return
+                if (this.expression.substr(`${expressionLength - 1}`) === '÷' 
+                || this.expression.substr(`${expressionLength - 1}`) === 'x'
+                || this.expression.substr(`${expressionLength - 1}`) === '+'
+                || this.expression.substr(`${expressionLength - 1}`) === '-') { 
+                    this.expression += `${symbol}`
+                    this.cosClicked = true 
+                    this.currentOpr = `${symbol}`
+                   return    
+                } 
+                // e.g, a.cos(x)
+                else if (this.expression.substr(`${expressionLength - 1}`) !== '÷' 
+                || this.expression.substr(`${expressionLength - 1}`) !== 'x'
+                || this.expression.substr(`${expressionLength - 1}`) !== '+'
+                || this.expression.substr(`${expressionLength - 1}`) !== '-') {
+                    this.currentOpr = `${symbol}`
+                    this.Ansexpression += "*"       
+                }
+
+                this.previousNumber = this.currentNumber
+                this.currentNumber = ""
+                
+                this.expression += `${symbol}`
+                this.cosClicked = true
+        
+                this.currentOpr = `${symbol}`
+                return
              }
         },
 
         tan(symbol) {
             this.equalClicked = true
-            //var expressionLength = this.expression.length
-            //  this.previousNumber = this.currentNumber
             this.previousOpr = this.currentOpr
-             this.currentNumber = ""
-             this.currentExpr =`${symbol}`
-             
-             var expressionLength = this.expression.length
-             
-            // this.Ansexpression += `${symbol}`
+            this.currentExpr =`${symbol}`
+            
+            var expressionLength = this.expression.length
 
             if (this.expression.substr(-4) === 'tan(') {   
                 return    
             }
               else if (this.expression.substr(-4) !== 'tan(') {
-                   //this.currentNumber =`${symbol}`
-                 this.expression += `${symbol}`
-                 this.tanClicked = true
-                 
-                 this.currentOpr = `${symbol}`
-    
-                 return
+                if (this.expression.substr(`${expressionLength - 1}`) === '÷' 
+                || this.expression.substr(`${expressionLength - 1}`) === 'x'
+                || this.expression.substr(`${expressionLength - 1}`) === '+'
+                || this.expression.substr(`${expressionLength - 1}`) === '-') { 
+                    this.expression += `${symbol}`
+                    this.tanClicked = true 
+                    this.currentOpr = `${symbol}`
+                   return    
+                } 
+                // e.g, a.tan(x)
+                else if (this.expression.substr(`${expressionLength - 1}`) !== '÷' 
+                || this.expression.substr(`${expressionLength - 1}`) !== 'x'
+                || this.expression.substr(`${expressionLength - 1}`) !== '+'
+                || this.expression.substr(`${expressionLength - 1}`) !== '-') {
+                    this.currentOpr = `${symbol}`
+                    this.Ansexpression += "*"       
+                }
+
+                this.previousNumber = this.currentNumber
+                this.currentNumber = ""
+                
+                this.expression += `${symbol}`
+                this.tanClicked = true
+        
+                this.currentOpr = `${symbol}`
+                return
              }
         },
 
 
-       /* 
-
-       //666, 420, 1999
-        function(){
-        var globalAnswer = "0" //declaring global variable here... this is bad practice
-
-        function removeLeadingZero(string) {
-        var newString = string
-        if (newString[0] === '0') {
-            console.log('removeLeadingZero-1: remove leading 0 from newString')
-            newString = newString.slice(1)
-        }
-        return newString
-        }
-
-         function makeCurrentValueNegative() {
-        //     // alert('Sorry, no negatives on this calculator. Only positive vibes!')
-            var currentValue = document.getElementById("currentValue").innerHTML
-            console.log('currentValue in makeInputNegative is: ', currentValue)
-            if (currentValue[0] === "-") {
-            currentValue = currentValue.slice(1)
-            $("#currentValue").html(currentValue)
-            } else {
-            $("#currentValue").prepend("-")
-            }
-            return currentValue
-        }
-
-
-        function removeLeadingSymbol(string) {
-        var newString = string
-            var symbols = ["*", "/", "+", "-", "%"]
-        if (symbols.includes(newString[0])) {
-            console.log('removeLeadingSymbol-1: remove leading symbol from newString')
-            newString = newString.slice(1)
-        }
-        return newString
-        }
-
-
-        function storeAnswer(value) {
-        console.log('storeAnswer-1: storeAnswer is:::', value)
-        var value = removeLeadingZero(value)
-        globalAnswer = value //bad practice -- setting globalAnswer here
-        console.log('storeAnswer-2: globalAnswer is:::', globalAnswer)
-        $("#globalAnswer").html(globalAnswer) //set globalAnswer on calculator
-        console.log('storeAnswer-3: set globalAnswer on calculator')
-        return value //should be a STRING
-        }
-
-
-        function getCurrentValue() {
-        var currentValue = document.getElementById("currentValue").innerHTML
-        console.log('getCurrentValue-- currentValue is a string: ', currentValue)
-        return currentValue //currentValue will be a STRING
-        }
-
-
-        function clearCurrentValue() {
-        console.log('CLEAR-1: calling clearCurrentValue... currentValue === 0')
-        $("#currentValue").html("0") //set currentValue to "0"
-        console.log('CLEAR-2: call storeAnswer with "0", to reset globalAnswer')
-        changeBackground()
-        return storeAnswer("0") //set globalAnswer to "0", a STRING
-        }
-
-
-        function equals() {
-        var answer = globalAnswer //bad practice!!! fix this.
-        console.log('EQUALS-1: answer is:::', answer) //a STRING
-        var removeEqualSign = answer.split("=") //remove "=" from end...
-        var newAnswer = removeEqualSign[0] // //removing "=" from end...
-        newAnswer = replaceTimesAndDivides(newAnswer)
-        newAnswer = removeLeadingSymbol(newAnswer) ///will this mess up negative numbers???
-        console.log('EQUALS-2: newAnswer is:::', newAnswer) //a STRING
-        var finalAnswer = eval(newAnswer) //pass answer to eval, turning it into a number
-        finalAnswer = finalAnswer.toString() //make a string again
-        storeAndReset(finalAnswer, finalAnswer)
-        console.log('EQUALS-3: finalAnswer is:::', finalAnswer)
-        changeBackground()
-        return finalAnswer //returning finalAnswer, a STRING
-        }
-
-
-        function clickButton(event) {
-        $(".w3-btn").click(function(event) {
-            var thingClicked = this.innerHTML
-            console.log("0. you clicked: ", thingClicked)
-
-            if ($(this).hasClass("orange")) {
-            console.log(`clickButton-1. ${thingClicked} is in the orange class!`)
-            return addSymbolToAnswer(thingClicked)
-            }
-
-            if ($(this).hasClass("num")) {
-            console.log(`clickButton-2. ${thingClicked} is in the num class!`)
-            return createNewNumber(thingClicked)
-            }
-
-            if ($(this).hasClass("clear")) {
-            console.log('clickButton-3. clearCurrentValue called!')
-            return clearCurrentValue()
-            }
-
-            if ($(this).hasClass("negative")) {
-            console.log('clickButton-4. makeInputNegative called!')
-            return makeCurrentValueNegative()
-            }
-
-            if ($(this).hasClass("equals")) {
-            console.log('clickButton-4. equals pressed!')
-            addSymbolToAnswer(thingClicked) //thingClicked is "="
-            return equals()
-            }
-        })
-        }
-        clickButton(event)
-
-
-        // function replaceTimesAndDivides(string) {
-        // string = string.replace("x", "*")
-        // string = string.replace("÷", "/")
-        // return string
-        // }
-
-
-        function addSymbolToAnswer(string) {
-        $('.negative').prop('disabled', true) //disable "+/-" when orange button clicked
-        var symbolString = string
-        symbolString = replaceTimesAndDivides(symbolString)
-        console.log('ORANGE-1. symbolString is: ', symbolString)
-        var currentValue = getCurrentValue()
-        var symbols = ["*", "/", "+", "-", "%"]
-        console.log('ORANGE-2. globalAnswer is now: ', globalAnswer)
-
-        if (globalAnswer === currentValue) { //after "=" was pressed...
-            console.log('ORANGE-3a. after "=" pressed, just need one symbol added to currentValue')
-            var newGlobalAnswer = currentValue + symbolString //add symbol to end of newGlobal
-            return storeAndReset(newGlobalAnswer, symbolString)
-        }
-        if (symbols.includes(currentValue)) { //if a symbol was already pressed...
-            console.log('Orange-3b: currentValue and symbolString are both symbols!')
-            currentValue = currentValue.replace(currentValue, symbolString)
-            console.log('Orange-3b: replaced currentValue with ', symbolString)
-            var newGlobalAnswer = globalAnswer.slice(0, -1) + currentValue
-            console.log('Orange-4b: replaced lastChar in newGlobalAnswer with', currentValue)
-            return storeAndReset(newGlobalAnswer, symbolString)
-        } else { //otherwise, adding new symbol to currentValue...
-            console.log('ORANGE-3c: adding new symbol to currentValue')
-            currentValue = currentValue + symbolString //add symbol to end of currentValue...
-            console.log('ORANGE-3c. new currentValue is: ', currentValue)
-            var newGlobalAnswer = globalAnswer + currentValue
-            return storeAndReset(newGlobalAnswer, symbolString)
-        }
-        }
-
-
-        function storeAndReset(newGlobalAnswer, newCurrentValue) {
-        storeAnswer(newGlobalAnswer)
-        $("#currentValue").html(newCurrentValue)
-        console.log('storeAndReset: replaced currentValue with symbol: ', newCurrentValue)
-        changeBackground()
-        return newCurrentValue
-        }
-
-
-        function createNewNumber(string) {
-        $('.negative').prop('disabled', false) //enable "+/-" when numbers clicked
-        var thingClicked = string
-        var currentValue = getCurrentValue()
-        var newString = currentValue + thingClicked //add into newString
-        newString = removeLeadingZero(newString)
-        newString = removeLeadingSymbol(newString)
-        console.log('createNewNumber-1: newString is: ', newString)
-        $("#currentValue").html(newString)
-        changeBackground()
-        return newString
-        }
-
-
-
+        /*
         function changeBackground() {
         var currentValue = document.getElementById("currentValue").innerHTML
         console.log('changeBackground. currentValue is: ', currentValue)
