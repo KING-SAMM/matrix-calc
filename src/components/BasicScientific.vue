@@ -47,18 +47,19 @@
         <button class="w3-btn" v-on:click="natural_log('ln')">ln</button>
 
         <!--Letters-->
+        <button class="w3-btn" v-on:click="append('∑')"><strong>∑</strong></button>
         <button class="w3-btn">∑ƒ𝑥</button>
         <button class="w3-btn">∑ƒ𝑥²</button>
-        <button class="w3-btn" v-on:click="factorial('!')">!</button>
-        <button class="w3-btn" v-on:click="pi('π')">π</button>
-        <button class="w3-btn">θ</button>
+        <button class="w3-btn" v-on:click="append('χ²')">χ²</button>
+        <button class="w3-btn"><strong>μ</strong></button>
         <button class="w3-btn" v-on:click="del()">DEL</button>
     
         <!--Permuta-combina-->
-        <button class="w3-btn" v-on:click="append('∑')"><strong>∑</strong></button>
-        <button class="w3-btn" v-on:click="append('χ²')">χ²</button>
-        <button class="w3-btn"><strong>μ</strong></button>
-        <button class="w3-btn"><sup>n</sup>C<sub>r</sub></button>
+        <button class="w3-btn" v-on:click="pi('π')">π</button>
+        <!-- <button class="w3-btn">θ</button> -->
+        <button class="w3-btn" v-on:click="factorial('!')">!</button>
+        <button class="w3-btn" v-on:click="combination('C')"><sup>n</sup>C<sub>r</sub></button>
+        <button class="w3-btn" v-on:click="permutation('P')"><sup>n</sup>P<sub>r</sub></button>
         <button class="w3-btn"><strong>σ</strong></button>
         <button class="w3-btn"><strong>ρ</strong></button>
 
@@ -91,7 +92,7 @@
 <script>
 import {globalAnswer, makeCurrentValueNegative, storeAnswer, clearCurrentValue, replaceTimesAndDivides} from '../special_functions/calculator.js'
 import {clickButton, addSymbolToAnswer, storeAndReset, equals} from '../special_functions/calculator.js'
-import {fact} from '../special_functions/factorial.js'
+import {fact, permutation, combination} from '../special_functions/factorial.js'
 import {square} from '../special_functions/squares.js'
 
 export default {
@@ -189,6 +190,24 @@ export default {
                 this.expression += `${number}`
                 this.currentExpr += `${number}`
                 this.currentDigit = `${number}`
+
+                if (this.currentOpr == "P") {
+                    this.currentNumber += `${number}`
+                    this.Ansexpression = this.Ansexpression.substr(0, AnsexpressionLength - this.currentNumLength)
+                    this.AnsexpressionHolder = this.Ansexpression
+                    var permutation = `${(fact(this.previousNumber)/fact(this.previousNumber - this.currentNumber))}`
+                    this.Ansexpression = `${this.AnsexpressionHolder + permutation}`
+                    this.answer = eval(`${this.AnsexpressionHolder + permutation}`)
+                    return
+                } else if (this.currentOpr == "C") {
+                    this.currentNumber += `${number}`
+                    this.Ansexpression = this.Ansexpression.substr(0, AnsexpressionLength - this.currentNumLength)
+                    this.AnsexpressionHolder = this.Ansexpression
+                    var combination = `${(fact(this.previousNumber)/(fact(this.previousNumber - this.currentNumber) * fact(this.currentNumber)))}`
+                    this.Ansexpression = `${this.AnsexpressionHolder + combination}`
+                    this.answer = eval(`${this.AnsexpressionHolder + combination}`)
+                    return
+                } 
                 
                 /** Sine of currentNumber */ 
                 if (this.currentOpr == "sin(") {
@@ -375,6 +394,12 @@ export default {
                     this.Ansexpression += `${number}`
                     return
                 } 
+
+                // if (this.currentOpr == 'P') {
+                //     var permutation = `${permutation(this.previousNumber, this.currentNumber)}`
+                //     this.Ansexpression += permutation
+                    
+                // } 
             }   
         
             else if (!this.operatorClicked && (this.expression == '+')) { 
@@ -410,6 +435,10 @@ export default {
                 this.currentDigit = `${number}`
                 this.Ansexpression *= `${number}`
             } 
+
+            // if (this.currentOpr === 'P') {
+            //     this.Ansexpression += permutation(this.previousNumber, this.currentNumber)
+            // } 
              
             this.answer = eval(this.Ansexpression)
         }, 
@@ -420,6 +449,8 @@ export default {
             }
         },
 
+
+        /** FACTORIAL PERMUTATION and COMBINATION */
         factorial(opr) {
             this.equalClicked = true
             this.previousOpr = this.currentOpr
@@ -457,6 +488,88 @@ export default {
                 // Evaluate
                 this.answer = eval(this.Ansexpression)
             }
+        },
+
+        permutation(symbol) {
+            this.equalClicked = true
+            this.previousOpr = this.currentOpr
+            this.currentExpr =`${symbol}`
+            var expressionLength = this.expression.length
+             
+            if (this.expression.substr(expressionLength-1) === 'P') {  
+                return    
+            }
+            
+            else if (this.expression.substr(expressionLength-1) !== 'P') {
+                // No immediate permutation after plus, minus, times or divide symbol
+                if (this.expression.substr(`${expressionLength - 1}`) === '÷' 
+                || this.expression.substr(`${expressionLength - 1}`) === 'x'
+                || this.expression.substr(`${expressionLength - 1}`) === '+'
+                || this.expression.substr(`${expressionLength - 1}`) === '-') {
+                    this.Ansexpression = this.Ansexpression
+                    this.expression = this.expression
+                    return
+                }
+                // e.g, nP...
+                else if (this.expression.substr(`${expressionLength - 1}`) !== '÷' 
+                || this.expression.substr(`${expressionLength - 1}`) !== 'x'
+                || this.expression.substr(`${expressionLength - 1}`) !== '+'
+                || this.expression.substr(`${expressionLength - 1}`) !== '-'
+                || this.expression.substr(`${expressionLength - 1}`) !== 'C') {
+                    this.currentOpr = `${symbol}`   
+                    this.expression += `${symbol}`   // Append square symbol to math expression
+                }
+
+                this.previousNumber = this.currentNumber
+                this.currentNumber = ""
+                
+                //this.expression += `${symbol}`
+                this.permutationClicked = true
+        
+                //this.currentOpr = `${symbol}`
+                return
+             }
+        },
+
+        combination(symbol) {
+            this.equalClicked = true
+            this.previousOpr = this.currentOpr
+            this.currentExpr =`${symbol}`
+            var expressionLength = this.expression.length
+             
+            if (this.expression.substr(expressionLength-1) === 'P') {  
+                return    
+            }
+            
+            else if (this.expression.substr(expressionLength-1) !== 'P') {
+                // No immediate permutation after plus, minus, times or divide symbol
+                if (this.expression.substr(`${expressionLength - 1}`) === '÷' 
+                || this.expression.substr(`${expressionLength - 1}`) === 'x'
+                || this.expression.substr(`${expressionLength - 1}`) === '+'
+                || this.expression.substr(`${expressionLength - 1}`) === '-') {
+                    this.Ansexpression = this.Ansexpression
+                    this.expression = this.expression
+                    return
+                }
+                // e.g, nP...
+                else if (this.expression.substr(`${expressionLength - 1}`) !== '÷' 
+                || this.expression.substr(`${expressionLength - 1}`) !== 'x'
+                || this.expression.substr(`${expressionLength - 1}`) !== '+'
+                || this.expression.substr(`${expressionLength - 1}`) !== '-'
+                || this.expression.substr(`${expressionLength - 1}`) !== 'C') {
+                    this.currentOpr = `${symbol}`   
+                    this.expression += `${symbol}`   // Append square symbol to math expression
+                }
+
+                this.previousNumber = this.currentNumber
+                this.currentNumber = ""
+                
+                //this.expression += `${symbol}`
+                this.combinationClicked = true
+        
+                //this.currentOpr = `${symbol}`
+                return
+             }
         },
 
         square(opr) {
@@ -510,13 +623,27 @@ export default {
         plus(opr) {
             this.equalClicked = true
             //this.operatorClicked = true
+
+            var expressionLength = this.expression.length
+
+            // If plus is present and second plus is pressed...
+            if (this.expression.substr(`${expressionLength - 1}`) === '+') {
+                this.currentOpr = "+"           
+                return
+            } 
+            
+            // If minus is present and a plus is pressed..
+            else if (this.expression.substr(`${expressionLength - 1}`) === '-') {
+                this.currentOpr = "-"        
+                return
+            }
+
             this.previousNumber = this.currentNumber
             this.previousOpr = this.currentOpr
             this.currentExpr = this.currentNumber = this.currentDigit = this.sineOfCurrentNumberHolder = ""
             this.currentNumLength = this.currentNumberLengthHolder = this.dDELETcurrentNumForTrigRatio = ""
             this.cosOfCurrentNumberHolder = this.tanOfCurrentNumberHolder = ""
-            var expressionLength = this.expression.length
-
+            
             // No immediate plus after times or divide symbol
             if (this.expression.substr(`${expressionLength - 1}`) === '÷' 
             || this.expression.substr(`${expressionLength - 1}`) === 'x') {
@@ -524,16 +651,7 @@ export default {
                 this.expression = this.expression
                 return
             }
-            // If minus is present and a plus is pressed...
-            else if (this.expression.substr(`${expressionLength - 1}`) === '-') {
-                this.currentOpr = "-"        
-                return
-            }
-            // If plus is present and second plus is pressed...
-             else if (this.expression.substr(`${expressionLength - 1}`) === '+') {
-                this.currentOpr = "+"           
-                return
-            } else {
+             else {
                 this.currentOpr = `${opr}`
                 this.expression += `${opr}`
                 this.Ansexpression += `${opr}`
@@ -543,14 +661,47 @@ export default {
         minus(opr) {
             this.equalClicked = true
             //this.operatorClicked = true
-            this.previousNumber = this.currentNumber
-            this.previousOpr = this.currentOpr
-            this.currentExpr = this.currentNumber = this.currentDigit = this.currentNumLength = ""
+
             var expressionLength = this.expression.length
+            var currentNumberLength = this.currentNumber.length
 
             if (this.expression === "") {
+                this.currentOpr = `${opr}`
                 this.currentNumber = `${opr}`
+                this.expression = `${opr}`
+                this.Ansexpression = `${opr}`
+                this.currentDigit = `${opr}`
+                return
             }
+
+            // If minus is present and second minus is pressed...
+            else if (this.expression.substr(`${expressionLength - 1}`) === '-') {
+                this.currentOpr = "+"        
+                this.expression = this.expression.substr(0, `${expressionLength - 1}`) // ...remove previous minus
+                this.Ansexpression = this.Ansexpression.substr(0, `${expressionLength - 1}`)  // ...remove previous minus
+                this.currentNumber = this.currentNumber.substr(0, `${currentNumberLength - 1}`)  // ...remove previous minus
+                this.expression += "+"       //...and change to plus
+                this.Ansexpression += "+"       
+                return
+
+            // If plus is present and a minus is pressed..
+            } else if (this.expression.substr(`${expressionLength - 1}`) === '+') {
+                this.currentOpr = `${opr}`        
+                this.expression = this.expression.substr(0, `${expressionLength - 1}`) // ...remove previous plus
+                this.Ansexpression = this.expression.substr(0, `${expressionLength - 1}`) // ...remove previous plus
+                this.currentNumber = this.currentNumber.substr(0, `${currentNumberLength - 1}`)  // ...remove previous minus       
+                this.expression += `${opr}`       //...and change to minus  
+                this.Ansexpression += `${opr}`
+                this.currentNumber += `${opr}`        
+                return
+            }
+
+
+            this.previousNumber = this.currentNumber
+            this.previousOpr = this.currentOpr
+            this.currentExpr = this.currentNumber = this.currentDigit = this.sineOfCurrentNumberHolder = ""
+            this.currentNumLength = this.currentNumberLengthHolder = this.dDELETcurrentNumForTrigRatio = ""
+            this.cosOfCurrentNumberHolder = this.tanOfCurrentNumberHolder = ""
 
             // No immediate minus after times or divide symbols
             if (this.expression.substr(`${expressionLength - 1}`) === '÷' 
@@ -559,23 +710,6 @@ export default {
                 this.expression = this.expression
                 return
 
-            // If minus is present and second minus is pressed...
-            } else if (this.expression.substr(`${expressionLength - 1}`) === '-') {
-                this.currentOpr = "+"        
-                this.expression = this.expression.substr(0, `${expressionLength - 1}`) // ...remove previous minus
-                this.Ansexpression = this.Ansexpression.substr(0, `${expressionLength - 1}`)  // ...remove previous minus
-                this.expression += "+"       //...and change to plus
-                this.Ansexpression += "+"        
-                return
-
-            // If plus is present and a minus is pressed..
-            } else if (this.expression.substr(`${expressionLength - 1}`) === '+') {
-                this.currentOpr = `${opr}`        
-                this.expression = this.expression.substr(0, `${expressionLength - 1}`) // ...remove previous plus
-                this.Ansexpression = this.expression.substr(0, `${expressionLength - 1}`) // ...remove previous plus       
-                this.expression += `${opr}`       //...and change to minus  
-                this.Ansexpression += `${opr}`        
-                return
             } else {
                 this.currentOpr = `${opr}`
                 this.expression += `${opr}`
@@ -690,7 +824,9 @@ export default {
                 else if (this.expression.substr(`${expressionLength - 1}`) !== '÷' 
                 || this.expression.substr(`${expressionLength - 1}`) !== 'x'
                 || this.expression.substr(`${expressionLength - 1}`) !== '+'
-                || this.expression.substr(`${expressionLength - 1}`) !== '-') {
+                || this.expression.substr(`${expressionLength - 1}`) !== '-'
+                || this.expression.substr(`${expressionLength - 1}`) !== 'P'
+                || this.expression.substr(`${expressionLength - 1}`) !== 'C') {
                     this.currentOpr = `${symbol}`
                     this.Ansexpression += "*" 
                 }
