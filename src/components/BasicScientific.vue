@@ -9,7 +9,7 @@
                    <tr><td> currentNumber: {{ currentNumber }}</td><td>previousNumber: {{ previousNumber }}</td><td>currentDigit: {{ currentDigit }}</td></tr>
                    <tr><td> Ansexpression: {{ Ansexpression }}</td><td> {{ answer || "0" }}</td><td>previousOpr: {{ previousOpr }}</td></tr>
                    <tr><td> AnsexpHolder: {{ AnsexpressionHolder }}</td><td> Factl: {{ factorial }}</td><td> cNL: {{ currentNumLength }} cNLHolder: {{ currentNumberLengthHolder }}</td></tr>
-                   <tr><td> DELcNFSine:{{dELETcurrentNumForTrigRatio}} </td><td> sineCNHolder: {{ sineOfCurrentNumberHolder }}</td></tr>
+                   <tr><td> DELcNFSine:{{dELETcurrentNumForTrigRatio}} </td><td> sineCNHolder: {{ cosOfCurrentNumberHolder }}</td></tr>
                </tbody>
            </table> 
         </section>
@@ -24,11 +24,11 @@
     
         <!--Calculus-->
         <div class="w3-btn"> ∫</div>
-        <div class="w3-btn"> ∫<sub>ₐ</sub><sup>ᵇ</sup></div>
-        <div class="w3-btn">d/dx</div>
-        <div class="w3-btn">lim</div>
-        <div class="w3-btn">ᴏᴏ</div>
-        <div class="w3-btn">e</div>
+        <div class="w3-btn"> ∫<sub>ₐ</sub><sup>ᵇ</sup>dx</div>
+        <div class="w3-btn">dy/dx</div>
+        <div class="w3-btn">lim<sub>𝑥→∞</sub></div> 
+        <div class="w3-btn">∞</div>
+        <div class="w3-btn"><i>e</i></div>
     
         <!--Trigonometry-->
         <div class="w3-btn" v-on:click="sin('sin(')">sin</div>
@@ -39,10 +39,10 @@
         <div class="w3-btn" v-on:click="cot('cot(')">cot</div>
     
         <!--Exponent-->
-        <button class="w3-btn" v-on:click="square('²')">x²</button>
-        <button class="w3-btn" v-on:click="power('^')">x<sup>a</sup></button>
-        <button class="w3-btn" v-on:click="squareroot('√')">√ x</button>
-        <button class="w3-btn"><sup>a</sup>√ x</button>
+        <button class="w3-btn" v-on:click="square('²')">𝑥²</button>
+        <button class="w3-btn" v-on:click="power('^')">𝑥<sup>a</sup></button>
+        <button class="w3-btn" v-on:click="squareroot('√')">√𝑥</button>
+        <button class="w3-btn"><sup>a</sup>√𝑥</button>
         <button class="w3-btn">log</button>
         <button class="w3-btn" v-on:click="natural_log('ln')">ln</button>
 
@@ -50,18 +50,18 @@
         <button class="w3-btn" v-on:click="append('∑')"><strong>∑</strong></button>
         <button class="w3-btn">∑ƒ𝑥</button>
         <button class="w3-btn">∑ƒ𝑥²</button>
-        <button class="w3-btn" v-on:click="append('χ²')">χ²</button>
+        <button class="w3-btn" v-on:click="append('χ²')"><i>χ</i> ²</button>
         <button class="w3-btn"><strong>μ</strong></button>
         <button class="w3-btn" v-on:click="del()">DEL</button>
     
         <!--Permuta-combina-->
         <button class="w3-btn" v-on:click="pi('π')">π</button>
         <!-- <button class="w3-btn">θ</button> -->
-        <button class="w3-btn" v-on:click="factorial('!')">!</button>
+        <button class="w3-btn" v-on:click="factorial('!')"><i>n</i>!</button>
         <button class="w3-btn" v-on:click="combination('C')"><sup>n</sup>C<sub>r</sub></button>
         <button class="w3-btn" v-on:click="permutation('P')"><sup>n</sup>P<sub>r</sub></button>
-        <button class="w3-btn"><strong>σ</strong></button>
-        <button class="w3-btn"><strong>ρ</strong></button>
+        <button class="w3-btn"><strong>σ<sub>𝑥</sub></strong></button>
+        <button class="w3-btn"><strong>𝑥̅</strong></button>   <!-- <span><sub>−</sub><br><sup>𝑥</sup></span> -->
 
         <!--Numbers-->    
         <button class="w3-btn num" v-on:click="append('1')"><strong>1</strong></button>
@@ -82,8 +82,8 @@
         <!--Operator-->
         <button class="w3-btn" v-on:click="dot()"><strong>.</strong></button>
         <button class="w3-btn orange add" v-on:click="plus('+')"><strong>+</strong></button>
-        <button class="w3-btn orange subtract" v-on:click="minus('-')"><strong>-</strong></button>
-        <button class="w3-btn orange" v-on:click="times('x')"><strong>x</strong></button>
+        <button class="w3-btn orange subtract" v-on:click="minus('−')"><strong>−</strong></button>
+        <button class="w3-btn orange" v-on:click="times('×')"><strong>×</strong></button>
         <button class="w3-btn orange" v-on:click="divide('÷')"><strong>÷</strong></button>
         <button class="w3-btn" v-on:click="equal"><strong>=</strong></button>  
      </v-container>  
@@ -233,21 +233,36 @@ export default {
                     if (this.previousNumber === "") {
                         // sine of 180 and 360 is 0
                         if (this.currentNumber === "180" || this.currentNumber === "360"
-                        || this.currentNumber === "-180" || this.currentNumber === "-360") {
+                        || this.currentNumber === "-180" || this.currentNumber === "-360") { // Sytem minus is used with currentNumber and Ansexpression for actual computation
                             this.sineOfCurrentNumberHolder = ""
                             this.sineOfCurrentNumberHolder = "0"
                             this.Ansexpression += "0"
                             this.answer = eval(this.Ansexpression)
                             return
+                        }   
+                        
+                        this.dELETcurrentNumForTrigRatio = this.currentNumber.substr(0, this.currentNumLength+1)
+                        this.sineOfCurrentNumberHolder = `${Math.sin(this.dELETcurrentNumForTrigRatio * Math.PI/180)}`
+                        
+                        // Get integer value when currentNumner is ±30, ±150, ±210 or ±330 
+                        if (this.currentNumber === "30" || this.currentNumber === "-30"
+                        || this.currentNumber === "150" || this.currentNumber === "-150"
+                        || this.currentNumber === "210" || this.currentNumber === "-210"
+                        || this.currentNumber === "330" || this.currentNumber === "-330") {
+                            this.sineOfCurrentNumberHolder = eval(this.sineOfCurrentNumberHolder).toPrecision(1)
+                        }
+
+                        if (this.previousOpr == '−') {
+                            this.answer = -1 * this.sineOfCurrentNumberHolder
+                            return
                         } else {
-                            this.dELETcurrentNumForTrigRatio = this.currentNumber.substr(0, this.currentNumLength+1)
-                            this.sineOfCurrentNumberHolder = `${Math.sin(this.dELETcurrentNumForTrigRatio * Math.PI/180)}`
                             this.answer = this.sineOfCurrentNumberHolder
                             return
                         }
                     }
-                                    
-                    /**
+
+                    if (this.previousNumber !== "") {
+                        /**
                      * If sine was pressed BEFORE this number
                      * let this number be the new currentNumber,
                      * then evaluate last value and sin(currentNumber)
@@ -258,7 +273,7 @@ export default {
                         this.dELETcurrentNumForTrigRatio = this.currentNumber.substr(0, this.currentNumLength+1)
                         this.sineOfCurrentNumberHolder = `${Math.sin(this.dELETcurrentNumForTrigRatio * Math.PI/180)}`
                         if (this.currentNumber === "180" || this.currentNumber === "360"
-                        || this.currentNumber === "-180" || this.currentNumber === "-360") {
+                        || this.currentNumber === "-180" || this.currentNumber === "-360") {   // Sytem minus is used with currentNumber and Ansexpression for actual computation
                             this.sineOfCurrentNumberHolder = ""
                             this.sineOfCurrentNumberHolder = "0"
                             this.Ansexpression += "0"
@@ -269,13 +284,38 @@ export default {
                             this.answer = eval(`${this.AnsexpressionHolder + this.sineOfCurrentNumberHolder}`)
                             this.currentNumberLengthHolder++
                             return
-                        } else {
+                        // } else if (this.previousOpr == '−') {
+                        //     this.answer = eval(`${this.AnsexpressionHolder + Math.abs(this.sineOfCurrentNumberHolder)}`)
+                        //     return
+                            // if (this.previousOpr == '−') {
+                            //     this.AnsexpressionHolder = this.Ansexpression.substr(0, this.Ansexpression.length-1)  // Remove last minus
+                            //     this.AnsexpressionHolder += "+"
+                            //     //this.sineOfCurrentNumberHolder = Math.abs(this.sineOfCurrentNumberHolder)
+                            //     this.answer = eval(`${this.AnsexpressionHolder + Math.abs(this.sineOfCurrentNumberHolder)}`)
+                            //     return
+                            // }
+                            
+                           
+                        } else if (this.currentNumber === "30" || this.currentNumber === "-30"
+                        || this.currentNumber === "150" || this.currentNumber === "-150"
+                        || this.currentNumber === "210" || this.currentNumber === "-210"
+                        || this.currentNumber === "330" || this.currentNumber === "-330") {
+                            this.sineOfCurrentNumberHolder = eval(this.sineOfCurrentNumberHolder).toPrecision(1)
+                            this.answer = eval(`${this.AnsexpressionHolder + this.sineOfCurrentNumberHolder}`)
+                            this.currentNumberLengthHolder++
+                            return
+                        }
+                        
+                        else {
                             this.answer = eval(`${this.AnsexpressionHolder + this.sineOfCurrentNumberHolder}`)
                             this.currentNumberLengthHolder++
                             return
                         }
                     } while (this.currentNumLength > (this.currentNumberLengthHolder))
 
+                    }
+                                    
+                    
                 /** Cosine of currentNumber */
                 } else if (this.currentOpr == "cos(") {
                 
@@ -298,9 +338,23 @@ export default {
                             this.Ansexpression += "0"
                             this.answer = eval(this.Ansexpression)
                             return
+                        }   
+                        
+                        this.dELETcurrentNumForTrigRatio = this.currentNumber.substr(0, this.currentNumLength+1)
+                        this.cosOfCurrentNumberHolder = `${Math.cos(this.dELETcurrentNumForTrigRatio * Math.PI/180)}`
+                        
+                        // Get 1 decimal place value when currentNumner is ±60, ±120, ±240 or ±360 
+                        if (this.currentNumber === "60" || this.currentNumber === "-60"
+                        || this.currentNumber === "120" || this.currentNumber === "-120"
+                        || this.currentNumber === "240" || this.currentNumber === "-240"
+                        || this.currentNumber === "300" || this.currentNumber === "-300") {
+                            this.cosOfCurrentNumberHolder = eval(this.cosOfCurrentNumberHolder).toPrecision(1)
+                        }
+
+                        if (this.previousOpr == '−') {
+                            this.answer = -1 * this.cosOfCurrentNumberHolder
+                            return
                         } else {
-                            this.dELETcurrentNumForTrigRatio = this.currentNumber.substr(0, this.currentNumLength+1)
-                            this.cosOfCurrentNumberHolder = `${Math.cos(this.dELETcurrentNumForTrigRatio * Math.PI/180)}`
                             this.answer = this.cosOfCurrentNumberHolder
                             return
                         }
@@ -328,7 +382,17 @@ export default {
                             this.answer = eval(`${this.AnsexpressionHolder + this.cosOfCurrentNumberHolder}`)
                             this.currentNumberLengthHolder++
                             return
-                        } else {
+                        } else if (this.currentNumber === "60" || this.currentNumber === "-60"
+                        || this.currentNumber === "120" || this.currentNumber === "-120"
+                        || this.currentNumber === "240" || this.currentNumber === "-240"
+                        || this.currentNumber === "300" || this.currentNumber === "-300") {
+                            this.cosOfCurrentNumberHolder = eval(this.cosOfCurrentNumberHolder).toPrecision(1)
+                            this.answer = eval(`${this.AnsexpressionHolder + this.cosOfCurrentNumberHolder}`)
+                            this.currentNumberLengthHolder++
+                            return
+                        }
+                        
+                        else {
                             this.answer = eval(`${this.AnsexpressionHolder + this.cosOfCurrentNumberHolder}`)
                             this.currentNumberLengthHolder++
                             return
@@ -349,7 +413,7 @@ export default {
                      */ 
 
                     if (this.previousNumber == "") {
-                        // tangent of 180 and 360 is 0
+                        // tangent of 0, 180 and 360 is 0
                         if (this.currentNumber === "180" || this.currentNumber === "360"
                         || this.currentNumber === "-180" || this.currentNumber === "-360") {
                             this.tanOfCurrentNumberHolder = ""
@@ -357,9 +421,23 @@ export default {
                             this.Ansexpression += "0"
                             this.answer = eval(this.Ansexpression)
                             return
+                        }   
+                        
+                        this.dELETcurrentNumForTrigRatio = this.currentNumber.substr(0, this.currentNumLength+1)
+                        this.tanOfCurrentNumberHolder = `${Math.tan(this.dELETcurrentNumForTrigRatio * Math.PI/180)}`
+                        
+                        // Get integer value when currentNumner is ±45, ±135, ±225 or ±315 
+                        if (this.currentNumber === "45" || this.currentNumber === "-45"
+                        || this.currentNumber === "135" || this.currentNumber === "-135"
+                        || this.currentNumber === "225" || this.currentNumber === "-225"
+                        || this.currentNumber === "315" || this.currentNumber === "-315") {
+                            this.tanOfCurrentNumberHolder = eval(this.tanOfCurrentNumberHolder).toPrecision(1)
+                        }
+
+                        if (this.previousOpr == '−') {
+                            this.answer = -1 * this.tanOfCurrentNumberHolder
+                            return
                         } else {
-                            this.dELETcurrentNumForTrigRatio = this.currentNumber.substr(0, this.currentNumLength+1)
-                            this.tanOfCurrentNumberHolder = `${Math.tan(this.dELETcurrentNumForTrigRatio * Math.PI/180)}`
                             this.answer = this.tanOfCurrentNumberHolder
                             return
                         }
@@ -375,7 +453,8 @@ export default {
                     do {
                         this.dELETcurrentNumForTrigRatio = this.currentNumber.substr(0, this.currentNumLength+1)
                         this.tanOfCurrentNumberHolder = `${Math.tan(this.dELETcurrentNumForTrigRatio * Math.PI/180)}`
-                        if (this.currentNumber === "180" || this.currentNumber === "360") {
+                        if (this.currentNumber === "180" || this.currentNumber === "360"
+                        || this.currentNumber === "-180" || this.currentNumber === "-360") {  // System minus
                             this.tanOfCurrentNumberHolder = ""
                             this.tanOfCurrentNumberHolder = "0"
                             this.Ansexpression += "0"
@@ -386,7 +465,17 @@ export default {
                             this.answer = eval(`${this.AnsexpressionHolder + this.tanOfCurrentNumberHolder}`)
                             this.currentNumberLengthHolder++
                             return
-                        } else {
+                        } else if (this.currentNumber === "45" || this.currentNumber === "-45"
+                        || this.currentNumber === "135" || this.currentNumber === "-135"
+                        || this.currentNumber === "225" || this.currentNumber === "-225"
+                        || this.currentNumber === "315" || this.currentNumber === "-315") {
+                            this.tanOfCurrentNumberHolder = eval(this.tanOfCurrentNumberHolder).toPrecision(1)
+                            this.answer = eval(`${this.AnsexpressionHolder + this.tanOfCurrentNumberHolder}`)
+                            this.currentNumberLengthHolder++
+                            return
+                        }
+                        
+                        else {
                             this.answer = eval(`${this.AnsexpressionHolder + this.tanOfCurrentNumberHolder}`)
                             this.currentNumberLengthHolder++
                             return
@@ -408,20 +497,35 @@ export default {
                      */ 
 
                     if (this.previousNumber == "") {
-                        // cosecant of 180 and 360 is Infinity
-                        if (this.currentNumber === "180" || this.currentNumber === "360"
-                        || this.currentNumber === "-180" || this.currentNumber === "-360") {
+                        // cosecant of 0, 180 and 360 is Infinity
+                        if (this.currentNumber === "180" || this.currentNumber === "360" || this.currentNumber === "0"
+                        || this.currentNumber === "-180" || this.currentNumber === "-360" || this.currentNumber === "-0") {   // Sytem minus is used with currentNumber and Ansexpression for actual computation
                             this.cscOfCurrentNumberHolder = ""
                             this.cscOfCurrentNumberHolder = "1/0"
                             this.Ansexpression += eval(this.cscOfCurrentNumberHolder)
-                            this.answer = this.Ansexpression.replace("Infinity", "ᴏᴏ")
+                            this.answer = this.Ansexpression.replace("Infinity", "∞")
+                            return
+                        }
+
+                        this.dELETcurrentNumForTrigRatio = this.currentNumber.substr(0, this.currentNumLength+1)
+                        this.cscOfCurrentNumberHolder = `${csc(this.dELETcurrentNumForTrigRatio * Math.PI/180)}`
+                        
+                        // Get integer value when currentNumner is ±30, ±150, ±210 or ±330 
+                        if (this.currentNumber === "30" || this.currentNumber === "-30"
+                        || this.currentNumber === "150" || this.currentNumber === "-150"
+                        || this.currentNumber === "210" || this.currentNumber === "-210"
+                        || this.currentNumber === "330" || this.currentNumber === "-330") {
+                            this.cscOfCurrentNumberHolder = Math.round(this.cscOfCurrentNumberHolder)
+                        }
+
+                        if (this.previousOpr == '−') {
+                            this.answer = -1 * this.cscOfCurrentNumberHolder
                             return
                         } else {
-                            this.dELETcurrentNumForTrigRatio = this.currentNumber.substr(0, this.currentNumLength+1)
-                            this.cscOfCurrentNumberHolder = `${csc(this.dELETcurrentNumForTrigRatio * Math.PI/180)}`
                             this.answer = this.cscOfCurrentNumberHolder
                             return
                         }
+
                     }
 
                     /**
@@ -434,7 +538,8 @@ export default {
                     do {
                         this.dELETcurrentNumForTrigRatio = this.currentNumber.substr(0, this.currentNumLength+1)
                         this.cscOfCurrentNumberHolder = `${csc(this.dELETcurrentNumForTrigRatio * Math.PI/180)}`
-                        if (this.currentNumber === "180" || this.currentNumber === "360") {
+                        if (this.currentNumber === "180" || this.currentNumber === "360" || this.currentNumber === "0"
+                        || this.currentNumber === "-180" || this.currentNumber === "-360" || this.currentNumber === "-0") {
                             this.cscOfCurrentNumberHolder = ""
                             this.cscOfCurrentNumberHolder = "1/0"
                             this.Ansexpression += eval(this.cscOfCurrentNumberHolder)
@@ -444,20 +549,50 @@ export default {
                             }
                             this.answer = eval(`${this.AnsexpressionHolder + this.cscOfCurrentNumberHolder}`)
                             var answerHolder = this.answer
+                            // replace the string "Infinity" with "∞" or "-Infinity" with "-∞"
                             if (answerHolder == "Infinity") {
                                 this.answer = ""
-                                this.answer = "ᴏᴏ"
+                                this.answer = "∞"
                                 return
-                             } 
+                             } else if (answerHolder == "-Infinity") {
+                                this.answer = ""
+                                this.answer = "-∞"
+                                return
+                             }
             
                             this.currentNumberLengthHolder++
                             return  
-                        } else {
+                        } 
+                        
+                        else if (this.currentNumber === "30" || this.currentNumber === "-30"
+                        || this.currentNumber === "150" || this.currentNumber === "-150"
+                        || this.currentNumber === "210" || this.currentNumber === "-210"
+                        || this.currentNumber === "330" || this.currentNumber === "-330") {
+                            this.cscOfCurrentNumberHolder = eval(this.cscOfCurrentNumberHolder).toPrecision(1)
+                            this.answer = eval(`${this.AnsexpressionHolder + this.cscOfCurrentNumberHolder}`)
+                            var answerHolder = eval(this.answer)
+                            // replace the string "Infinity" with "∞" or "-Infinity" with "-∞"
+                            if (answerHolder == "Infinity") {
+                                this.answer = ""
+                                this.answer = "∞"
+                                return
+                             } else if (answerHolder == "-Infinity") {
+                                this.answer = ""
+                                this.answer = "-∞"
+                                return
+                             }
+            
+                            this.currentNumberLengthHolder++
+                            return  
+                
+                        }
+                        
+                        else {
                             this.answer = eval(`${this.AnsexpressionHolder + this.cscOfCurrentNumberHolder}`)
                              var answerHolder = eval(this.answer)
                              if (answerHolder == "Infifnity") {
                                 this.answer = ""
-                                this.answer = "ᴏᴏ"
+                                this.answer = "∞"
                                 return
                             }
                             this.currentNumberLengthHolder++
@@ -480,16 +615,32 @@ export default {
                      */ 
 
                     if (this.previousNumber == "") {
-                        // cosecant of 90 and 270 is Infinity
-                        if (this.currentNumber === "90" || this.currentNumber === "270" || this.currentNumber === "-90" || this.currentNumber === "-270") {
+                        // Secant of 90 and 270 is Infinity
+                        // Sytem minus is used with currentNumber and Ansexpression for actual computation
+                        if (this.currentNumber === "90" || this.currentNumber === "270" 
+                        || this.currentNumber === "-90" || this.currentNumber === "-270") {
                             this.secOfCurrentNumberHolder = ""
                             this.secOfCurrentNumberHolder = "1/0"
                             this.Ansexpression += eval(this.secOfCurrentNumberHolder)
-                            this.answer = this.Ansexpression.replace("Infinity", "ᴏᴏ")
+                            this.answer = this.Ansexpression.replace("Infinity", "∞")
+                            return
+                        } 
+                        
+                        this.dELETcurrentNumForTrigRatio = this.currentNumber.substr(0, this.currentNumLength+1)
+                        this.secOfCurrentNumberHolder = `${sec(this.dELETcurrentNumForTrigRatio * Math.PI/180)}`
+                        
+                        // Get integer value when currentNumner is ±60, ±120, ±240 or ±300 
+                        if (this.currentNumber === "60" || this.currentNumber === "-60"
+                        || this.currentNumber === "120" || this.currentNumber === "-120"
+                        || this.currentNumber === "240" || this.currentNumber === "-240"
+                        || this.currentNumber === "300" || this.currentNumber === "-300") {
+                            this.secOfCurrentNumberHolder = Math.round(this.secOfCurrentNumberHolder)
+                        }
+
+                        if (this.previousOpr == '−') {
+                            this.answer = -1 * this.secOfCurrentNumberHolder
                             return
                         } else {
-                            this.dELETcurrentNumForTrigRatio = this.currentNumber.substr(0, this.currentNumLength+1)
-                            this.secOfCurrentNumberHolder = `${sec(this.dELETcurrentNumForTrigRatio * Math.PI/180)}`
                             this.answer = this.secOfCurrentNumberHolder
                             return
                         }
@@ -505,7 +656,8 @@ export default {
                     do {
                         this.dELETcurrentNumForTrigRatio = this.currentNumber.substr(0, this.currentNumLength+1)
                         this.secOfCurrentNumberHolder = `${sec(this.dELETcurrentNumForTrigRatio * Math.PI/180)}`
-                        if (this.currentNumber === "90" || this.currentNumber === "270") {
+                        if (this.currentNumber === "90" || this.currentNumber === "270"
+                        || this.currentNumber === "-90" || this.currentNumber === "-270") {
                             this.secOfCurrentNumberHolder = ""
                             this.secOfCurrentNumberHolder = "1/0"
                             this.Ansexpression += eval(this.secOfCurrentNumberHolder)
@@ -514,10 +666,55 @@ export default {
                                 return
                             }
                             this.answer = eval(`${this.AnsexpressionHolder + this.secOfCurrentNumberHolder}`)
+                            var answerHolder = this.answer
+                            // replace the string "Infinity" with "∞" or "-Infinity" with "-∞"
+                            if (answerHolder == "Infinity") {
+                                this.answer = ""
+                                this.answer = "∞"
+                                return
+                             } else if (answerHolder == "-Infinity") {
+                                this.answer = ""
+                                this.answer = "-∞"
+                                return
+                             }
                             this.currentNumberLengthHolder++
-                            return
-                        } else {
+                            return  
+
+                        } 
+                        
+                        else if (this.currentNumber === "60" || this.currentNumber === "-60"
+                        || this.currentNumber === "120" || this.currentNumber === "-120"
+                        || this.currentNumber === "240" || this.currentNumber === "-240"
+                        || this.currentNumber === "300" || this.currentNumber === "-300") {
+                            this.secOfCurrentNumberHolder = eval(this.secOfCurrentNumberHolder).toPrecision(1)
                             this.answer = eval(`${this.AnsexpressionHolder + this.secOfCurrentNumberHolder}`)
+                            var answerHolder = eval(this.answer)
+                            // replace the string "Infinity" with "∞" or "-Infinity" with "-∞"
+                            if (answerHolder == "Infinity") {
+                                this.answer = ""
+                                this.answer = "∞"
+                                return
+                             } else if (answerHolder == "-Infinity") {
+                                this.answer = ""
+                                this.answer = "-∞"
+                                return
+                             }
+            
+                            this.currentNumberLengthHolder++
+                            return  
+                
+                        }
+                        
+                        else {
+                            this.answer = eval(`${this.AnsexpressionHolder + this.secOfCurrentNumberHolder}`)
+                            // replace the string "Infinity" with "∞"
+                            var answerHolder = eval(this.answer)
+                             if (answerHolder == "Infifnity") {
+                                this.answer = ""
+                                this.answer = "∞"
+                                return
+                            }
+                            
                             this.currentNumberLengthHolder++
                             return
                         }
@@ -540,15 +737,29 @@ export default {
                     if (this.previousNumber == "") {
                         // cotangent of 180 and 360 is infinity
                         if (this.currentNumber === "180" || this.currentNumber === "360"
-                        || this.currentNumber === "-180" || this.currentNumber === "-360") {
+                        || this.currentNumber === "-180" || this.currentNumber === "-360") {  // Sytem minus is used with currentNumber and Ansexpression for actual computation
                             this.cotOfCurrentNumberHolder = ""
                             this.cotOfCurrentNumberHolder = "1/0"
                             this.Ansexpression += eval(this.cotOfCurrentNumberHolder)
-                            this.answer = this.Ansexpression.replace("Infinity", "ᴏᴏ")          //"ᴏᴏ"
+                            this.answer = this.Ansexpression.replace("Infinity", "∞")          //"∞"
+                            return
+                        }   
+                        
+                        this.dELETcurrentNumForTrigRatio = this.currentNumber.substr(0, this.currentNumLength+1)
+                        this.cotOfCurrentNumberHolder = `${cot(this.dELETcurrentNumForTrigRatio * Math.PI/180)}`
+                        
+                        // Get integer value when currentNumner is ±30, ±150, ±210 or ±330 
+                        if (this.currentNumber === "45" || this.currentNumber === "-45"
+                        || this.currentNumber === "135" || this.currentNumber === "-135"
+                        || this.currentNumber === "225" || this.currentNumber === "-225"
+                        || this.currentNumber === "315" || this.currentNumber === "-315") {
+                            this.cotOfCurrentNumberHolder = eval(this.cotOfCurrentNumberHolder).toPrecision(1)
+                        }
+
+                        if (this.previousOpr == '−') {
+                            this.answer = -1 * this.cotOfCurrentNumberHolder
                             return
                         } else {
-                            this.dELETcurrentNumForTrigRatio = this.currentNumber.substr(0, this.currentNumLength+1)
-                            this.cotOfCurrentNumberHolder = `${cot(this.dELETcurrentNumForTrigRatio * Math.PI/180)}`
                             this.answer = this.cotOfCurrentNumberHolder
                             return
                         }
@@ -564,7 +775,9 @@ export default {
                     do {
                         this.dELETcurrentNumForTrigRatio = this.currentNumber.substr(0, this.currentNumLength+1)
                         this.cotOfCurrentNumberHolder = `${cot(this.dELETcurrentNumForTrigRatio * Math.PI/180)}`
-                        if (this.currentNumber === "180" || this.currentNumber === "360") {
+                        if (this.currentNumber === "0" || this.currentNumber === "-0"
+                            || this.currentNumber === "180" || this.currentNumber === "360"
+                            || this.currentNumber === "-180" || this.currentNumber === "-360") {
                             this.cotOfCurrentNumberHolder = ""
                             this.cotOfCurrentNumberHolder = "1/0"
                             this.Ansexpression += eval(this.cotOfCurrentNumberHolder)
@@ -573,10 +786,57 @@ export default {
                                 return
                             }
                             this.answer = eval(`${this.AnsexpressionHolder + this.cotOfCurrentNumberHolder}`)
+                            
+                            var answerHolder = this.answer
+                            // replace the string "Infinity" with "∞" or "-Infinity" with "-∞"
+                            if (answerHolder == "Infinity") {
+                                this.answer = ""
+                                this.answer = "∞"
+                                return
+                             } else if (answerHolder == "-Infinity") {
+                                this.answer = ""
+                                this.answer = "-∞"
+                                return
+                             }
+                            
                             this.currentNumberLengthHolder++
                             return
-                        } else {
+                        } 
+                        
+                        else if (this.currentNumber === "45" || this.currentNumber === "-45"
+                        || this.currentNumber === "135" || this.currentNumber === "-135"
+                        || this.currentNumber === "225" || this.currentNumber === "-225"
+                        || this.currentNumber === "315" || this.currentNumber === "-315") {
+                            this.cotOfCurrentNumberHolder = eval(this.cotOfCurrentNumberHolder).toPrecision(1)
                             this.answer = eval(`${this.AnsexpressionHolder + this.cotOfCurrentNumberHolder}`)
+                            var answerHolder = eval(this.answer)
+                            // replace the string "Infinity" with "∞" or "-Infinity" with "-∞"
+                            if (answerHolder == "Infinity") {
+                                this.answer = ""
+                                this.answer = "∞"
+                                return
+                             } else if (answerHolder == "-Infinity") {
+                                this.answer = ""
+                                this.answer = "-∞"
+                                return
+                             }
+            
+                            this.currentNumberLengthHolder++
+                            return  
+                
+                        }
+                        
+                        else {
+                            this.answer = eval(`${this.AnsexpressionHolder + this.cotOfCurrentNumberHolder}`)
+                           
+                            // replace the string "Infinity" with "∞"
+                            var answerHolder = eval(this.answer)
+                             if (answerHolder == "Infifnity") {
+                                this.answer = ""
+                                this.answer = "∞"
+                                return
+                            }
+
                             this.currentNumberLengthHolder++
                             return
                         }
@@ -632,12 +892,12 @@ export default {
                 this.Ansexpression = `${number}`
                 
             }
-            else if (!this.operatorClicked && (this.expression == '-')) { 
+            else if (!this.operatorClicked && (this.expression == '−')) {   // Display minus
                 this.expression += `${number}`
                 this.currentExpr += `${number}`
                 this.currentDigit = `${number}`
-                this.Ansexpression = `${-1 * number}`
-                this.currentNumber = `${-1 * number}`
+                this.Ansexpression = `${-1 * number}`   // System minus
+                this.currentNumber = `${-1 * number}`   // System minus
                 
             } 
             
@@ -678,9 +938,9 @@ export default {
 
             // No immediate factorial after factorial, plus, minus, times or divide symbol
             if (this.expression.substr(`${expressionLength - 1}`) === '÷' 
-            || this.expression.substr(`${expressionLength - 1}`) === 'x'
+            || this.expression.substr(`${expressionLength - 1}`) === '×'
             || this.expression.substr(`${expressionLength - 1}`) === '+'
-            || this.expression.substr(`${expressionLength - 1}`) === '-'
+            || this.expression.substr(`${expressionLength - 1}`) === '−'
             || this.expression.substr(`${expressionLength - 1}`) === '!') {
                 this.Ansexpression = this.Ansexpression
                 this.expression = this.expression
@@ -721,18 +981,18 @@ export default {
             else if (this.expression.substr(expressionLength-1) !== 'P') {
                 // No immediate permutation after plus, minus, times or divide symbol
                 if (this.expression.substr(`${expressionLength - 1}`) === '÷' 
-                || this.expression.substr(`${expressionLength - 1}`) === 'x'
+                || this.expression.substr(`${expressionLength - 1}`) === '×'
                 || this.expression.substr(`${expressionLength - 1}`) === '+'
-                || this.expression.substr(`${expressionLength - 1}`) === '-') {
+                || this.expression.substr(`${expressionLength - 1}`) === '−') {
                     this.Ansexpression = this.Ansexpression
                     this.expression = this.expression
                     return
                 }
                 // e.g, nP...
                 else if (this.expression.substr(`${expressionLength - 1}`) !== '÷' 
-                || this.expression.substr(`${expressionLength - 1}`) !== 'x'
+                || this.expression.substr(`${expressionLength - 1}`) !== '×'
                 || this.expression.substr(`${expressionLength - 1}`) !== '+'
-                || this.expression.substr(`${expressionLength - 1}`) !== '-'
+                || this.expression.substr(`${expressionLength - 1}`) !== '−'
                 || this.expression.substr(`${expressionLength - 1}`) !== 'C') {
                     this.currentOpr = `${symbol}`   
                     this.expression += `${symbol}`   // Append square symbol to math expression
@@ -762,18 +1022,18 @@ export default {
             else if (this.expression.substr(expressionLength-1) !== 'P') {
                 // No immediate permutation after plus, minus, times or divide symbol
                 if (this.expression.substr(`${expressionLength - 1}`) === '÷' 
-                || this.expression.substr(`${expressionLength - 1}`) === 'x'
+                || this.expression.substr(`${expressionLength - 1}`) === '×'
                 || this.expression.substr(`${expressionLength - 1}`) === '+'
-                || this.expression.substr(`${expressionLength - 1}`) === '-') {
+                || this.expression.substr(`${expressionLength - 1}`) === '−') {
                     this.Ansexpression = this.Ansexpression
                     this.expression = this.expression
                     return
                 }
                 // e.g, nP...
                 else if (this.expression.substr(`${expressionLength - 1}`) !== '÷' 
-                || this.expression.substr(`${expressionLength - 1}`) !== 'x'
+                || this.expression.substr(`${expressionLength - 1}`) !== '×'
                 || this.expression.substr(`${expressionLength - 1}`) !== '+'
-                || this.expression.substr(`${expressionLength - 1}`) !== '-'
+                || this.expression.substr(`${expressionLength - 1}`) !== '−'
                 || this.expression.substr(`${expressionLength - 1}`) !== 'C') {
                     this.currentOpr = `${symbol}`   
                     this.expression += `${symbol}`   // Append square symbol to math expression
@@ -798,9 +1058,9 @@ export default {
 
             // No immediate square after factorial, plus, minus, times or divide symbol
             if (this.expression.substr(`${expressionLength - 1}`) === '÷' 
-            || this.expression.substr(`${expressionLength - 1}`) === 'x'
+            || this.expression.substr(`${expressionLength - 1}`) === '×'
             || this.expression.substr(`${expressionLength - 1}`) === '+'
-            || this.expression.substr(`${expressionLength - 1}`) === '-'
+            || this.expression.substr(`${expressionLength - 1}`) === '−'
             || this.expression.substr(`${expressionLength - 1}`) === '!') {
                 this.Ansexpression = this.Ansexpression
                 this.expression = this.expression
@@ -851,7 +1111,7 @@ export default {
             } 
             
             // If minus is present and a plus is pressed..
-            else if (this.expression.substr(`${expressionLength - 1}`) === '-') {
+            else if (this.expression.substr(`${expressionLength - 1}`) === '−') {
                 this.currentOpr = "-"        
                 return
             }
@@ -865,7 +1125,7 @@ export default {
             
             // No immediate plus after times or divide symbol
             if (this.expression.substr(`${expressionLength - 1}`) === '÷' 
-            || this.expression.substr(`${expressionLength - 1}`) === 'x') {
+            || this.expression.substr(`${expressionLength - 1}`) === '×') {
                 this.Ansexpression = this.Ansexpression
                 this.expression = this.expression
                 return
@@ -885,16 +1145,16 @@ export default {
             var currentNumberLength = this.currentNumber.length
 
             if (this.expression === "") {
-                this.currentOpr = `${opr}`
-                this.currentNumber = `${opr}`
-                this.expression = `${opr}`
-                this.Ansexpression = `${opr}`
-                this.currentDigit = `${opr}`
+                this.currentOpr = `${opr}`    // Display minus
+                this.currentNumber = '-'      // System minus, for actual computation
+                this.expression = `${opr}`    // Display minus
+                this.Ansexpression = '-'      // System minus, for actual computation
+                this.currentDigit = `${opr}`  // Display minus
                 return
             }
 
             // If minus is present and second minus is pressed...
-            else if (this.expression.substr(`${expressionLength - 1}`) === '-') {
+            else if (this.expression.substr(`${expressionLength - 1}`) === '−') {
                 this.currentOpr = "+"        
                 this.expression = this.expression.substr(0, `${expressionLength - 1}`) // ...remove previous minus
                 this.Ansexpression = this.Ansexpression.substr(0, `${expressionLength - 1}`)  // ...remove previous minus
@@ -908,10 +1168,10 @@ export default {
                 this.currentOpr = `${opr}`        
                 this.expression = this.expression.substr(0, `${expressionLength - 1}`) // ...remove previous plus
                 this.Ansexpression = this.expression.substr(0, `${expressionLength - 1}`) // ...remove previous plus
-                this.currentNumber = this.currentNumber.substr(0, `${currentNumberLength - 1}`)  // ...remove previous minus       
-                this.expression += `${opr}`       //...and change to minus  
-                this.Ansexpression += `${opr}`
-                this.currentNumber += `${opr}`        
+                this.currentNumber = this.currentNumber.substr(0, `${currentNumberLength - 1}`)  // ...remove previous plus       
+                this.expression += `${opr}`  //...and replace with (display) minus  
+                this.Ansexpression += '-'    // ...and replace with (system) minus
+                this.currentNumber += '-'    // ...and replace with (system) minus
                 return
 
             // Pressing the negative sign of a negative angle e.g sin(-x)
@@ -921,9 +1181,9 @@ export default {
             || this.expression.substr(`${expressionLength - 4}`) === 'csc('
             || this.expression.substr(`${expressionLength - 4}`) === 'sec('
             || this.expression.substr(`${expressionLength - 4}`) === 'cot(') {
-                this.expression += `${opr}`
-                this.currentNumber += `${opr}`
-                this.currentExpr += `${opr}`
+                this.expression += `${opr}`   // Display minus
+                this.currentNumber += '-'     // System minus
+                this.currentExpr += `${opr}`  // Display minus
                 return
             }
 
@@ -937,15 +1197,15 @@ export default {
 
             // No immediate minus after times or divide symbols
             if (this.expression.substr(`${expressionLength - 1}`) === '÷' 
-                || this.expression.substr(`${expressionLength - 1}`) === 'x') {
+                || this.expression.substr(`${expressionLength - 1}`) === '×') {
                 this.Ansexpression = this.Ansexpression
                 this.expression = this.expression
                 return
 
             } else {
-                this.currentOpr = `${opr}`
-                this.expression += `${opr}`
-                this.Ansexpression += `${opr}`
+                this.currentOpr = `${opr}`   // Display minus
+                this.expression += `${opr}`  // Display minus
+                this.Ansexpression += '-'    // System minus
             }
         },
 
@@ -959,13 +1219,13 @@ export default {
 
             // No immediate times after times or divide symbols
             if (this.expression.substr(`${expressionLength - 1}`) === '÷' 
-                || this.expression.substr(`${expressionLength - 1}`) === 'x') {
+                || this.expression.substr(`${expressionLength - 1}`) === '×') {
                 return
             }
 
             // No immediate times after plus or minus symbols
             else if (this.expression.substr(`${expressionLength - 1}`) === '+' 
-                || this.expression.substr(`${expressionLength - 1}`) === '-') {   
+                || this.expression.substr(`${expressionLength - 1}`) === '−') {   
                 return    
             } 
             
@@ -986,13 +1246,13 @@ export default {
 
             // No immediate divide after times or divide symbols
             if (this.expression.substr(`${expressionLength - 1}`) === '÷' 
-                || this.expression.substr(`${expressionLength - 1}`) === 'x') {
+                || this.expression.substr(`${expressionLength - 1}`) === '×') {
                 return
             }
 
             // No immediate divide after plus or minus symbols
             else if (this.expression.substr(`${expressionLength - 1}`) === '+' 
-                || this.expression.substr(`${expressionLength - 1}`) === '-') {
+                || this.expression.substr(`${expressionLength - 1}`) === '−') {
                 return
             } else {
                 this.currentOpr = `${opr}`
@@ -1023,11 +1283,11 @@ export default {
             // this.currentDigit = this.answer = ""
 
             if (this.answer == "Infinity") {
-                this.answer = "ᴏᴏ"
+                this.answer = "∞"
             }
 
-            if (this.answer == "-Infinity") {
-                this.answer = "-ᴏᴏ"
+            if (this.answer == "-Infinity") {  // If negative (i.e system minus) infinity,,,
+                this.answer = "−∞"             // output nrgative (i.e display minus) lemniscale (infinity symbol)
             }
 
             else if (this.Ansexpression == "0/0") {
@@ -1053,9 +1313,9 @@ export default {
             else if (this.expression.substr(expressionLength-4) !== 'sin(') {
                 if (this.expression == ""
                 || this.expression.substr(`${expressionLength - 1}`) === '÷' 
-                || this.expression.substr(`${expressionLength - 1}`) === 'x'
+                || this.expression.substr(`${expressionLength - 1}`) === '×'
                 || this.expression.substr(`${expressionLength - 1}`) === '+'
-                || this.expression.substr(`${expressionLength - 1}`) === '-') { 
+                || this.expression.substr(`${expressionLength - 1}`) === '−') { 
                     this.expression += `${symbol}`
                     this.currentNumber = ""
                     this.sinClicked = true 
@@ -1064,9 +1324,9 @@ export default {
                 } 
                 // e.g, a.sin(x)
                 else if ((this.expression != "") && (this.expression.substr(`${expressionLength - 1}`) !== '÷' 
-                || this.expression.substr(`${expressionLength - 1}`) !== 'x'
+                || this.expression.substr(`${expressionLength - 1}`) !== '×'
                 || this.expression.substr(`${expressionLength - 1}`) !== '+'
-                || this.expression.substr(`${expressionLength - 1}`) !== '-'
+                || this.expression.substr(`${expressionLength - 1}`) !== '−'
                 || this.expression.substr(`${expressionLength - 1}`) !== 'P'
                 || this.expression.substr(`${expressionLength - 1}`) !== 'C')) {
                     this.currentOpr = `${symbol}`
@@ -1096,9 +1356,9 @@ export default {
               else if (this.expression.substr(-4) !== 'cos(') {
                 if (this.expression == ""
                 || this.expression.substr(`${expressionLength - 1}`) === '÷' 
-                || this.expression.substr(`${expressionLength - 1}`) === 'x'
+                || this.expression.substr(`${expressionLength - 1}`) === '×'
                 || this.expression.substr(`${expressionLength - 1}`) === '+'
-                || this.expression.substr(`${expressionLength - 1}`) === '-') { 
+                || this.expression.substr(`${expressionLength - 1}`) === '−') { 
                     this.expression += `${symbol}`
                     this.currentNumber = ""
                     this.cosClicked = true 
@@ -1108,9 +1368,9 @@ export default {
                 // e.g, a.cos(x)
                 else if ((this.expression != "") 
                 && (this.expression.substr(`${expressionLength - 1}`) !== '÷' 
-                || this.expression.substr(`${expressionLength - 1}`) !== 'x'
+                || this.expression.substr(`${expressionLength - 1}`) !== '×'
                 || this.expression.substr(`${expressionLength - 1}`) !== '+'
-                || this.expression.substr(`${expressionLength - 1}`) !== '-')) {
+                || this.expression.substr(`${expressionLength - 1}`) !== '−')) {
                     this.currentOpr = `${symbol}`
                     this.Ansexpression += "*"       
                 }
@@ -1139,9 +1399,9 @@ export default {
               else if (this.expression.substr(-4) !== 'tan(') {
                 if (this.expression == ""
                 || this.expression.substr(`${expressionLength - 1}`) === '÷' 
-                || this.expression.substr(`${expressionLength - 1}`) === 'x'
+                || this.expression.substr(`${expressionLength - 1}`) === '×'
                 || this.expression.substr(`${expressionLength - 1}`) === '+'
-                || this.expression.substr(`${expressionLength - 1}`) === '-') { 
+                || this.expression.substr(`${expressionLength - 1}`) === '−') { 
                     this.expression += `${symbol}`
                     this.currentNumber = ""
                     this.tanClicked = true 
@@ -1151,9 +1411,9 @@ export default {
                 // e.g, a.tan(x)
                 else if ((this.expression != "") 
                 && (this.expression.substr(`${expressionLength - 1}`) !== '÷' 
-                || this.expression.substr(`${expressionLength - 1}`) !== 'x'
+                || this.expression.substr(`${expressionLength - 1}`) !== '×'
                 || this.expression.substr(`${expressionLength - 1}`) !== '+'
-                || this.expression.substr(`${expressionLength - 1}`) !== '-')) {
+                || this.expression.substr(`${expressionLength - 1}`) !== '−')) {
                     this.currentOpr = `${symbol}`
                     this.Ansexpression += "*"       
                 }
@@ -1179,12 +1439,19 @@ export default {
             if (this.expression.substr(-4) === 'csc(') {   
                 return    
             }
+
+            // else if (this.expression == '−' && this.currentOpr == '−') {
+            //     this.expression += `${symbol}`
+            //     this.Ansexpression = -1
+            //     this.Ansexpression += "*"
+            //     return
+            // }
               else if (this.expression.substr(-4) !== 'csc(') {
                 if (this.expression == ""
                 || this.expression.substr(`${expressionLength - 1}`) === '÷' 
-                || this.expression.substr(`${expressionLength - 1}`) === 'x'
+                || this.expression.substr(`${expressionLength - 1}`) === '×'
                 || this.expression.substr(`${expressionLength - 1}`) === '+'
-                || this.expression.substr(`${expressionLength - 1}`) === '-') { 
+                || this.expression.substr(`${expressionLength - 1}`) === '−') { 
                     this.expression += `${symbol}`
                     this.currentNumber = ""
                     this.cscClicked = true 
@@ -1194,9 +1461,9 @@ export default {
                 // e.g, a.csc(x)
                 else if ((this.expression != "") 
                 && (this.expression.substr(`${expressionLength - 1}`) !== '÷' 
-                || this.expression.substr(`${expressionLength - 1}`) !== 'x'
+                || this.expression.substr(`${expressionLength - 1}`) !== '×'
                 || this.expression.substr(`${expressionLength - 1}`) !== '+'
-                || this.expression.substr(`${expressionLength - 1}`) !== '-')) {
+                || this.expression.substr(`${expressionLength - 1}`) !== '−')) {
                     this.currentOpr = `${symbol}`
                     this.Ansexpression += "*"       
                 }
@@ -1225,9 +1492,9 @@ export default {
               else if (this.expression.substr(-4) !== 'sec(') {
                 if (this.expression == ""
                 || this.expression.substr(`${expressionLength - 1}`) === '÷' 
-                || this.expression.substr(`${expressionLength - 1}`) === 'x'
+                || this.expression.substr(`${expressionLength - 1}`) === '×'
                 || this.expression.substr(`${expressionLength - 1}`) === '+'
-                || this.expression.substr(`${expressionLength - 1}`) === '-') { 
+                || this.expression.substr(`${expressionLength - 1}`) === '−') { 
                     this.expression += `${symbol}`
                     this.currentNumber = ""
                     this.secClicked = true 
@@ -1237,9 +1504,9 @@ export default {
                 // e.g, a.sec(x)
                 else if ((this.expression != "") 
                 && (this.expression.substr(`${expressionLength - 1}`) !== '÷' 
-                || this.expression.substr(`${expressionLength - 1}`) !== 'x'
+                || this.expression.substr(`${expressionLength - 1}`) !== '×'
                 || this.expression.substr(`${expressionLength - 1}`) !== '+'
-                || this.expression.substr(`${expressionLength - 1}`) !== '-')) {
+                || this.expression.substr(`${expressionLength - 1}`) !== '−')) {
                     this.currentOpr = `${symbol}`
                     this.Ansexpression += "*"       
                 }
@@ -1268,9 +1535,9 @@ export default {
               else if (this.expression.substr(-4) !== 'cot(') {
                 if (this.expression == ""
                 || this.expression.substr(`${expressionLength - 1}`) === '÷' 
-                || this.expression.substr(`${expressionLength - 1}`) === 'x'
+                || this.expression.substr(`${expressionLength - 1}`) === '×'
                 || this.expression.substr(`${expressionLength - 1}`) === '+'
-                || this.expression.substr(`${expressionLength - 1}`) === '-') { 
+                || this.expression.substr(`${expressionLength - 1}`) === '−') { 
                     this.expression += `${symbol}`
                     this.currentNumber = ""
                     this.cotClicked = true 
@@ -1280,9 +1547,9 @@ export default {
                 // e.g, a.cot(x)
                 else if ((this.expression != "") 
                 && (this.expression.substr(`${expressionLength - 1}`) !== '÷' 
-                || this.expression.substr(`${expressionLength - 1}`) !== 'x'
+                || this.expression.substr(`${expressionLength - 1}`) !== '×'
                 || this.expression.substr(`${expressionLength - 1}`) !== '+'
-                || this.expression.substr(`${expressionLength - 1}`) !== '-')) {
+                || this.expression.substr(`${expressionLength - 1}`) !== '−')) {
                     this.currentOpr = `${symbol}`
                     this.Ansexpression += "*"       
                 }
@@ -1336,6 +1603,7 @@ export default {
 *{
         margin: 0;
         padding: 0;
+        font-family: 'Computer Modern','Times New Roman','LaTeX','Cambria';
     }
     .basic {
         display: grid;
