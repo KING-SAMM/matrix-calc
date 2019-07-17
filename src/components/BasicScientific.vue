@@ -76,8 +76,8 @@
         <button class="w3-btn num" v-on:click="append('8')"><strong>8</strong></button>
         <button class="w3-btn num" v-on:click="append('9')"><strong>9</strong></button>
         <button class="w3-btn num zero" v-on:click="append('0')"><strong>0</strong></button>
-        <button class="w3-btn" v-on:click="append('(')">(</button>
-        <button class="w3-btn" v-on:click="append(')')">)</button>
+        <button class="w3-btn" v-on:click="openParenthesis('(')">(</button>
+        <button class="w3-btn" v-on:click="closeParenthesis(')')">)</button>
 
         <!--Operator-->
         <button class="w3-btn" v-on:click="dot()"><strong>.</strong></button>
@@ -112,6 +112,8 @@ export default {
             cscOfCurrentNumberHolder: "",
             secOfCurrentNumberHolder: "",
             cotOfCurrentNumberHolder: "",
+            currentNumForPI: "",
+            currentNumForParenthClose: "",
             cummulative: "",
             operator: "",
             currentOpr: "",
@@ -151,6 +153,8 @@ export default {
             this.cscOfCurrentNumberHolder = ""
             this.secOfCurrentNumberHolder = ""
             this.cotOfCurrentNumberHolder = ""
+            this.currentNumForPI = ""
+            this.currentNumForParenthClose = ""
             this.currentExpr = ""
             this.previousNumber = ""
             this.operator = ""
@@ -194,9 +198,80 @@ export default {
             } 
             
             else if (!this.operatorClicked && this.expression !== "") { 
+
                 this.expression += `${number}`
                 this.currentExpr += `${number}`
                 this.currentDigit = `${number}`
+
+                // Initial Positive and Negative numbers
+                if (this.expression == '+') { 
+                    this.expression += `${number}`
+                    this.currentExpr += `${number}`
+                    this.currentDigit = `${number}`
+                    this.currentNumber = `${number}`
+                    this.Ansexpression = `${number}`
+                    this.answer = eval(this.Ansexpression)
+                    return
+                }
+                else if (this.expression == '−') {   // Display minus
+                    this.expression += `${number}`
+                    this.currentExpr += `${number}`
+                    this.currentDigit = `${number}`
+                    this.Ansexpression = `${-1 * number}`   // System minus
+                    this.currentNumber = `${-1 * number}`   // System minus
+                    this.answer = eval(this.Ansexpression)
+                    return
+                } 
+
+
+                /** SUCCESSIVE FACTORIALS (after an initial factorial operation) */ 
+                if (this.currentOpr == "!") {
+                /**
+                 * If factorial was pressed BEFORE this number
+                 * let this number be the new currentNumber,
+                 * then multiply last value by new currentNumber
+                 */ 
+                    this.previousNumber = this.currentNumber
+                    this.currentNumber = ""
+                    this.currentNumber += `${number}`
+                    this.Ansexpression += "*" + `${number}`
+                    this.answer = eval(this.Ansexpression)
+                    return
+                } 
+
+                if (this.currentOpr == 'π') {
+                    /**
+                 * If pi was pressed BEFORE this number
+                 * let this number be the new currentNumber,
+                 * then multiply last value by new currentNumber
+                 */ 
+                    this.currentOpr = ""
+                    this.previousNumber = this.currentNumber
+
+                    this.currentNumber += `${number}`
+                    this.AnsexpressionHolder = this.Ansexpression
+
+                    this.currentNumForPI = this.currentNumber.substr(0, this.currentNumLength+1)
+                    
+                    // this.currentNumber += `${number}`
+                    this.Ansexpression += "*"
+                    
+                    this.Ansexpression += this.currentNumForPI
+                    this.answer = eval(this.Ansexpression)
+                    return
+                } 
+
+                    // Pressing this number immediately after closing paewnthesis
+                if (this.currentOpr == ')') {
+                    this.currentOpr = ""
+                    this.currentNumber += `${number}`
+                    this.currentNumForParenthClose = this.currentNumber.substr(0, this.currentNumLength+1)
+                    this.Ansexpression += "*" 
+                    this.Ansexpression += this.currentNumForParenthClose
+                    this.answer = eval(this.Ansexpression)
+                    return
+                }
+
 
                 /** PERMUTATION AND COMBINATION */
                 if (this.currentOpr == "P") {
@@ -849,57 +924,9 @@ export default {
                     this.Ansexpression += `${number}`
                     return
                 } 
+
             }   
-
-              
-            // Pressing the later numbers of an expression
-            else if (!this.operatorClicked && this.expression !== "") { 
-                this.expression += `${number}`
-                this.currentExpr += `${number}`
-                this.currentDigit = `${number}`
-
-                /** SUCCESSIVE FACTORIALS (after an initial factorial operation) */ 
-                if (this.currentOpr == "!") {
-                /**
-                 * If factorial was pressed BEFORE this number
-                 * let this number be the new currentNumber,
-                 * then multiply last value by new currentNumber
-                 */ 
-                    this.previousNumber = this.currentNumber
-                    this.currentNumber = ""
-                    this.currentNumber += `${number}`
-                    this.Ansexpression += "*" + `${number}`
-                    return
-                } else {
-                    this.currentNumber += `${number}`
-                    this.Ansexpression += `${number}`
-                    return
-                } 
-
-                // if (this.currentOpr == 'P') {
-                //     var permutation = `${permutation(this.previousNumber, this.currentNumber)}`
-                //     this.Ansexpression += permutation
-                    
-                // } 
-            }   
-        
-            // Positive and Negative numbers
-            else if (!this.operatorClicked && (this.expression == '+')) { 
-                this.expression += `${number}`
-                this.currentExpr += `${number}`
-                this.currentDigit = `${number}`
-                this.currentNumber = `${number}`
-                this.Ansexpression = `${number}`
-                
-            }
-            else if (!this.operatorClicked && (this.expression == '−')) {   // Display minus
-                this.expression += `${number}`
-                this.currentExpr += `${number}`
-                this.currentDigit = `${number}`
-                this.Ansexpression = `${-1 * number}`   // System minus
-                this.currentNumber = `${-1 * number}`   // System minus
-                
-            } 
+               
             
             /** 
              * This happens after pressing an operator.
@@ -912,11 +939,7 @@ export default {
                 this.expression += `${number}`        
                 this.operatorClicked = false
             }
-            
-            if (this.currentDigit === "π") {
-                this.currentDigit = `${number}`
-                this.Ansexpression *= `${number}`
-            } 
+        
              
             this.answer = eval(this.Ansexpression)
         }, 
@@ -932,7 +955,7 @@ export default {
         factorial(opr) {
             this.equalClicked = true
             this.previousOpr = this.currentOpr
-            //this.currentExpr = this.currentNumber = this.currentDigit = ""
+            //this.currentNumber = this.currentDigit = ""
             var expressionLength = this.expression.length
 
 
@@ -947,6 +970,7 @@ export default {
                 return
             }
             else {
+                this.currentExpr += `${opr}`
                 this.currentOpr = `${opr}`   
                 this.expression += `${opr}`   // Append factorial symbol to math expression
             
@@ -962,6 +986,9 @@ export default {
                
                 // Replace it with its factorial value
                 this.Ansexpression += factorial
+
+                //Clear currentNumber
+                //this.currentNumber = ""
 
                 // Evaluate
                 this.answer = eval(this.Ansexpression)
@@ -1262,15 +1289,64 @@ export default {
         },
 
         pi(symbol) {
+            this.currentOpr = `${symbol}`
             this.currentDigit = `${symbol}`
             this.expression += `${symbol}`
+            
+            this.previousNumber = this.currentNumber
+            this.currentNumber = ""
 
             // If pi is the first button pressed
             if (this.Ansexpression === "") {
                 this.Ansexpression = `${Math.PI}`
             } else if (this.Ansexpression !== "") {
-                this.Ansexpression *= `${Math.PI}`
+                this.Ansexpression += "*" 
+                this.Ansexpression += `${Math.PI}`
+                this.answer = eval(this.Ansexpression)
             } 
+        },
+
+        openParenthesis(symbol) {
+            this.previousNumber = this.currentNumber
+            this.previousOpr = this.currentOpr
+            this.currentExpr = this.currentNumber = this.currentDigit = this.currentNumLength = ""
+            var expressionLength = this.expression.length
+            var AnsexpressionLength = this.Ansexpression.length
+
+            if (this.expression.substr(`${expressionLength - 1}`) == ')') {
+                this.Ansexpression = this.Ansexpression.substr(0, `${AnsexpressionLength - 1}`) // Remove ")"
+                this.Ansexpression += "*"  // Replace it with "*"
+                this.expression += `${symbol}`
+                return
+            } else if (this.expression.substr(`${expressionLength - 1}`) != ')'
+                && this.expression.substr(`${expressionLength - 1}`) != '+'
+                && this.expression.substr(`${expressionLength - 1}`) != '−'
+                && this.expression.substr(`${expressionLength - 1}`) != '÷'
+                && this.expression.substr(`${expressionLength - 1}`) != '×'
+                && this.expression.substr(`${expressionLength - 1}`) != "") {
+                    this.expression += `${symbol}`
+                    this.Ansexpression += '*('
+                    return
+                
+            }
+                this.currentOpr = `${symbol}`
+                this.Ansexpression += '('
+                this.expression += `${symbol}`
+            
+
+        },
+
+        closeParenthesis(symbol) {
+            this.previousNumber = this.currentNumber
+            this.previousOpr = this.currentOpr
+            this.currentExpr = this.currentNumber = this.currentDigit = this.currentNumLength = ""
+            var expressionLength = this.expression.length
+
+            this.currentOpr = `${symbol}`
+            this.Ansexpression += ')'
+            this.expression += `${symbol}`
+            //this.answer = parseInt(this.Ansexpression)
+            return
         },
 
         equal() {
