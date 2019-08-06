@@ -1,5 +1,5 @@
 <template>
-    <v-toolbar dark color="orange">
+    <v-toolbar dark color="primary">
     <nav id="nav" class="w3-bar w3-card-4">
        <!-- <v-container justify-space-between="true">
         <v-toolbar-side-icon>

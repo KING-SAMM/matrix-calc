@@ -5,7 +5,7 @@
         <section class="answerPanel">
            <table>
                <tbody>
-                   <tr><td> expr: {{ expression }}</td><td>currentExpr: {{ currentExpr }}</td><td>currentOpr: {{ currentOpr }}</td></tr>
+                   <tr><td v-html="expression"></td><td>currentExpr: {{ currentExpr }}</td><td>currentOpr: {{ currentOpr }}</td></tr>
                    <tr><td> currentNumber: {{ currentNumber }}</td><td>previousNumber: {{ previousNumber }}</td><td>currentDigit: {{ currentDigit }}</td></tr>
                    <tr><td> Ansexpression: {{ Ansexpression }}</td><td> {{ answer || "0" }}</td><td>previousOpr: {{ previousOpr }}</td></tr>
                    <tr><td> AnsexpHolder: {{ AnsexpressionHolder }}</td><td> Factl: {{ factorial }}</td><td> cNL: {{ currentNumLength }} cNLHolder: {{ currentNumberLengthHolder }}</td></tr>
@@ -28,7 +28,7 @@
         <div class="w3-btn">dy/dx</div>
         <div class="w3-btn">lim<sub>𝑥→∞</sub></div> 
         <div class="w3-btn">∞</div>
-        <div class="w3-btn"><i>e</i></div>
+        <div class="w3-btn" v-on:click="euler('e')"><i>e</i></div>
     
         <!--Trigonometry-->
         <div class="w3-btn" v-on:click="sin('sin(')">sin</div>
@@ -43,8 +43,8 @@
         <button class="w3-btn" v-on:click="power('^')">𝑥<sup>a</sup></button>
         <button class="w3-btn" v-on:click="squareroot('√')">√𝑥</button>
         <button class="w3-btn"><sup>a</sup>√𝑥</button>
-        <button class="w3-btn">log</button>
-        <button class="w3-btn" v-on:click="natural_log('ln')">ln</button>
+        <button class="w3-btn" v-on:click="log('log(')">log</button>
+        <button class="w3-btn" v-on:click="natural_log('ln(')">ln</button>
 
         <!--Letters-->
         <button class="w3-btn" v-on:click="append('∑')"><strong>∑</strong></button>
@@ -113,6 +113,7 @@ export default {
             secOfCurrentNumberHolder: "",
             cotOfCurrentNumberHolder: "",
             currentNumForPI: "",
+            currentNumForLog: "",
             currentNumForParenthClose: "",
             cummulative: "",
             operator: "",
@@ -129,7 +130,9 @@ export default {
             //factorial: "",
             currentExpr: "",
             currentDigit: "",
-            dELETcurrentNumForTrigRatio: ""
+            dELETcurrentNumForTrigRatio: "",
+            logDisplay: ""
+            //logDisplay: '<sub><input id="logBase" type="text" maxlength="2" size="2">3</sub><input id="logNum" type="text" maxlength="2" size="5">'
         }
     },
 
@@ -154,6 +157,7 @@ export default {
             this.secOfCurrentNumberHolder = ""
             this.cotOfCurrentNumberHolder = ""
             this.currentNumForPI = ""
+            this.currentNumForLog = ""
             this.currentNumForParenthClose = ""
             this.currentExpr = ""
             this.previousNumber = ""
@@ -167,6 +171,7 @@ export default {
             this.operatorClicked = false
             this.equalClicked = false
             this.dELETcurrentNumForTrigRatio = ""
+            this.logDisplay = ""
         },
 
         percent() {
@@ -260,6 +265,39 @@ export default {
                     this.answer = eval(this.Ansexpression)
                     return
                 } 
+
+                /** Log to Base 10 */
+                if (this.currentOpr == 'log(') {
+                    this.currentNumber += `${number}`
+                    this.AnsexpressionHolder = this.Ansexpression
+
+                    if(this.previousNumber == "") {
+                        this.currentNumForLog = this.currentNumber.substr(0, this.currentNumLength+1)
+                        if (this.currentNumForLog == 1000 || this.currentNumForLog == 1000000 
+                        || this.currentNumForLog == 1000000000 || this.currentNumForLog == 1000000000000
+                        || this.currentNumForLog == 1000000000000000 || this.currentNumForLog == 1000000000000000000) {
+                            this.Ansexpression = `${Math.ceil(Math.log(this.currentNumForLog)/Math.log(10))}`
+                            return
+                        } else {
+                            this.Ansexpression = `${Math.log(this.currentNumForLog)/Math.log(10)}`
+                            return
+                        }
+                        this.answer = eval(this.Ansexpression)
+                    }
+                }
+
+                /** Natural logarithm (log to Base e) */
+                if (this.currentOpr == 'ln(') {
+                    this.currentNumber += `${number}`
+                    this.AnsexpressionHolder = this.Ansexpression
+
+                    if(this.previousNumber == "") {
+                        this.currentNumForLog = this.currentNumber.substr(0, this.currentNumLength+1)
+                        this.Ansexpression = `${Math.log(this.currentNumForLog)}`
+                        this.answer = eval(this.Ansexpression)
+                        return
+                    }
+                }
 
                     // Pressing this number immediately after closing paewnthesis
                 if (this.currentOpr == ')') {
@@ -951,6 +989,97 @@ export default {
         },
 
 
+        /**LOGARITHMS */
+
+        log(symbol) {
+            this.equalClicked = true
+            this.previousOpr = this.currentOpr
+            this.currentExpr =`${symbol}`
+            var expressionLength = this.expression.length
+             
+            if (this.expression.substr(expressionLength-4) === 'log(') {  
+                return    
+            }
+            
+            else if (this.expression.substr(expressionLength-4) !== 'log(') {
+                if (this.expression == ""
+                || this.expression.substr(`${expressionLength - 1}`) === '÷' 
+                || this.expression.substr(`${expressionLength - 1}`) === '×'
+                || this.expression.substr(`${expressionLength - 1}`) === '+'
+                || this.expression.substr(`${expressionLength - 1}`) === '−') { 
+                    this.expression += `${symbol}`
+                    this.currentNumber = ""
+                    //this.sinClicked = true 
+                    this.currentOpr = `${symbol}`
+                   return    
+                } 
+                // e.g, a.log(x)
+                else if ((this.expression != "") && (this.expression.substr(`${expressionLength - 1}`) !== '÷' 
+                || this.expression.substr(`${expressionLength - 1}`) !== '×'
+                || this.expression.substr(`${expressionLength - 1}`) !== '+'
+                || this.expression.substr(`${expressionLength - 1}`) !== '−'
+                || this.expression.substr(`${expressionLength - 1}`) !== 'P'
+                || this.expression.substr(`${expressionLength - 1}`) !== 'C')) {
+                    this.currentOpr = `${symbol}`
+                    this.Ansexpression += "*" 
+                }
+
+                this.previousNumber = this.currentNumber
+                this.currentNumber = ""
+                
+                this.expression += `${symbol}`
+                this.sinClicked = true
+        
+                this.currentOpr = `${symbol}`
+                return
+            }
+        },
+
+        natural_log(symbol) {
+            this.equalClicked = true
+            this.previousOpr = this.currentOpr
+            this.currentExpr =`${symbol}`
+            var expressionLength = this.expression.length
+             
+            if (this.expression.substr(expressionLength-3) === 'ln(') {  
+                return    
+            }
+            
+            else if (this.expression.substr(expressionLength-3) !== 'ln(') {
+                if (this.expression == ""
+                || this.expression.substr(`${expressionLength - 1}`) === '÷' 
+                || this.expression.substr(`${expressionLength - 1}`) === '×'
+                || this.expression.substr(`${expressionLength - 1}`) === '+'
+                || this.expression.substr(`${expressionLength - 1}`) === '−') { 
+                    this.expression += `${symbol}`
+                    this.currentNumber = ""
+                    //this.sinClicked = true 
+                    this.currentOpr = `${symbol}`
+                   return    
+                } 
+                // e.g, a.ln(x)
+                else if ((this.expression != "") && (this.expression.substr(`${expressionLength - 1}`) !== '÷' 
+                || this.expression.substr(`${expressionLength - 1}`) !== '×'
+                || this.expression.substr(`${expressionLength - 1}`) !== '+'
+                || this.expression.substr(`${expressionLength - 1}`) !== '−'
+                || this.expression.substr(`${expressionLength - 1}`) !== 'P'
+                || this.expression.substr(`${expressionLength - 1}`) !== 'C')) {
+                    this.currentOpr = `${symbol}`
+                    this.Ansexpression += "*" 
+                }
+
+                this.previousNumber = this.currentNumber
+                this.currentNumber = ""
+                
+                this.expression += `${symbol}`
+                //this.sinClicked = true
+        
+                this.currentOpr = `${symbol}`
+                return
+            }
+        },
+
+
         /** FACTORIAL PERMUTATION and COMBINATION */
         factorial(opr) {
             this.equalClicked = true
@@ -1113,6 +1242,50 @@ export default {
 
                 // Evaluate
                 this.answer = eval(this.Ansexpression)
+            }
+        },
+
+        squareroot(symbol) {
+            this.equalClicked = true
+            this.previousOpr = this.currentOpr
+            this.currentExpr =`${symbol}`
+            var expressionLength = this.expression.length
+             
+            if (this.expression.substr(expressionLength-1) === '√') {  
+                return    
+            }
+            
+            else if (this.expression.substr(expressionLength-1) !== '√') {
+                if (this.expression == ""
+                || this.expression.substr(`${expressionLength - 1}`) === '÷' 
+                || this.expression.substr(`${expressionLength - 1}`) === '×'
+                || this.expression.substr(`${expressionLength - 1}`) === '+'
+                || this.expression.substr(`${expressionLength - 1}`) === '−') { 
+                    this.expression += `${symbol}`
+                    this.currentNumber = ""
+                    //this.sinClicked = true 
+                    this.currentOpr = `${symbol}`
+                   return    
+                } 
+                // e.g, a.log(x)
+                else if ((this.expression != "") && (this.expression.substr(`${expressionLength - 1}`) !== '÷' 
+                || this.expression.substr(`${expressionLength - 1}`) !== '×'
+                || this.expression.substr(`${expressionLength - 1}`) !== '+'
+                || this.expression.substr(`${expressionLength - 1}`) !== '−'
+                || this.expression.substr(`${expressionLength - 1}`) !== 'P'
+                || this.expression.substr(`${expressionLength - 1}`) !== 'C')) {
+                    this.currentOpr = `${symbol}`
+                    this.Ansexpression += "*" 
+                }
+
+                this.previousNumber = this.currentNumber
+                this.currentNumber = ""
+                
+                this.expression += `${symbol}`
+                //this.sinClicked = true
+        
+                this.currentOpr = `${symbol}`
+                return
             }
         },
 
@@ -1288,6 +1461,9 @@ export default {
             }
         },
 
+
+        /** CONSTANTS */
+
         pi(symbol) {
             this.currentOpr = `${symbol}`
             this.currentDigit = `${symbol}`
@@ -1304,6 +1480,11 @@ export default {
                 this.Ansexpression += `${Math.PI}`
                 this.answer = eval(this.Ansexpression)
             } 
+        },
+
+        euler(symbol) {
+            this.expression += `${symbol}`
+            this.Ansexpression += Math.E
         },
 
         openParenthesis(symbol) {
@@ -1670,6 +1851,13 @@ export default {
         }
         } */
 
+    },
+
+    computed: {
+        getLog() {
+            this.answer = eval(Math.log(this.numOfLog)/Math.log(this.baseOfLog)) 
+            this.Ansexpression = eval(Math.log(this.numOfLog)/Math.log(this.baseOfLog)) 
+        },
     }
 }
 </script>
@@ -1711,6 +1899,28 @@ export default {
         color: white;
         font-size: 25px;
     }
+
+    .logBase {
+        border: 2px solid black;
+        height: 2px;
+        width: 5px;
+        font-size: 18;
+    }
+
+    .logNum {
+        border: 2px solid black;
+        height: 10px;
+        width: 10px;
+        font-size: 25;
+    }
+
+    // Remove scrollbar from number input fields
+    .entry::-webkit-inner-spin-button,
+    .entry::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
 /*
     .calculus {
         grid-area: calculus;

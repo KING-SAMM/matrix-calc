@@ -1015,20 +1015,11 @@ export default {
 
     #method {
         color: white;
-        //background-color: aqua;
     }
 
     .fn {
         background-color: rgb(252, 213, 105);
     }
-
-    // .grid section:nth-child(even) {
-    //     background-color: rgb(233, 236, 15);
-    // }
-
-    // .grid section:nth-child(odd) {
-    //     background-color: #ccc;
-    // }
 
     .value{
         font-size: 12px;

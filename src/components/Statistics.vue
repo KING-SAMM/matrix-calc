@@ -133,6 +133,12 @@ export default {
                 this.append('.')
             }
         },
+
+        factorial() {
+            if(this.current.indexOf('!') === -1) {
+                this.append('!')
+            }
+        },
         
         setCummulative() {
             this.previous = this.current
