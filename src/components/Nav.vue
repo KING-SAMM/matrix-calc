@@ -1,25 +1,45 @@
 <template>
-    <v-toolbar dark color="primary">
-    <nav id="nav" class="w3-bar w3-card-4">
-       <!-- <v-container justify-space-between="true">
-        <v-toolbar-side-icon>
-            <span></span>
-        </v-toolbar-side-icon> -->
+    <nav>
+        <v-toolbar app dark class="indigo" height="50">
+            <!--<v-app-bar-nav-icon></v-app-bar-nav-icon> -->
+            <!--<v-toolbar-side-icon class="grey--text" @click="drawer = !drawer"></v-toolbar-side-icon>-->
+            <v-icon @click="drawer = !drawer">menu</v-icon>
+            <v-toolbar-title class="hidden-xs-only">
+                <span class="font-weight-thin">Matrix</span>
+                <span class="font-weight-bold">Calc</span>
+            </v-toolbar-title>
+            <v-spacer></v-spacer>
+            <router-link to="/" class="links"><v-icon small>home</v-icon><br><span class="white--text iconText">Home</span></router-link>
+            <router-link to="/matrix2x2" class="links"><v-icon small>widgets</v-icon><br><span class="white--text iconText">2X2</span></router-link>
+            <router-link to="/matrix3x3" class="links"><v-icon small>apps</v-icon><br><span class="white--text iconText">3X3</span></router-link>
+            <router-link to="/matrixmxn" class="links"><v-icon small>view_module</v-icon><br><span class="white--text iconText">MXN</span></router-link>
+            <v-spacer></v-spacer>
+            <v-icon>more_vert</v-icon>
+        <!-- </v-container>-->
+        </v-toolbar>
 
-       
-        <router-link to="/" class="w3-button"> <v-icon>home</v-icon> Home </router-link>
-        <router-link to="/matrix2x2" class="w3-button"> 2X2 </router-link>
-        <router-link to="/matrix3x3" class="w3-button"> <v-icon>apps</v-icon> 3X3 </router-link>
-        <router-link to="/matrixmxn" class="w3-button"> <v-icon>view_module</v-icon> MXN </router-link>
-        
-       <!-- </v-container>-->
+        <v-navigation-drawer v-model="drawer" app class="indigo">
+            <br>
+            <br>
+            <router-link to="/vector"><p class="white--text"><v-icon color="white" style="float:left">call_made</v-icon>Logarithms</p></router-link>
+            <router-link to="/matrix2x2"><p class="white--text"><v-icon color="white" style="float:left">apps</v-icon>Matrices</p></router-link>
+            <router-link to="/vector"><p class="white--text"><v-icon color="white" style="float:left">timer_3</v-icon>Number Systems</p></router-link>
+            <router-link to="/basicscientific"><p class="white--text"><v-icon color="white" style="float:left">perm_device_information</v-icon>Scientific Calculator</p></router-link>
+            <router-link to="/statistics"><p class="white--text"><v-icon color="white" style="float:left">equalizer</v-icon>Statistics</p></router-link>
+            <router-link to="/vector"><p class="white--text"><v-icon color="white" style="float:left">change_history</v-icon>Trigonometry</p></router-link>
+            <router-link to="/vector"><p class="white--text"><v-icon color="white" style="float:left">swap_horiz</v-icon>Vectors</p></router-link>
+        </v-navigation-drawer>
     </nav>
-    </v-toolbar>
 </template>
 
 <script>
 export default {
-    name: 'Nav'
+    name: 'Nav',
+    data() {
+        return {
+            drawer: false
+        }
+    }
 }
 </script>
 
@@ -28,13 +48,29 @@ export default {
 #nav {
     text-decoration: none;
     a {
-        padding: 0px 20px 0ox 20px;
+        padding: 0px 10px;
         color: #ffffff;
         &.router-link-exact-active {
             color: #ffffff;
             font-weight: 800;
         }
     }
+}
+
+.indigo {
+    margin: 0;
+}
+
+.links {
+    padding: 20px;
+}
+
+span.iconText {
+    font-size: 12px;
+}
+
+p.white--text {
+    margin: 10px;
 }
 
 

@@ -9,7 +9,7 @@ import 'material-design-icons-iconfont/dist/material-design-icons.css' // Ensure
 import '@fortawesome/fontawesome-free'
 
 Vue.use(Vuetify, {
-  iconfont: 'md' && 'fa'
+  iconfont: 'mdi' && 'fa'
 })
 
 Vue.config.productionTip = false

@@ -1,3 +1,4 @@
+/*
 import './jquery-3.4.1'
 
 export var globalAnswer = "0"
@@ -194,5 +195,5 @@ export function changeBackground() {
     }
 }
   
-  
+ */ 
   

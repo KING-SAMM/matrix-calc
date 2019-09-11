@@ -2,6 +2,8 @@
      <v-container class="basic">
         <!--Answer Panel-->
         <!-- <span class="item item-header" id="currentValue">0</span> -->
+        <!--
+        /* For Debuging */
         <section class="answerPanel">
            <table>
                <tbody>
@@ -9,7 +11,19 @@
                    <tr><td> currentNumber: {{ currentNumber }}</td><td>previousNumber: {{ previousNumber }}</td><td>currentDigit: {{ currentDigit }}</td></tr>
                    <tr><td> Ansexpression: {{ Ansexpression }}</td><td> {{ answer || "0" }}</td><td>previousOpr: {{ previousOpr }}</td></tr>
                    <tr><td> AnsexpHolder: {{ AnsexpressionHolder }}</td><td> Factl: {{ factorial }}</td><td> cNL: {{ currentNumLength }} cNLHolder: {{ currentNumberLengthHolder }}</td></tr>
-                   <tr><td> DELcNFSine:{{dELETcurrentNumForTrigRatio}} </td><td> sineCNHolder: {{ cosOfCurrentNumberHolder }}</td></tr>
+                   <tr><td> DELcNFLog:{{dELETcurrentNumForLog}} </td><td> logCNHolder: {{ logOfCurrentNumberHolder }}</td></tr> 
+               </tbody>
+           </table> 
+        </section>
+        -->
+
+        <section class="answerPanel">
+           <table>
+               <tbody>
+                   <tr><td v-html="expression"></td></tr>
+                   
+                   <tr><td> {{ answer || "0" }}</td></tr>
+                   
                </tbody>
            </table> 
         </section>
@@ -43,7 +57,7 @@
         <button class="w3-btn" v-on:click="power('^')">𝑥<sup>a</sup></button>
         <button class="w3-btn" v-on:click="squareroot('√')">√𝑥</button>
         <button class="w3-btn"><sup>a</sup>√𝑥</button>
-        <button class="w3-btn" v-on:click="log('log(')">log</button>
+        <button class="w3-btn" v-on:click="log('log₁₀(')">log₁₀</button>
         <button class="w3-btn" v-on:click="natural_log('ln(')">ln</button>
 
         <!--Letters-->
@@ -81,10 +95,10 @@
 
         <!--Operator-->
         <button class="w3-btn" v-on:click="dot()"><strong>.</strong></button>
-        <button class="w3-btn orange add" v-on:click="plus('+')"><strong>+</strong></button>
-        <button class="w3-btn orange subtract" v-on:click="minus('−')"><strong>−</strong></button>
-        <button class="w3-btn orange" v-on:click="times('×')"><strong>×</strong></button>
-        <button class="w3-btn orange" v-on:click="divide('÷')"><strong>÷</strong></button>
+        <button class="w3-btn plusTimesDivideMultiply add" v-on:click="plus('+')"><strong>+</strong></button>
+        <button class="w3-btn plusTimesDivideMultiply subtract" v-on:click="minus('−')"><strong>−</strong></button>
+        <button class="w3-btn plusTimesDivideMultiply" v-on:click="times('×')"><strong>×</strong></button>
+        <button class="w3-btn plusTimesDivideMultiply" v-on:click="divide('÷')"><strong>÷</strong></button>
         <button class="w3-btn" v-on:click="equal"><strong>=</strong></button>  
      </v-container>  
 </template>
@@ -112,6 +126,7 @@ export default {
             cscOfCurrentNumberHolder: "",
             secOfCurrentNumberHolder: "",
             cotOfCurrentNumberHolder: "",
+            logOfCurrentNumberHolder: "",
             currentNumForPI: "",
             currentNumForLog: "",
             currentNumForParenthClose: "",
@@ -131,6 +146,7 @@ export default {
             currentExpr: "",
             currentDigit: "",
             dELETcurrentNumForTrigRatio: "",
+            dELETcurrentNumForLog: "",
             logDisplay: ""
             //logDisplay: '<sub><input id="logBase" type="text" maxlength="2" size="2">3</sub><input id="logNum" type="text" maxlength="2" size="5">'
         }
@@ -148,14 +164,15 @@ export default {
             this.AnsexpressionHolder = ""
             this.currentDigit = ""
             this.currentNumber = ""
-            this.currentNumLength = ""
-            this.currentNumberLengthHolder = ""
+            this.currentNumLength = 0
+            this.currentNumberLengthHolder = 0
             this.sineOfCurrentNumberHolder = ""
             this.cosOfCurrentNumberHolder = ""
             this.tanOfCurrentNumberHolder = ""
             this.cscOfCurrentNumberHolder = ""
             this.secOfCurrentNumberHolder = ""
             this.cotOfCurrentNumberHolder = ""
+            this.logOfCurrentNumberHolder = ""
             this.currentNumForPI = ""
             this.currentNumForLog = ""
             this.currentNumForParenthClose = ""
@@ -171,6 +188,7 @@ export default {
             this.operatorClicked = false
             this.equalClicked = false
             this.dELETcurrentNumForTrigRatio = ""
+            this.dELETcurrentNumForLog = ""
             this.logDisplay = ""
         },
 
@@ -267,22 +285,52 @@ export default {
                 } 
 
                 /** Log to Base 10 */
-                if (this.currentOpr == 'log(') {
+                if (this.currentOpr == 'log₁₀(') {
                     this.currentNumber += `${number}`
                     this.AnsexpressionHolder = this.Ansexpression
 
-                    if(this.previousNumber == "") {
+                    if(this.previousNumber === "") {
                         this.currentNumForLog = this.currentNumber.substr(0, this.currentNumLength+1)
                         if (this.currentNumForLog == 1000 || this.currentNumForLog == 1000000 
                         || this.currentNumForLog == 1000000000 || this.currentNumForLog == 1000000000000
                         || this.currentNumForLog == 1000000000000000 || this.currentNumForLog == 1000000000000000000) {
-                            this.Ansexpression = `${Math.ceil(Math.log(this.currentNumForLog)/Math.log(10))}`
+                            this.Ansexpression = '(' + `${Math.ceil(Math.log(this.currentNumForLog)/Math.log(10))}` + ')'
                             return
                         } else {
-                            this.Ansexpression = `${Math.log(this.currentNumForLog)/Math.log(10)}`
+                            this.Ansexpression = '(' + `${Math.log(this.currentNumForLog)/Math.log(10)}` + ')'
                             return
                         }
                         this.answer = eval(this.Ansexpression)
+                    } 
+                    
+                    else if(this.previousNumber !== "") {
+                        /**
+                         * If log was pressed BEFORE this number
+                         * let this number be the new currentNumber,
+                         * then evaluate last value and log(currentNumber)
+                         * e.g, a + log(x)
+                         */ 
+
+                        do {
+                            this.dELETcurrentNumForLog = this.currentNumber.substr(0, this.currentNumLength+1)
+                            this.logOfCurrentNumberHolder = `${Math.log(this.dELETcurrentNumForLog)/Math.log(10)}`
+                            if (this.currentNumber == 1000 || this.currentNumber == 1000000 
+                            || this.currentNumber == 1000000000 || this.currentNumber == 1000000000000
+                            || this.currentNumber == 1000000000000000 || this.currentNumber == 1000000000000000000) {
+                               
+                                this.answer = eval(`${this.AnsexpressionHolder + Math.ceil(this.logOfCurrentNumberHolder)}`)
+                                this.currentNumberLengthHolder++
+                                return
+                            } else {
+                                
+                                this.answer = eval(`${this.AnsexpressionHolder + this.logOfCurrentNumberHolder}`)
+                                this.currentNumberLengthHolder++
+                                
+                                return
+                            }
+                            //this.answer = eval(this.Ansexpression)
+            
+                        } while (this.currentNumLength === (this.currentNumberLengthHolder))
                     }
                 }
 
@@ -375,56 +423,56 @@ export default {
                     }
 
                     if (this.previousNumber !== "") {
-                        /**
-                     * If sine was pressed BEFORE this number
-                     * let this number be the new currentNumber,
-                     * then evaluate last value and sin(currentNumber)
-                     * e.g, a + sin(x)
-                     */ 
+                            /**
+                         * If sine was pressed BEFORE this number
+                         * let this number be the new currentNumber,
+                         * then evaluate last value and sin(currentNumber)
+                         * e.g, a + sin(x)
+                         */ 
 
-                    do {
-                        this.dELETcurrentNumForTrigRatio = this.currentNumber.substr(0, this.currentNumLength+1)
-                        this.sineOfCurrentNumberHolder = `${Math.sin(this.dELETcurrentNumForTrigRatio * Math.PI/180)}`
-                        if (this.currentNumber === "180" || this.currentNumber === "360"
-                        || this.currentNumber === "-180" || this.currentNumber === "-360") {   // Sytem minus is used with currentNumber and Ansexpression for actual computation
-                            this.sineOfCurrentNumberHolder = ""
-                            this.sineOfCurrentNumberHolder = "0"
-                            this.Ansexpression += "0"
-                            if (this.Ansexpression == "0/0") {
-                                this.answer = "Undefined"
+                        do {
+                            this.dELETcurrentNumForTrigRatio = this.currentNumber.substr(0, this.currentNumLength+1)
+                            this.sineOfCurrentNumberHolder = `${Math.sin(this.dELETcurrentNumForTrigRatio * Math.PI/180)}`
+                            if (this.currentNumber === "180" || this.currentNumber === "360"
+                            || this.currentNumber === "-180" || this.currentNumber === "-360") {   // Sytem minus is used with currentNumber and Ansexpression for actual computation
+                                this.sineOfCurrentNumberHolder = ""
+                                this.sineOfCurrentNumberHolder = "0"
+                                this.Ansexpression += "0"
+                                if (this.Ansexpression == "0/0") {
+                                    this.answer = "Undefined"
+                                    return
+                                }
+                                this.answer = eval(`${this.AnsexpressionHolder + this.sineOfCurrentNumberHolder}`)
+                                this.currentNumberLengthHolder++
                                 return
-                            }
-                            this.answer = eval(`${this.AnsexpressionHolder + this.sineOfCurrentNumberHolder}`)
-                            this.currentNumberLengthHolder++
-                            return
-                        // } else if (this.previousOpr == '−') {
-                        //     this.answer = eval(`${this.AnsexpressionHolder + Math.abs(this.sineOfCurrentNumberHolder)}`)
-                        //     return
-                            // if (this.previousOpr == '−') {
-                            //     this.AnsexpressionHolder = this.Ansexpression.substr(0, this.Ansexpression.length-1)  // Remove last minus
-                            //     this.AnsexpressionHolder += "+"
-                            //     //this.sineOfCurrentNumberHolder = Math.abs(this.sineOfCurrentNumberHolder)
+                            // } else if (this.previousOpr == '−') {
                             //     this.answer = eval(`${this.AnsexpressionHolder + Math.abs(this.sineOfCurrentNumberHolder)}`)
                             //     return
-                            // }
+                                // if (this.previousOpr == '−') {
+                                //     this.AnsexpressionHolder = this.Ansexpression.substr(0, this.Ansexpression.length-1)  // Remove last minus
+                                //     this.AnsexpressionHolder += "+"
+                                //     //this.sineOfCurrentNumberHolder = Math.abs(this.sineOfCurrentNumberHolder)
+                                //     this.answer = eval(`${this.AnsexpressionHolder + Math.abs(this.sineOfCurrentNumberHolder)}`)
+                                //     return
+                                // }
+                                
                             
-                           
-                        } else if (this.currentNumber === "30" || this.currentNumber === "-30"
-                        || this.currentNumber === "150" || this.currentNumber === "-150"
-                        || this.currentNumber === "210" || this.currentNumber === "-210"
-                        || this.currentNumber === "330" || this.currentNumber === "-330") {
-                            this.sineOfCurrentNumberHolder = eval(this.sineOfCurrentNumberHolder).toPrecision(1)
-                            this.answer = eval(`${this.AnsexpressionHolder + this.sineOfCurrentNumberHolder}`)
-                            this.currentNumberLengthHolder++
-                            return
-                        }
-                        
-                        else {
-                            this.answer = eval(`${this.AnsexpressionHolder + this.sineOfCurrentNumberHolder}`)
-                            this.currentNumberLengthHolder++
-                            return
-                        }
-                    } while (this.currentNumLength > (this.currentNumberLengthHolder))
+                            } else if (this.currentNumber === "30" || this.currentNumber === "-30"
+                            || this.currentNumber === "150" || this.currentNumber === "-150"
+                            || this.currentNumber === "210" || this.currentNumber === "-210"
+                            || this.currentNumber === "330" || this.currentNumber === "-330") {
+                                this.sineOfCurrentNumberHolder = eval(this.sineOfCurrentNumberHolder).toPrecision(1)
+                                this.answer = eval(`${this.AnsexpressionHolder + this.sineOfCurrentNumberHolder}`)
+                                this.currentNumberLengthHolder++
+                                return
+                            }
+                            
+                            else {
+                                this.answer = eval(`${this.AnsexpressionHolder + this.sineOfCurrentNumberHolder}`)
+                                this.currentNumberLengthHolder++
+                                return
+                            }
+                        } while (this.currentNumLength > (this.currentNumberLengthHolder))
 
                     }
                                     
@@ -997,19 +1045,20 @@ export default {
             this.currentExpr =`${symbol}`
             var expressionLength = this.expression.length
              
-            if (this.expression.substr(expressionLength-4) === 'log(') {  
+            if (this.expression.substr(expressionLength-6) === 'log₁₀(') {  
                 return    
             }
             
-            else if (this.expression.substr(expressionLength-4) !== 'log(') {
+            else if (this.expression.substr(expressionLength-6) !== 'log₁₀(') {
                 if (this.expression == ""
                 || this.expression.substr(`${expressionLength - 1}`) === '÷' 
                 || this.expression.substr(`${expressionLength - 1}`) === '×'
                 || this.expression.substr(`${expressionLength - 1}`) === '+'
                 || this.expression.substr(`${expressionLength - 1}`) === '−') { 
                     this.expression += `${symbol}`
+                   // this.Ansexpression += '('
                     this.currentNumber = ""
-                    //this.sinClicked = true 
+                     
                     this.currentOpr = `${symbol}`
                    return    
                 } 
@@ -1319,8 +1368,10 @@ export default {
             this.previousNumber = this.currentNumber
             this.previousOpr = this.currentOpr
             this.currentExpr = this.currentNumber = this.currentDigit = this.sineOfCurrentNumberHolder = ""
-            this.currentNumLength = this.currentNumberLengthHolder = this.dDELETcurrentNumForTrigRatio = ""
-            this.cosOfCurrentNumberHolder = this.tanOfCurrentNumberHolder = ""
+            this.currentNumLength = 0
+            this.currentNumberLengthHolder = 0
+            this.dDELETcurrentNumForTrigRatio = this.dDELETcurrentNumForLog = ""
+            this.cosOfCurrentNumberHolder = this.tanOfCurrentNumberHolder = this.logOfCurrentNumberHolde = ""
             this.cscOfCurrentNumberHolder = this.secOfCurrentNumberHolder = this.tanOfCurrentNumberHolder = ""
             
             // No immediate plus after times or divide symbol
@@ -1391,8 +1442,10 @@ export default {
             this.previousNumber = this.currentNumber
             this.previousOpr = this.currentOpr
             this.currentExpr = this.currentNumber = this.currentDigit = this.sineOfCurrentNumberHolder = ""
-            this.currentNumLength = this.currentNumberLengthHolder = this.dDELETcurrentNumForTrigRatio = ""
-            this.cosOfCurrentNumberHolder = this.tanOfCurrentNumberHolder = ""
+            this.currentNumLength = 0
+            this.currentNumberLengthHolder = 0
+            this.dDELETcurrentNumForTrigRatio = this.dDELETcurrentNumForLog = ""
+            this.cosOfCurrentNumberHolder = this.tanOfCurrentNumberHolder = this.logOfCurrentNumberHolde = ""
             this.cscOfCurrentNumberHolder = this.secOfCurrentNumberHolder = this.tanOfCurrentNumberHolder = ""
 
             // No immediate minus after times or divide symbols
@@ -1522,12 +1575,34 @@ export default {
             this.previousOpr = this.currentOpr
             this.currentExpr = this.currentNumber = this.currentDigit = this.currentNumLength = ""
             var expressionLength = this.expression.length
+            var AnsexpressionLength = this.Ansexpression.length
 
+            if((this.currentOpr == 'log₁₀(') && (this.Ansexpression.substr(`${AnsexpressionLength - 1}`) === ')')) {
+                this.currentOpr = `${symbol}`
+                this.expression += `${symbol}`
+                return
+            } 
+
+            // Close off log(x only in expression (i.e display), but NOT in Ansexpression,
+            // (which is unupdated and only contains previous expression before 'log₁₀(' was pressed).
+            // Then assign answer (already updated/evaluated) to Ansexpression to bring
+            // Ansexpression up tp date with current value. 
+            // Note that close parenthesis i.e `${symbol}` is not added to Ansexpression 
+            // to keep it consistent since it contains no open  parenthesis
+            else if((this.currentOpr == 'log₁₀(') && (this.Ansexpression.substr(`${AnsexpressionLength - 1}`) !== ')')) {
+                this.currentOpr = `${symbol}`
+                this.expression += `${symbol}`
+                this.Ansexpression = this.answer
+                return
+            } 
+            
             this.currentOpr = `${symbol}`
             this.Ansexpression += ')'
             this.expression += `${symbol}`
             //this.answer = parseInt(this.Ansexpression)
             return
+            
+            
         },
 
         equal() {
@@ -1864,7 +1939,7 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
-*{
+    *{
         margin: 0;
         padding: 0;
         font-family: 'Computer Modern','Times New Roman','LaTeX','Cambria';
@@ -1884,20 +1959,27 @@ export default {
         // "numbers numbers numbers numbers numbers numbers"
         // "numbers1 numbers1 numbers1 numbers1 numbers1 numbers1"
         // "operator operator operator operator operator operator";
+        background-image: -webkit-linear-gradient(120deg, rgb(0, 128, 255), rgb(0, 148, 255), rgb(0, 188, 255),rgb(0, 204, 255));
     }
   
     .answerPanel {
         grid-column: 1/7;
         grid-row: 1/4;
-        background-color: #ccc;
+        /* background-color: #ccc; */
+        background-image: -webkit-linear-gradient(120deg, rgb(0, 204, 255), lightblue, rgb(77, 255, 210));
         font-size: 25px;
        // padding: 15px;
     }
 
     .w3-btn {
-        background-color: #555555;
+        background-color: transparent;
         color: white;
         font-size: 25px;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .plusTimesDivideMultiply {
+        background-color: indigo;
     }
 
     .logBase {

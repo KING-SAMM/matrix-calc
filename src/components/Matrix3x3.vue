@@ -42,7 +42,7 @@
         </section> -->
 
         <section class="matrix">
-            <div class="blank1"></div>
+            <div class="blankPre"></div>
             <aside class="doubleMatrix" v-show="showDoubleInputMatrix">
                 <!-- <aside class="w3-col s5 m3 w3-center table_sec"> -->
                 <table id="first_By3" class="w3-center table_sec w3-animate-zoom w3-card-4 w3-black w3-centered tr td">
@@ -78,30 +78,30 @@
                     </tbody>
                 </table>
             </aside>
-            <div class="blank2"></div>
+            <div class="blankPost"></div>
         </section>
 
         <section class="buttons w3-animate-bottom w3-small">
             <div class="blank1"></div>
-            <button id="subBtn" class="minus w3-btn" v-on:click="getSubtraction()" :class="isDoubleDisabled"><i>-</i></button>
+            <button id="subBtn" class="minus w3-btn" v-on:click="getSubtraction()" :class="isDoubleDisabled"><v-icon class="white--text" small>remove</v-icon></button>
             <button class="fn w3-btn" v-on:click="getDeterminant()" :class="isDisabled">| <i>X</i> |</button>
             <button class="fn w3-btn" v-on:click="getRank()" :class="isDisabled"><i>Rnk</i></button>
             <button id="detBtn" class="fn w3-btn" v-on:click="getEigenValues()" :class="isDisabled"> <i>λ</i> </button>
             <button class="fn w3-btn" v-on:click="getTranspose()" :class="isDisabled"><i>X</i><sup>T</sup></button>
-            <button class="clear special w3-btn w3-blue" v-on:click="clear()">CLR</button> 
+            <button class="clear special w3-btn" v-on:click="clear()">CLR</button> 
             <section class="blank2"></section>
 
-            <button id="matMultiplyBtn" class="matMultiply w3-btn" v-on:click="matMultiply()" :class="isDoubleDisabled"><i>x</i></button>
+            <button id="matMultiplyBtn" class="matMultiply w3-btn" v-on:click="matMultiply()" :class="isDoubleDisabled"><v-icon class="white--text" small>clear</v-icon></button>
             <button id="adjBtn" class="fn w3-btn" v-on:click="getAdjoint()" :class="isDisabled">ADJ</button>
             <button id="matSquaredBtn" class="fn w3-btn" v-on:click="matSquared()" :class="isDisabled"><i>X</i><sup>2</sup></button>
             <button id="invBtn" class="fn w3-btn" v-on:click="getInverse()" :class="isDisabled"><i>X</i><sup>-1</sup></button>
             <button id="scalarMultiplyBtn" class="fn w3-btn" v-on:click="scalarMultiply()" :class="isDisabled"><strong>k</strong><i>X</i></button>
-            <button id="invBtn" class="answer special w3-btn w3-blue" v-on:click="getAnswer()"><i>ANS</i></button>
+            <button id="invBtn" class="answer special w3-btn" v-on:click="getAnswer()"><i>ANS</i></button>
             
-            <button id="addBtn" class="plus w3-btn" v-on:click="getSum()" :class="isDoubleDisabled"><i>+</i></button> 
+            <button id="addBtn" class="plus w3-btn" v-on:click="getSum()" :class="isDoubleDisabled"><v-icon class="white--text" small>add</v-icon></button> 
             <button id="invBtn" class="identity w3-btn" v-on:click="getIdentity()"><i>I</i></button>
             <button id="clrBtn" class="swap w3-btn w3-blue" v-on:click="swapMatrices()" :class="isDoubleDisabled">{{ swap }}</button>
-            <button id="clrBtn" class="double special w3-btn w3-red" v-on:click="doubleOperations()">{{ modeBtn }}</button>
+            <button id="clrBtn" class="double special w3-btn modeBtn" v-on:click="doubleOperations()">{{ modeBtn }}</button>
             <section class="blank2"></section>
     
         </section>
@@ -1272,7 +1272,7 @@ export default {
         grid-area: answerPanel;
         grid-row-start: 1;
         grid-row-end: 1;
-        background-color: #ccc;
+        background-image: -webkit-linear-gradient(120deg, rgb(0, 204, 255), lightblue, rgb(77, 255, 210));
         padding: 5px;
 
     }
@@ -1281,7 +1281,7 @@ export default {
         grid-area: method;
         font-size: 12px;
         color: white;
-        background-color: #555555;
+        background-color: indigo;
     }
 
     .determinant {
@@ -1302,13 +1302,16 @@ export default {
     .scalar {
         grid-area: scalar;
         font-size: 10px;
-        background-color: #555555;
+        background-color: indigo;
+        color: white;
     }
 
     .matrix {
         grid-area: matrix;
-        background-color: #ccc; 
-        //height: 180px;          // rgb(252, 213, 105);
+        background-image: -webkit-linear-gradient(120deg, rgb(0, 128, 255), rgb(0, 148, 255), rgb(0, 188, 255),rgb(0, 204, 255));
+        
+        /*background-color: #ccc; */
+         // rgb(252, 213, 105);
     }
 
     .buttons {
@@ -1320,16 +1323,20 @@ export default {
         "blank1 matMultiply fn fn fn fn answer"
         "blank1 plus fn fn fn fn double";
         grid-area: buttons;
-        background-color: #ccc;
+        background-image: -webkit-linear-gradient(120deg, rgb(0, 128, 255), rgb(0, 188, 255)); 
         vertical-align: bottom;
     }
 
     .clear {
         grid-area: clear;
+        background-color: rgba(0, 128, 255, 0.6);
+        color: white;
     }
 
     .answer {
         grid-area: answer;
+        background-color: rgba(0, 128, 255, 0.6);
+        color: white;
     }
 
     .double {
@@ -1338,19 +1345,19 @@ export default {
 
     .plus {
         grid-area: plus;
-        background-color: gray;
+        background-color: rgba(0, 128, 255, 0.6);
         color: white;
     }
 
     .minus {
         grid-area: minus;
-        background-color: gray;
+        background-color: rgba(0, 128, 255, 0.6);
         color: white;
     }
 
     .matMultiply {
         grid-area: matMultiply;
-        background-color: gray;
+        background-color: rgba(0, 128, 255, 0.6);
         color: white;
     }
 
@@ -1360,25 +1367,37 @@ export default {
 
     .identity {
         grid-column: 3 / 5;
-        background-color: gray;
+        background-color: inherit;
         color: white;
     }
 
     .fn {
-        background-color: rgb(252, 213, 105);
+        background-color: inherit;
+        color: white;
     }
 
-    // .theme-l3 {
-    //     background-color: rgb(252, 213, 105);
-    // }
+    .modeBtn {
+        background-color: #fd0356;
+        color: white;
+    }
 
-    // .grid section:nth-child(even) {
-    //     background-color: rgb(233, 236, 15);
-    // }
+    div.blank1 {
+        background-color: inherit;
+        background-image: -webkit-linear-gradient(120deg, rgb(0, 200, 255), rgb(0, 190, 255), rgb(0, 176, 255));
+        background-image: -moz-linear-gradient(120deg, rgb(0, 200, 255), rgb(0, 190, 255), rgb(0, 176, 255)); 
+        background-image: -o-linear-gradient(120deg, rgb(0, 200, 255), rgb(0, 190, 255), rgb(0, 176, 255)); 
+        background-image: -ms-linear-gradient(120deg, rgb(0, 200, 255), rgb(0, 190, 255), rgb(0, 176, 255)); 
+        background-image: linear-gradient(120deg, rgb(0, 200, 255), rgb(0, 190, 255), rgb(0, 176, 255));  
+    }
 
-    // .grid section:nth-child(odd) {
-    //     background-color: #ccc;
-    // }
+    div.blank2 {
+        background-color: inherit;
+        background-image: -webkit-linear-gradient(120deg, rgb(0, 168, 255), rgb(0, 128, 255), rgb(0, 132, 255), rgb(0, 138, 255)); 
+        background-image: -moz-linear-gradient(120deg, rgb(0, 168, 255), rgb(0, 128, 255), rgb(0, 132, 255), rgb(0, 138, 255)); 
+        background-image: -o-linear-gradient(120deg, rgb(0, 168, 255), rgb(0, 128, 255), rgb(0, 132, 255), rgb(0, 138, 255)); 
+        background-image: -ms-linear-gradient(120deg, rgb(0, 168, 255), rgb(0, 128, 255), rgb(0, 132, 255), rgb(0, 138, 255)); 
+        background-image: linear-gradient(120deg, rgb(0, 168, 255), rgb(0, 128, 255), rgb(0, 132, 255), rgb(0, 138, 255)); 
+    }
 
     .value{
         font-size: 12px;
@@ -1436,7 +1455,11 @@ export default {
         width: 200px;
         border-radius: 5px;
         margin-top: 5px !important;
-        background-color: #ffffff !important;
+        background-image: -webkit-linear-gradient(120deg, rgb(67, 152, 230), rgb(153, 153, 230));
+        background-image: -moz-linear-gradient(120deg, rgb(67, 152, 230), rgb(153, 153, 230));
+        background-image: -o-linear-gradient(120deg, rgb(67, 152, 230),rgb(153, 153, 230));
+        background-image: -ms-linear-gradient(120deg, rgb(67, 152, 230),rgb(153, 153, 230));
+        background-image: linear-gradient(120deg, rgb(67, 152, 230),rgb(153, 153, 230));
     }
 
     .doubleMatrix {
@@ -1468,7 +1491,11 @@ export default {
         border-radius: 5px;
         margin-top: 18.364px !important;
         margin-bottom: 18px !important;
-        background-color: #ffffff !important;
+        background-image: -webkit-linear-gradient(120deg, rgb(67, 152, 230), rgb(153, 153, 230));
+        background-image: -moz-linear-gradient(120deg, rgb(67, 152, 230), rgb(153, 153, 230));
+        background-image: -o-linear-gradient(120deg, rgb(67, 152, 230),rgb(153, 153, 230));
+        background-image: -ms-linear-gradient(120deg, rgb(67, 152, 230),rgb(153, 153, 230));
+        background-image: linear-gradient(120deg, rgb(67, 152, 230),rgb(153, 153, 230));
     }
 
     #threeBy3Ans {
@@ -1480,6 +1507,11 @@ export default {
         margin-left: auto;
         margin-right: auto;
         border-radius: 5px;
+        background-image: -webkit-linear-gradient(120deg, rgb(67, 152, 230), rgb(153, 153, 230));
+        background-image: -moz-linear-gradient(120deg, rgb(67, 152, 230), rgb(153, 153, 230));
+        background-image: -o-linear-gradient(120deg, rgb(67, 152, 230),rgb(153, 153, 230));
+        background-image: -ms-linear-gradient(120deg, rgb(67, 152, 230),rgb(153, 153, 230));
+        background-image: linear-gradient(120deg, rgb(67, 152, 230),rgb(153, 153, 230));
     }
 
     @media screen and (min-width: 736px)
@@ -1500,7 +1532,11 @@ export default {
             margin-right: 30%;
             border-radius: 5px;
             margin-top: 16px !important;
-            background-color: #ffffff !important;
+            background-image: -webkit-linear-gradient(120deg, rgb(67, 152, 230), rgb(153, 153, 230));
+            background-image: -moz-linear-gradient(120deg, rgb(67, 152, 230), rgb(153, 153, 230));
+            background-image: -o-linear-gradient(120deg, rgb(67, 152, 230),rgb(153, 153, 230));
+            background-image: -ms-linear-gradient(120deg, rgb(67, 152, 230),rgb(153, 153, 230));
+            background-image: linear-gradient(120deg, rgb(67, 152, 230),rgb(153, 153, 230));
         }
 
         #threeBy3Ans {
@@ -1511,6 +1547,11 @@ export default {
             margin-left: 35%;
             margin-right: 35%;
             border-radius: 5px;
+            background-image: -webkit-linear-gradient(120deg, rgb(67, 152, 230), rgb(153, 153, 230));
+            background-image: -moz-linear-gradient(120deg, rgb(67, 152, 230), rgb(153, 153, 230));
+            background-image: -o-linear-gradient(120deg, rgb(67, 152, 230),rgb(153, 153, 230));
+            background-image: -ms-linear-gradient(120deg, rgb(67, 152, 230),rgb(153, 153, 230));
+            background-image: linear-gradient(120deg, rgb(67, 152, 230),rgb(153, 153, 230));
         }
 
         .matrix {
@@ -1518,7 +1559,7 @@ export default {
             grid-template-columns:1fr 1fr 1fr;
             grid-template-rows: auto auto auto;
             grid-template-areas: 
-            "blank1 doubleMatrix singleMatrix blank2";
+            "blankPre doubleMatrix singleMatrix blank2";
             vertical-align: center;
         }
 
@@ -1533,21 +1574,30 @@ export default {
 
         .blank1 {
             grid-area: blank1;
-            background-color: #ccc;
+            background-color: lightblue;
+            background-image: -webkit-linear-gradient(120deg, rgb(0, 158, 255), rgb(0, 178, 255), rgb(0, 190, 255));
+            background-image: -moz-linear-gradient(120deg, rgb(0, 158, 255), rgb(0, 178, 255), rgb(0, 190, 255)); 
+            background-image: -o-linear-gradient(120deg, rgb(0, 158, 255), rgb(0, 178, 255), rgb(0, 190, 255)); 
+            background-image: -ms-linear-gradient(120deg, rgb(0, 158, 255), rgb(0, 178, 255), rgb(0, 190, 255)); 
+            background-image: linear-gradient(120deg, rgb(0, 158, 255), rgb(0, 178, 255), rgb(0, 190, 255));  
         }
 
         .blank2 {
             grid-area: blank2;
-            background-color: #ccc;
+            background-color: lightblue;
+            background-image: -webkit-linear-gradient(120deg, rgb(0, 138, 255), rgb(0, 132, 255), rgb(0, 128, 255)); 
+            background-image: -moz-linear-gradient(120deg, rgb(0, 138, 255), rgb(0, 132, 255), rgb(0, 128, 255)); 
+            background-image: -o-linear-gradient(120deg, rgb(0, 138, 255), rgb(0, 132, 255), rgb(0, 128, 255)); 
+            background-image: -ms-linear-gradient(120deg, rgb(0, 138, 255), rgb(0, 132, 255), rgb(0, 128, 255)); 
+            background-image: linear-gradient(120deg, rgb(0, 138, 255), rgb(0, 132, 255), rgb(0, 128, 255)); 
         }
-
         // .swap {
         //     grid-column: 5 / 7;
         // }
 
         .identity {
             grid-column: 3 / 5;
-            background-color: gray;
+            background-color: inherit;
             color: white;
         }
 
@@ -1569,6 +1619,11 @@ export default {
 
         #first_By3, #sec_By3 {
             width: 300px;
+            background-image: -webkit-linear-gradient(120deg, rgb(67, 152, 230), rgb(153, 153, 230));
+            background-image: -moz-linear-gradient(120deg, rgb(67, 152, 230), rgb(153, 153, 230));
+            background-image: -o-linear-gradient(120deg, rgb(67, 152, 230),rgb(153, 153, 230));
+            background-image: -ms-linear-gradient(120deg, rgb(67, 152, 230),rgb(153, 153, 230));
+            background-image: linear-gradient(120deg, rgb(67, 152, 230),rgb(153, 153, 230));
         }
 
 
