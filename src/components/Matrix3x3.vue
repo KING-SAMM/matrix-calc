@@ -1251,14 +1251,14 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
     *{
-        margin: 0;
+        margin-top: 0;
         padding: 0;
     }
     // Main grid
     .grid {
         display: grid;
         grid-template-columns: 1fr 1fr 1fr;
-        grid-template-rows:110px 15px auto 20px auto auto;  
+        grid-template-rows:310px 15px auto 20px auto auto;  
         grid-template-areas: 
         "answerPanel answerPanel answerPanel"
         "method method method"
@@ -1269,7 +1269,13 @@ export default {
     }
 
     .answerPanel {
+        display:flex;
         grid-area: answerPanel;
+        align-items:center;
+        justify-content: center;
+        margin-top: -20%;
+        margin-left: -4%;
+        margin-right: -4%;
         grid-row-start: 1;
         grid-row-end: 1;
         background-image: -webkit-linear-gradient(120deg, rgb(0, 204, 255), lightblue, rgb(77, 255, 210));
@@ -1278,6 +1284,8 @@ export default {
     }
 
     .method {
+        margin-left: -4%;
+        margin-right: -4%;
         grid-area: method;
         font-size: 12px;
         color: white;
@@ -1300,6 +1308,8 @@ export default {
     }
 
     .scalar {
+        margin-left: -4%;
+        margin-right: -4%;
         grid-area: scalar;
         font-size: 10px;
         background-color: indigo;
@@ -1307,6 +1317,8 @@ export default {
     }
 
     .matrix {
+        margin-left: -4%;
+        margin-right: -4%;
         grid-area: matrix;
         background-image: -webkit-linear-gradient(120deg, rgb(0, 128, 255), rgb(0, 148, 255), rgb(0, 188, 255),rgb(0, 204, 255));
         
@@ -1316,6 +1328,8 @@ export default {
 
     .buttons {
         display: grid;
+        margin-left: -4%;
+        margin-right: -4%;
         grid-template-columns:0px repeat(5, 1fr) 80px; 
         grid-template-rows: auto auto auto;
         grid-template-areas: 
@@ -1506,6 +1520,8 @@ export default {
         float: center;
         margin-left: auto;
         margin-right: auto;
+        //margin-top: 25%;
+        justify-content:center;
         border-radius: 5px;
         background-image: -webkit-linear-gradient(120deg, rgb(67, 152, 230), rgb(153, 153, 230));
         background-image: -moz-linear-gradient(120deg, rgb(67, 152, 230), rgb(153, 153, 230));

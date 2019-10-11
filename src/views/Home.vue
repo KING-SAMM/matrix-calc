@@ -1,6 +1,6 @@
 <template>
   <div class="home w3-animate-opacity">
-    <img alt="Vue logo" src="../assets/logo.png">
+    <!--<img alt="App logo" src="../assets/main_img.png">-->
     <Home msg="Welcome to Your Vue.js App"/>
     <HomeNav />
   </div>

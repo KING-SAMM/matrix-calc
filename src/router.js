@@ -7,6 +7,9 @@ import Matrixmxn from './views/Matrixmxn.vue'
 import Vector from './views/Vector.vue'
 import Statistics from './views/Statistics.vue'
 import BasicScientific from './views/BasicScientific.vue'
+import Logarithm from './views/Logarithm.vue'
+import NumberSystems from './views/NumberSystems.vue'
+import Trigonometry from './views/Trigonometry.vue'
 
 Vue.use(Router)
 
@@ -48,6 +51,21 @@ export default new Router({
       path: '/basicscientific',
       name: 'basicscientific',
       component: BasicScientific
+    },
+    {
+      path: '/logarithm',
+      name: 'logarithm',
+      component: Logarithm
+    },
+    {
+      path: '/numbersystems',
+      name: 'numbersystems',
+      component: NumberSystems
+    },
+    {
+      path: '/trigonometry',
+      name: 'trigonometry',
+      component: Trigonometry
     },
     {
       path: '/about',

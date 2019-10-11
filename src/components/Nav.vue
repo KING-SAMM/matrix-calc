@@ -21,12 +21,12 @@
         <v-navigation-drawer v-model="drawer" app class="indigo">
             <br>
             <br>
-            <router-link to="/vector"><p class="white--text"><v-icon color="white" style="float:left">call_made</v-icon>Logarithms</p></router-link>
+            <router-link to="/logarithm"><p class="white--text"><v-icon color="white" style="float:left">call_made</v-icon>Logarithms</p></router-link>
             <router-link to="/matrix2x2"><p class="white--text"><v-icon color="white" style="float:left">apps</v-icon>Matrices</p></router-link>
-            <router-link to="/vector"><p class="white--text"><v-icon color="white" style="float:left">timer_3</v-icon>Number Systems</p></router-link>
+            <router-link to="/numbersystems"><p class="white--text"><v-icon color="white" style="float:left">timer_3</v-icon>Number Systems</p></router-link>
             <router-link to="/basicscientific"><p class="white--text"><v-icon color="white" style="float:left">perm_device_information</v-icon>Scientific Calculator</p></router-link>
             <router-link to="/statistics"><p class="white--text"><v-icon color="white" style="float:left">equalizer</v-icon>Statistics</p></router-link>
-            <router-link to="/vector"><p class="white--text"><v-icon color="white" style="float:left">change_history</v-icon>Trigonometry</p></router-link>
+            <router-link to="/trigonometry"><p class="white--text"><v-icon color="white" style="float:left">change_history</v-icon>Trigonometry</p></router-link>
             <router-link to="/vector"><p class="white--text"><v-icon color="white" style="float:left">swap_horiz</v-icon>Vectors</p></router-link>
         </v-navigation-drawer>
     </nav>
@@ -46,6 +46,7 @@ export default {
 <style lang="scss" scoped>
 
 #nav {
+    display: inline-block;
     text-decoration: none;
     a {
         padding: 0px 10px;

@@ -102,7 +102,7 @@ export default {
     .grid {
         display: grid;
         grid-template-columns: 1fr 1fr 1fr;
-        grid-template-rows: 110px 20px 160px 160px 50px 50px;
+        grid-template-rows: 310px 23px 160px 160px 55px 55px;
         grid-template-areas: 
         "answerPanel answerPanel answerPanel"
         "header header header"
