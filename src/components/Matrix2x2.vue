@@ -1,7 +1,10 @@
 <template>
     <v-container class="grid"> 
         <section class="answerPanel">
-            <table id="twoBy2B" class="w3-animate-opacity w3-card-4 w3-black w3-centered tr td" v-show="showAnsMatrix">
+            <!-- Mode -->
+            <span class="mode">{{ mode }}</span>
+            
+            <table id="twoBy2B" class="answerTable w3-animate-opacity w3-card-4 w3-black w3-centered tr td" v-show="showAnsMatrix">
                 <tbody>
                     <tr>
                         <td><p id="a_adj">{{a11}}</p></td><td><p id="b_adj">{{b12}}</p></td>
@@ -145,6 +148,7 @@ export default {
             lambda1_2: "",
             lambdaScalarProd1_2: "",
             method: "",
+            mode: "matrices",
             opr: "",
             showSingleInputMatrix: true,
             showDoubleInputMatrix: false,
@@ -156,7 +160,7 @@ export default {
             showEigenvaluesScalarProd: false,
             isDisabled: "",
             isDoubleDisabled: "w3-disabled",
-            modeBtn: "DBL",
+            modeBtn: "DOUBLE",
             swap: "A <=> B",
         }
     },
@@ -501,7 +505,7 @@ export default {
                 this.lambdaScalarProd1_2 = ""
                 this.isDisabled = "w3-disabled"
                 this.isDoubleDisabled = !this.isDoubleDisabled
-                this.modeBtn = "SGL"
+                this.modeBtn = "SINGLE"
                 this.opr = ""
 
             // Disable buttons and view for binary operations when on single matrix mode
@@ -513,7 +517,7 @@ export default {
 
                 this.isDisabled = !this.isDisabled
                 this.isDoubleDisabled = "w3-disabled"
-                this.modeBtn = "DBL"
+                this.modeBtn = "DOUBLE"
             }
         },
 
@@ -689,7 +693,7 @@ export default {
                 return
             }
 
-            // If scalalr is missing, update eigenvalues accordingly
+            // If scalar is missing, update eigenvalues accordingly
             if (this.showScalarInputMatrix === true && this.scalar === "") {
 
                 this.lambda1_2 = eigenvalues2x2(arr).join(", ")
@@ -902,7 +906,7 @@ export default {
 <style scoped lang="scss">
 // Default styling for mobile 
     *{
-        margin: 0;
+        margin-top: 0;
         padding: 0;
     }
 
@@ -910,7 +914,8 @@ export default {
     .grid {
         display: grid;
         grid-template-columns: 1fr 1fr 1fr;
-        grid-template-rows: 110px 15px 80px 20px 160px auto 45px;
+        grid-template-rows: 175px 18px 70px 24px 120px 70px;
+        max-height: 100vh;
         grid-template-areas: 
         "answerPanel answerPanel answerPanel"
         "method method method"
@@ -919,28 +924,48 @@ export default {
         "matrix matrix matrix"
         "buttons buttons buttons"
         "bottomSpace bottomSpace bottomSpace";
+        box-sizing: border-box; 
     }
 
     .answerPanel {
-        display: flex;
         grid-area: answerPanel;
-        margin-top: -20%;
-        margin-left: -4%;
-        margin-right: -4%;
+        margin-left:-4px;
+        margin-right:-4px;
+        margin-top: -75px;
         align-items:center;
         justify-content: center;
         grid-row-start: 1;
         grid-row-end: 1;
         background-image: -webkit-linear-gradient(120deg, rgb(0, 204, 255), lightblue, rgb(77, 255, 210));
-        
-        /* background-color: #ccc; */
-        padding: 15px;
+        padding: 10px 15px 25px 15px;
+
+        display: grid;
+        grid-template-columns:1000px;
+        grid-template-rows: 30px 200px;
+        grid-template-areas:
+        "mode"
+        "answerTable";
+    }
+
+    .mode {
+        padding-top: 20px;
+        grid-area: mode;
+        margin-bottom: 5px;
+        align-items: center;
+        color: #999;
+        font-size: 18px;
+    }
+
+    .answerTable {
+        grid-area: answerTable;
+        margin-bottom: 30px;
+        align-items: center;
     }
 
     .method {
         grid-area: method;
-        margin-left: -4%;
-        margin-right: -4%;
+        margin-left:-4px;
+        margin-right:-4px;
         font-size: 12px;
         color: white;
         background-color: indigo;
@@ -960,19 +985,17 @@ export default {
 
     .scalar {
         grid-area: scalar;
-        margin-left: -4%;
-        margin-right: -4%;
+        margin-left:-4px;
+        margin-right:-4px;
         font-size: 10px;
         background-color: indigo;
     }
 
     .matrix {
         grid-area: matrix;
-        margin-left: -4%;
-        margin-right: -4%;
+        margin-left:-4px;
+        margin-right:-4px;
         background-image: -webkit-linear-gradient(120deg, rgb(0, 128, 255), rgb(0, 148, 255), rgb(0, 188, 255),rgb(0, 204, 255));
-        
-        /*background-color: #ccc; */
          // rgb(252, 213, 105);
     }
     
@@ -981,7 +1004,7 @@ export default {
     .buttons {
         display: grid;
         grid-template-columns:0px repeat(5, 1fr) 80px; 
-        grid-template-rows: auto auto auto;
+        grid-template-rows: 33% 33% 33%;
         grid-template-areas: 
         "blank1 minus fn fn fn fn clear"
         "blank1 matMultiply fn fn fn fn answer"
@@ -989,15 +1012,16 @@ export default {
         grid-area: buttons;
         background-image: -webkit-linear-gradient(120deg, rgb(0, 128, 255), rgb(0, 188, 255)); 
         vertical-align: bottom;
-        margin-left: -4%;
-        margin-right: -4%;
+        margin-left:-4px;
+        margin-right:-4px;
+        height: 20vh;
     }
 
     .bottomSpace {
         grid-area: bottomSpace;
         margin-bottom: -20%;
-        margin-left: -4%;
-        margin-right: -4%;
+        margin-left:-4px;
+        margin-right:-4px;
         //background-color: blue;
         background-image: -webkit-linear-gradient(120deg, rgb(0, 128, 255), rgb(0, 148, 255), rgb(0, 188, 255),rgb(0, 204, 255));
     }
@@ -1169,6 +1193,7 @@ export default {
         float: center;
         margin-left: auto;
         margin-right: auto;
+        margin-top: 15px !important;
         border-radius: 5px;
         background-image: -webkit-linear-gradient(120deg, rgb(34, 116, 192), rgb(121, 121, 206));
         background-image: -moz-linear-gradient(120deg, rgb(34, 116, 192), rgb(121, 121, 206));
@@ -1234,22 +1259,6 @@ export default {
         }
     }
 
-    //  @media screen and (min-device-width: 411px) and (max-device-height: 731px) and (orientation: landscape) and (-webkit-device-pixel-ratio: 2.6)
-    // {
-    //     .grid {
-    //         display: grid;
-    //         grid-template-columns: 1fr 1fr 1fr;
-    //         grid-template-rows: 200px 15px 80px 20px 140px auto;
-    //         grid-template-areas: 
-    //         "answerPanel answerPanel answerPanel"
-    //         "method method method"
-    //         "rank determinant eigenValues"
-    //         "scalar scalar scalar"
-    //         "matrix matrix matrix"
-    //         "buttons buttons buttons";
-    //     }
-    // }
-
     // Pixel 2 XL
      @media screen and (min-device-width: 411px) and (max-device-height: 823px) and (orientation: portrait) and (-webkit-device-pixel-ratio: 3.5)
     {
@@ -1271,10 +1280,6 @@ export default {
             margin-left: -5%;
             margin-right: -5%;
         }
-
-        // .bottomSpace {
-        //     margin-bottom: -5px;
-        // }
     }
 
     // iPhone 5/5E (Landscape)
@@ -1292,15 +1297,6 @@ export default {
             "matrix matrix matrix"
             "buttons buttons buttons";
         }
-
-        // .answerPanel, .scalar, .method, .matrix, .buttons {
-        //     margin-left: -5%;
-        //     margin-right: -5%;
-        // }
-
-        // .buttons {
-        //     margin-bottom: -5%;
-        // }
     }
           
         
@@ -1534,100 +1530,6 @@ export default {
         }
     }
 
-    // // iPad Pro
-    //  @media screen and (min-device-width: 1024px) and (max-device-width: 1366px) and (orientation: portrait)
-    // {
-    //      input {
-    //         width: 70%;
-    //         font-size: 12px;
-    //     }
-
-            
-    //     #twoBy2 {
-    //         width: 26%;
-    //         float: center;
-    //         margin-left: 37%;
-    //         margin-right: 37%;
-    //         border-radius: 5px;
-    //         margin-top: 16px !important;
-    //         background-image: -webkit-linear-gradient(120deg, rgb(67, 152, 230), rgb(153, 153, 230));
-    //         background-image: -moz-linear-gradient(120deg, rgb(67, 152, 230), rgb(153, 153, 230));
-    //         background-image: -o-linear-gradient(120deg, rgb(67, 152, 230),rgb(153, 153, 230));
-    //         background-image: -ms-linear-gradient(120deg, rgb(67, 152, 230),rgb(153, 153, 230));
-    //         background-image: linear-gradient(120deg, rgb(67, 152, 230),rgb(153, 153, 230));
-    //     }
-
-    //     #twoBy2B {
-    //         width: 30%;
-    //         float: center;
-    //         margin-left: 35%;
-    //         margin-right: 35%;
-    //         border-radius: 5px;
-    //         margin-top: 16px !important;
-    //         background-image: -webkit-linear-gradient(120deg, rgb(67, 152, 230), rgb(153, 153, 230));
-    //         background-image: -moz-linear-gradient(120deg, rgb(67, 152, 230), rgb(153, 153, 230));
-    //         background-image: -o-linear-gradient(120deg, rgb(67, 152, 230),rgb(153, 153, 230));
-    //         background-image: -ms-linear-gradient(120deg, rgb(67, 152, 230),rgb(153, 153, 230));
-    //         background-image: linear-gradient(120deg, rgb(67, 152, 230),rgb(153, 153, 230));
-    //     }
-
-    //     #first_By2, #sec_By2 {
-    //         background-image: -webkit-linear-gradient(120deg, rgb(67, 152, 230), rgb(153, 153, 230));
-    //         background-image: -moz-linear-gradient(120deg, rgb(67, 152, 230), rgb(153, 153, 230));
-    //         background-image: -o-linear-gradient(120deg, rgb(67, 152, 230),rgb(153, 153, 230));
-    //         background-image: -ms-linear-gradient(120deg, rgb(67, 152, 230),rgb(153, 153, 230));
-    //         background-image: linear-gradient(120deg, rgb(67, 152, 230),rgb(153, 153, 230));
-    //     }
-
-    //     // .grid {
-    //     //     grid-template-columns: 1fr 60% 1fr;
-    //     //     grid-template-rows: 130px 20px 90px 30px 160px auto;
-            
-    //     //     grid-template-areas: 
-    //     //     "blank1 buttons blank2";
-    //     // }
-
-    //     .buttons {
-    //         display: grid;
-    //         grid-template-columns:2fr repeat(5, 1fr) 150px 2fr;
-    //         grid-template-areas: 
-    //         "blank1 minus fn fn fn fn clear blank2"
-    //         "blank1 matMultiply fn fn fn fn answer blank2"
-    //         "blank1 plus fn fn fn fn double blank2";
-    //     }
-
-    //     .blank1 {
-    //         grid-area: blank1;
-    //         background-color: lightblue;
-    //         background-image: -webkit-linear-gradient(120deg, rgb(0, 158, 255), rgb(0, 178, 255), rgb(0, 190, 255));
-    //         background-image: -moz-linear-gradient(120deg, rgb(0, 158, 255), rgb(0, 178, 255), rgb(0, 190, 255)); 
-    //         background-image: -o-linear-gradient(120deg, rgb(0, 158, 255), rgb(0, 178, 255), rgb(0, 190, 255)); 
-    //         background-image: -ms-linear-gradient(120deg, rgb(0, 158, 255), rgb(0, 178, 255), rgb(0, 190, 255)); 
-    //         background-image: linear-gradient(120deg, rgb(0, 158, 255), rgb(0, 178, 255), rgb(0, 190, 255));  
-    //     }
-
-    //     .blank2 {
-    //         grid-area: blank2;
-    //         background-color: lightblue;
-    //         background-image: -webkit-linear-gradient(120deg, rgb(0, 190, 255), rgb(0, 108, 255), rgb(0, 108, 255)); 
-    //         background-image: -moz-linear-gradient(120deg, rgb(0, 190, 255), rgb(0, 108, 255), rgb(0, 108, 255)); 
-    //         background-image: -o-linear-gradient(120deg, rgb(0, 190, 255), rgb(0, 108, 255), rgb(0, 108, 255)); 
-    //         background-image: -ms-linear-gradient(120deg, rgb(0, 190, 255), rgb(0, 108, 255), rgb(0, 108, 255)); 
-    //         background-image: linear-gradient(120deg, rgb(0, 190, 255), rgb(0, 108, 255), rgb(0, 108, 255)); 
-    //     }
-
-    //     .swap {
-    //     grid-column: 5 / 7;
-    //     }
-
-    //     .identity {
-    //         grid-column: 3 / 5;
-    //         background-color: inherit;
-    //         color: white;
-    //     }
-
-    // }
-
 
     // Styling for large screens
      @media screen and (min-width: 736px)
@@ -1640,7 +1542,8 @@ export default {
         .grid {
             display: grid;
             grid-template-columns: 1fr 1fr 1fr;
-            grid-template-rows: 250px 20px 100px 30px 190px auto;
+            grid-template-rows: 175px 18px 70px 24px 120px 70px;
+            max-height: 100vh;
             grid-template-areas: 
             "answerPanel answerPanel answerPanel"
             "method method method"
@@ -1648,11 +1551,10 @@ export default {
             "scalar scalar scalar"
             "matrix matrix matrix"
             "buttons buttons buttons";
+            box-sizing: border-box;
         }
 
-        .buttons {
-            margin-bottom: -9%;
-        }
+       
 
             
         #twoBy2 {
@@ -1661,7 +1563,7 @@ export default {
             margin-left: 37%;
             margin-right: 37%;
             border-radius: 5px;
-            margin-top: 16px !important;
+            margin-top: 0 !important;
             background-image: -webkit-linear-gradient(120deg, rgb(67, 152, 230), rgb(153, 153, 230));
             background-image: -moz-linear-gradient(120deg, rgb(67, 152, 230), rgb(153, 153, 230));
             background-image: -o-linear-gradient(120deg, rgb(67, 152, 230),rgb(153, 153, 230));
@@ -1675,12 +1577,13 @@ export default {
             margin-left: 35%;
             margin-right: 35%;
             border-radius: 5px;
-            margin-top: 16px !important;
-            background-image: -webkit-linear-gradient(120deg, rgb(67, 152, 230), rgb(153, 153, 230));
-            background-image: -moz-linear-gradient(120deg, rgb(67, 152, 230), rgb(153, 153, 230));
-            background-image: -o-linear-gradient(120deg, rgb(67, 152, 230),rgb(153, 153, 230));
-            background-image: -ms-linear-gradient(120deg, rgb(67, 152, 230),rgb(153, 153, 230));
-            background-image: linear-gradient(120deg, rgb(67, 152, 230),rgb(153, 153, 230));
+            margin-top: 15px !important;
+            margin-bottom:5px;
+            background-image: -webkit-linear-gradient(120deg, rgb(38, 140, 235), rgb(132, 117, 217));
+            background-image: -moz-linear-gradient(120deg, rgb(38, 140, 235), rgb(132, 117, 217));
+            background-image: -o-linear-gradient(120deg, rgb(38, 140, 235),rgb(132, 117, 217));
+            background-image: -ms-linear-gradient(120deg, rgb(38, 140, 235),rgb(132, 117, 217));
+            background-image: linear-gradient(120deg, rgb(38, 140, 235),rgb(132, 117, 217));
         }
 
         #first_By2, #sec_By2 {
@@ -1691,13 +1594,6 @@ export default {
             background-image: linear-gradient(120deg, rgb(67, 152, 230),rgb(153, 153, 230));
         }
 
-        // .grid {
-        //     grid-template-columns: 1fr 60% 1fr;
-        //     grid-template-rows: 130px 20px 90px 30px 160px auto;
-            
-        //     grid-template-areas: 
-        //     "blank1 buttons blank2";
-        // }
 
         .buttons {
             display: grid;

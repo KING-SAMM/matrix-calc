@@ -1,7 +1,10 @@
 <template>
     <v-container class="grid">
         <section class="answerPanel" id="answerPanel">
-            <table id="threeBy3Ans" class="w3-animate-opacity w3-card-4 w3-black w3-centered tr td" v-show="showAnsMatrix">
+        <!-- Mode -->
+            <span class="mode">{{ mode }}</span>
+
+            <table id="threeBy3Ans" class="answerTable w3-animate-opacity w3-card-4 w3-black w3-centered tr td" v-show="showAnsMatrix">
                 <tbody>
                     <tr>
                         <td><p id="a_adj">{{a11}}</p></td><td><p id="b_adj">{{b12}}</p></td><td><p id="c_adj">{{c13}}</p></td>
@@ -169,6 +172,7 @@ export default {
             lambda1_2: "",
             lambdaScalarProd1_2: "",
             method: "",
+            mode: "matrices",
             matrixA: "A",
             matrixB: "B",
             opr: "",
@@ -184,7 +188,7 @@ export default {
             showEigenvaluesScalarProd: false,
             isDisabled: true,
             isDoubleDisabled: "w3-disabled",
-            modeBtn: "DBL",
+            modeBtn: "DOUBLE",
             swap: "A <=> B"
 
         }
@@ -879,7 +883,7 @@ export default {
 
                 this.isDisabled = "w3-disabled"
                 this.isDoubleDisabled = !this.isDoubleDisabled
-                this.modeBtn = "SGL"
+                this.modeBtn = "SINGLE"
                 this.opr = ""
             } else if (this.showDoubleInputMatrix === false) {
                 // Clear out double operations variables
@@ -892,7 +896,7 @@ export default {
 
                 this.isDisabled = !this.isDisabled
                 this.isDoubleDisabled = "w3-disabled"
-                this.modeBtn = "DBL"
+                this.modeBtn = "DOUBLE"
             }
         },
 
@@ -1273,19 +1277,43 @@ export default {
         grid-area: answerPanel;
         align-items:center;
         justify-content: center;
-        margin-top: -20%;
-        margin-left: -4%;
-        margin-right: -4%;
+        margin-top: -75px;
+        margin-left:-4px;
+        margin-right:-4px;
         grid-row-start: 1;
         grid-row-end: 1;
         background-image: -webkit-linear-gradient(120deg, rgb(0, 204, 255), lightblue, rgb(77, 255, 210));
-        padding: 5px;
+        padding: 10px 15px 25px 15px;
 
+        
+        display: grid;
+        grid-template-columns:1000px;
+        grid-template-rows: 30px 200px;
+        grid-template-areas:
+        "mode"
+        "answerTable";
     }
 
+    .mode {
+        padding-top: 20px;
+        grid-area: mode;
+        margin-bottom: 5px;
+        align-items: center;
+        color: #999;
+        font-size: 18px;
+    }
+
+    .answerTable {
+        grid-area: answerTable;
+        margin-bottom: 30px;
+        align-items: center;
+    }
+
+    
+
     .method {
-        margin-left: -4%;
-        margin-right: -4%;
+        margin-left:-4px;
+        margin-right:-4px;
         grid-area: method;
         font-size: 12px;
         color: white;
@@ -1308,8 +1336,8 @@ export default {
     }
 
     .scalar {
-        margin-left: -4%;
-        margin-right: -4%;
+        margin-left:-4px;
+        margin-right:-4px;
         grid-area: scalar;
         font-size: 10px;
         background-color: indigo;
@@ -1317,21 +1345,19 @@ export default {
     }
 
     .matrix {
-        margin-left: -4%;
-        margin-right: -4%;
+        margin-left:-4px;
+        margin-right:-4px;
         grid-area: matrix;
         background-image: -webkit-linear-gradient(120deg, rgb(0, 128, 255), rgb(0, 148, 255), rgb(0, 188, 255),rgb(0, 204, 255));
-        
-        /*background-color: #ccc; */
          // rgb(252, 213, 105);
     }
 
     .buttons {
         display: grid;
-        margin-left: -4%;
-        margin-right: -4%;
+        margin-left:-4px;
+        margin-right:-4px;
         grid-template-columns:0px repeat(5, 1fr) 80px; 
-        grid-template-rows: auto auto auto;
+        grid-template-rows: 33% 33% 33%;
         grid-template-areas: 
         "blank1 minus fn fn fn fn clear"
         "blank1 matMultiply fn fn fn fn answer"
@@ -1339,6 +1365,7 @@ export default {
         grid-area: buttons;
         background-image: -webkit-linear-gradient(120deg, rgb(0, 128, 255), rgb(0, 188, 255)); 
         vertical-align: bottom;
+        height: 20vh;
     }
 
     .clear {
@@ -1458,13 +1485,6 @@ export default {
         margin: 0;
     }
 
-    // .doubleMatrix {
-    //     display: flex;
-    //     flex-flow: row wrap;
-    //     justify-content: center;
-    //     align-items: center;
-    // }
-
     #first_By3, #sec_By3 {
         width: 200px;
         border-radius: 5px;
@@ -1477,9 +1497,6 @@ export default {
     }
 
     .doubleMatrix {
-        // width: 100%;
-        // height: 150px;
-
         display: flex;
         flex-flow: column nowrap;
         justify-content: center;
@@ -1514,13 +1531,14 @@ export default {
 
     #threeBy3Ans {
         width: 180px;
-        height: 100px;
+        height: 80px;
         font-size: 12px;
         opacity: 1;
         float: center;
-        margin-left: auto;
-        margin-right: auto;
-        //margin-top: 25%;
+        margin-left: 35%;
+        margin-right: 35%;
+        margin-bottom:-10%;
+        margin-top: 14% !important;
         justify-content:center;
         border-radius: 5px;
         background-image: -webkit-linear-gradient(120deg, rgb(67, 152, 230), rgb(153, 153, 230));
@@ -1538,7 +1556,7 @@ export default {
         }
 
         .grid {
-            grid-template-rows: 130px 20px auto 30px 160px auto;
+            grid-template-rows: 175px 18px 70px 24px 120px 70px;
         }
 
         #threeBy3 {
@@ -1562,12 +1580,14 @@ export default {
             float: center;
             margin-left: 35%;
             margin-right: 35%;
+            margin-top: 15px !important;
+            margin-bottom:5px;
             border-radius: 5px;
-            background-image: -webkit-linear-gradient(120deg, rgb(67, 152, 230), rgb(153, 153, 230));
-            background-image: -moz-linear-gradient(120deg, rgb(67, 152, 230), rgb(153, 153, 230));
-            background-image: -o-linear-gradient(120deg, rgb(67, 152, 230),rgb(153, 153, 230));
-            background-image: -ms-linear-gradient(120deg, rgb(67, 152, 230),rgb(153, 153, 230));
-            background-image: linear-gradient(120deg, rgb(67, 152, 230),rgb(153, 153, 230));
+            background-image: -webkit-linear-gradient(120deg, rgb(38, 140, 235), rgb(132, 117, 217));
+            background-image: -moz-linear-gradient(120deg, rgb(38, 140, 235), rgb(132, 117, 217));
+            background-image: -o-linear-gradient(120deg, rgb(38, 140, 235), rgb(132, 117, 217));
+            background-image: -ms-linear-gradient(120deg, rgb(38, 140, 235), rgb(132, 117, 217));
+            background-image: linear-gradient(120deg, rgb(38, 140, 235), rgb(132, 117, 217));
         }
 
         .matrix {
@@ -1607,9 +1627,7 @@ export default {
             background-image: -ms-linear-gradient(120deg, rgb(0, 138, 255), rgb(0, 132, 255), rgb(0, 128, 255)); 
             background-image: linear-gradient(120deg, rgb(0, 138, 255), rgb(0, 132, 255), rgb(0, 128, 255)); 
         }
-        // .swap {
-        //     grid-column: 5 / 7;
-        // }
+
 
         .identity {
             grid-column: 3 / 5;
@@ -1642,30 +1660,6 @@ export default {
             background-image: linear-gradient(120deg, rgb(67, 152, 230),rgb(153, 153, 230));
         }
 
-
-
-
     }
-
-    // Horizontal scroll
-    // .wrapper {
-    //     background: #efefef;
-    //     box-shadow: 1px 1px 10px #999;
-    //     margin: auto;
-    //     text-align: center;
-    //     position: relative;
-    //     -webkit-border-radius: 5px;
-    //     -moz-border-radius: 5px;
-    //     margin-bottom: 20px !important;
-    //     width: 800px;
-    //     padding-top: 5px;
-    // }
-
-    // .scrolls {
-    //     overflow-x: scroll;
-    //     overflow-y: hidden;
-    //     height: 160px;
-    //     white-space: nowrap;
-    // }
 
 </style>

@@ -1,6 +1,9 @@
 <template>
     <v-container class="grid">
         <section class="answerPanel" id="answerPanel">
+            <!-- Mode -->
+            <span class="mode">{{ mode }}</span>
+
             <table id="threeBy3B" class="w3-animate-opacity w3-card-4 w3-black w3-centered tr td" v-show="showAnsMatrix">
                 <tbody>
                     <tr>
@@ -18,12 +21,6 @@
             <span id="angle" class="value">θ</span><h3 v-show="showAngle">{{ angle }}</h3>
         </section>
 
-        <section class="eigenValues">
-            <span class="value">Eigenvalues</span>
-            <h3 v-show="showEigenvalues">{{ lambda1_2 }}</h3>
-            <h3 v-show="showEigenvaluesScalarProd">{{ lambdaScalarProd1_2 }}</h3>
-        </section>
-        <section class="rank"><span class="value">Rank</span><h3 v-show="showRank">{{ rank }}</h3></section>
 
         <section class="scalar">
             <aside class="doubleMatrixName" v-show="showDoubleInputMatrix">
@@ -38,7 +35,7 @@
         </section> -->
 
         <section class="matrix">
-            <div class="blank1"></div>
+            <div class="blank3"></div>
             <aside class="doubleMatrix" v-show="showDoubleInputMatrix">
                 <!--<aside class="w3-center table_sec"> -->
                 <table id="first_By3" class="w3-center table_sec w3-animate-zoom w3-card-4 w3-black w3-centered tr td">
@@ -81,19 +78,19 @@
             <button id="invBtn" class="fn w3-btn" v-on:click="getAbsB()" :class="isDoubleDisabled">|<i>B</i>|</button>
             <button id="invBtn" class="fn w3-btn" v-on:click="getAHat()" :class="isDoubleDisabled"><b>â</b></button>
             <button id="invBtn" class="fn w3-btn" v-on:click="getBHat()" :class="isDoubleDisabled"><b>û</b></button>
-            <button class="clear special w3-btn w3-blue" v-on:click="clear()">CLR</button>
+            <button class="clear special w3-btn" v-on:click="clear()">CLR</button>
             <section class="blank2"></section>
 
             <button id="addBtn" class="plus w3-btn" v-on:click="getSum()" :class="isDoubleDisabled">+</button> 
             <button id="invBtn" class="angle fn w3-btn" v-on:click="getAngle()" :class="isDoubleDisabled">θ</button> 
             <button id="scalarMultiplyBtn" class="fn w3-btn" v-on:click="scalarMultiply()" :class="isDisabled"><strong>k</strong><i>X</i></button>
             <button id="matSquaredBtn" class="fn w3-btn" v-on:click="matSquared()" :class="isDisabled"><i>X</i><sup>2</sup></button>
-            <button id="invBtn" class="answer special w3-btn w3-blue" v-on:click="getAnswer()"><i>ANS</i></button>
+            <button id="invBtn" class="answer special w3-btn" v-on:click="getAnswer()"><i>ANS</i></button>
             
             <button id="dotProdBtn" class="dot w3-btn" v-on:click="dotProduct()" :class="isDoubleDisabled">{{ dotProdBtnSwap }}</button>
             <button id="crossProdBtn" class="cross w3-btn" v-on:click="crossProduct()" :class="isDoubleDisabled">{{ crossProdBtnSwap }}</button>
             <button id="crossProdBtn" class="absCross w3-btn" v-on:click="absCrossProduct()" :class="isDoubleDisabled">|{{ crossProdBtnSwap }}|</button>
-            <button id="clrBtn" class="swap w3-btn w3-blue" v-on:click="swapMatrices()" :class="isDoubleDisabled">{{ swap }}</button>    
+            <button id="clrBtn" class="swap w3-btn" v-on:click="swapMatrices()" :class="isDoubleDisabled">{{ swap }}</button>    
             <button id="clrBtn" class="double special w3-btn w3-red" v-on:click="doubleOperations()">{{ modeBtn }}</button>
             <section class="blank2"></section>
 
@@ -135,6 +132,7 @@ export default {
             lambda1_2: "",
             lambdaScalarProd1_2: "",
             method: "",
+            mode: "vectors",
             matrixA: "A",
             matrixB: "B",
             opr: "  ",
@@ -151,7 +149,7 @@ export default {
             showEigenvaluesScalarProd: false,
             isDisabled: "w3-disabled",
             isDoubleDisabled: true,
-            modeBtn: "SGL",
+            modeBtn: "SINGLE",
             swap: "A<─>B",
             crossProdBtnSwap: "AxB",
             dotProdBtnSwap: "A.B",
@@ -179,7 +177,7 @@ export default {
 
                 this.isDisabled = "w3-disabled"
                 this.isDoubleDisabled = !this.isDoubleDisabled
-                this.modeBtn = "SGL"
+                this.modeBtn = "SINGLE"
                 this.opr = ""
             } else if (this.showDoubleInputMatrix === false) {
                 // Clear out double operations variables
@@ -188,7 +186,7 @@ export default {
 
                 this.isDisabled = !this.isDisabled
                 this.isDoubleDisabled = "w3-disabled"
-                this.modeBtn = "DBL"
+                this.modeBtn = "DOUBLE"
             }
         },
 
@@ -679,13 +677,13 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
     *{
-        margin: 0;
+        margin-top: 0;
         padding: 0;
     }
     .grid {
         display: grid;
         grid-template-columns: 1fr 1fr 1fr;
-        grid-template-rows: 130px 20px 90px 30px 160px auto;
+        grid-template-rows: 130px 20px 90px 30px 130px 35px;
         grid-template-areas: 
         "answerPanel answerPanel answerPanel"
         "method method method"
@@ -696,32 +694,73 @@ export default {
     }
 
     .answerPanel {
+        display:flex;
         grid-area: answerPanel;
-        background-color: #ccc;
-        padding: 5px;
+        align-items:center;
+        justify-content: center;
+        margin-top: -75px;
+        margin-left:-4px;
+        margin-right:-4px;
+        grid-row-start: 1;
+        grid-row-end: 1;
+        background-image: -webkit-linear-gradient(120deg, rgb(0, 204, 255), lightblue, rgb(77, 255, 210));
+        padding: 10px 15px 25px 15px;
+
+        display: grid;
+        grid-template-columns:1000px;
+        grid-template-rows: 30px 200px;
+        grid-template-areas:
+        "mode"
+        "answerTable";
 
     }
 
+    .mode {
+        padding-top: 20px;
+        grid-area: mode;
+        margin-bottom: 5px;
+        align-items: center;
+        color: #999;
+        font-size: 18px;
+    }
+
+    .answerTable {
+        grid-area: answerTable;
+        margin-bottom: 30px;
+        align-items: center;
+    }
+
     .method {
+        margin-left:-4px;
+        margin-right:-4px;
         grid-area: method;
-        background-color: #555555;
+        font-size: 12px;
+        color: white;
+        background-color: indigo;
     }
 
     .determinant {
         grid-area: determinant;
+        height: 80px;
     }
 
     .eigenValues {
         grid-area: eigenValues;
+        height: 80px;
     }
 
     .rank {
         grid-area: rank;
+        height: 80px;
     }
 
     .scalar {
+        margin-left:-4px;
+        margin-right:-4px;
         grid-area: scalar;
-        background-color: #555555;
+        font-size: 10px;
+        background-color: indigo;
+        color: white;
     }
 
     .matrix {
@@ -730,63 +769,76 @@ export default {
         grid-template-rows: auto auto auto;
         grid-template-areas: 
         "blank1 doubleMatrix threeBy3 blank2";
+        margin-left:-4px;
+        margin-right:-4px;
         grid-area: matrix;
-        background-color: #ccc;
+        background-image: -webkit-linear-gradient(120deg, rgb(0, 128, 255), rgb(0, 148, 255), rgb(0, 188, 255),rgb(0, 204, 255));
         vertical-align: center;
 
     }
 
     .buttons {
         display: grid;
+        margin-left:-4px;
+        margin-right:-4px;
         grid-template-columns:0px repeat(5, 1fr) 80px; 
-        grid-template-rows: auto auto auto;
+        grid-template-rows: 33% 33% 33%;
         grid-template-areas: 
         "blank1 minus fn fn fn fn clear"
         "blank1 plus fn fn fn fn answer"
-        "blank1 dot fn fn fn fn double";
+        "blank1 dot cross absCross swap swap double";
         grid-area: buttons;
-        background-color: #ccc;
+         background-image: -webkit-linear-gradient(120deg, rgb(0, 128, 255), rgb(0, 188, 255)); 
         vertical-align: bottom;
+        height: 20vh;
     }
 
     .clear {
         grid-area: clear;
+        background-color: rgba(0, 128, 255, 0.6);
+        color: white;
     }
 
     .answer {
         grid-area: answer;
+        background-color: rgba(0, 128, 255, 0.6);
+        color: white;
     }
 
     .double {
         grid-area: double;
+        background-color: #fd0356;
+        color: white;
     }
 
     .plus {
         grid-area: plus;
-        background-color: gray;
+        background-color: rgba(0, 128, 255, 0.6);
         color: white;
     }
 
     .minus {
         grid-area: minus;
-        background-color: gray;
+        background-color: rgba(0, 128, 255, 0.6);
         color: white;
     }
 
     .dot {
         grid-area: dot;
-        background-color: gray;
+        background-color: rgba(0, 128, 255, 0.6);
         color: white;
     }
 
     .cross {
-        grid-column: 3 / 4;
-        background-color: gray;
+        grid-area: cross;
+        background-color: rgba(0, 128, 255, 0.6);
         color: white;
     }
 
     .swap {
-        grid-column: 5 / 7;
+        grid-area: swap;
+        background-color: rgba(0, 128, 255, 0.6);
+        color: white;
     }
 
     .angle {
@@ -794,9 +846,8 @@ export default {
     }
 
     .absCross {
-        //grid-area: absCross;
-        grid-column: 4 / 5;
-        background-color: gray;
+        grid-area: absCross;
+        background-color: rgba(0, 128, 255, 0.6);
         color: white;
     }
 
@@ -805,16 +856,9 @@ export default {
     }
 
     .fn {
-        background-color: rgb(252, 213, 105);
+        background-color: inherit;
+        color: white;
     }
-
-    // .grid section:nth-child(even) {
-    //     background-color: rgb(233, 236, 15);
-    // }
-
-    // .grid section:nth-child(odd) {
-    //     background-color: #ccc;
-    // }
 
     .value{
         font-size: 12px;
@@ -861,16 +905,7 @@ export default {
         margin: 0;
     }
 
-    #first_By3, #sec_By3 {
-        width: 250px;
-        border-radius: 5px;
-        margin-top: 16px !important;
-        background-color: #ffffff !important;
-    }
-
     .doubleMatrix {
-        // width: 100%;
-        // height: 150px;
 
         display: flex;
         flex-flow: row wrap;
@@ -887,26 +922,6 @@ export default {
         flex-flow: row wrap;
         justify-content: space-evenly;
         align-items: center;
-    }
-
-    #threeBy3 {
-        width: 250px;
-        float: center;
-        margin-left: auto;
-        margin-right: auto;
-        border-radius: 5px;
-        margin-top: 16px !important;
-        background-color: #ffffff !important;
-    }
-
-    #threeBy3B {
-        width: 250px;
-        height: 120px;
-        opacity: 1;
-        float: center;
-        margin-left: auto;
-        margin-right: auto;
-        border-radius: 5px;
     }
 
     .component {
@@ -926,27 +941,39 @@ export default {
     @media screen and (min-width: 736px)
     {
         input {
-            width: 60%;
+            width: 70%;
+            font-size: 12px;
         }
 
         #threeBy3 {
-            width: 40%;
+             width: 40%;
             float: center;
             margin-left: 30%;
             margin-right: 30%;
             border-radius: 5px;
             margin-top: 16px !important;
-            background-color: #ffffff !important;
+            background-image: -webkit-linear-gradient(120deg, rgb(67, 152, 230), rgb(153, 153, 230));
+            background-image: -moz-linear-gradient(120deg, rgb(67, 152, 230), rgb(153, 153, 230));
+            background-image: -o-linear-gradient(120deg, rgb(67, 152, 230),rgb(153, 153, 230));
+            background-image: -ms-linear-gradient(120deg, rgb(67, 152, 230),rgb(153, 153, 230));
+            background-image: linear-gradient(120deg, rgb(67, 152, 230),rgb(153, 153, 230));
         }
 
         #threeBy3B {
-            width: 54%;
-            height: 120px;
+            width: 30%;
+            height: 40px;
             opacity: 1;
             float: center;
-            margin-left: 23%;
-            margin-right: 23%;
+            margin-left: 35%;
+            margin-right: 35%;
+            margin-top: 15px !important;
+            margin-bottom:5px;
             border-radius: 5px;
+            background-image: -webkit-linear-gradient(120deg, rgb(38, 140, 235), rgb(132, 117, 217));
+            background-image: -moz-linear-gradient(120deg, rgb(38, 140, 235), rgb(132, 117, 217));
+            background-image: -o-linear-gradient(120deg, rgb(38, 140, 235), rgb(132, 117, 217));
+            background-image: -ms-linear-gradient(120deg, rgb(38, 140, 235), rgb(132, 117, 217));
+            background-image: linear-gradient(120deg, rgb(38, 140, 235), rgb(132, 117, 217));
         }
 
         .matrix {
@@ -964,36 +991,29 @@ export default {
             grid-template-areas: 
             "blank1 minus fn fn fn fn clear blank2"
             "blank1 plus fn fn fn fn answer blank2"
-            "blank1 cross absCross fn fn fn double blank2";
+            "blank1 dot cross absCross swap swap double blank2";
         }
 
         .blank1 {
             grid-area: blank1;
-            background-color: #ccc;
+            background-color: inherit;
+            background-image: -webkit-linear-gradient(120deg, rgb(0, 190, 255), rgb(0, 190, 255));
+            background-image: -moz-linear-gradient(120deg, rgb(0, 190, 255), rgb(0, 190, 255)); 
+            background-image: -o-linear-gradient(120deg, rgb(0, 190, 255), rgb(0, 190, 255)); 
+            background-image: -ms-linear-gradient(120deg, rgb(0, 190, 255), rgb(0, 190, 255)); 
+            background-image: linear-gradient(120deg, rgb(0, 190, 255), rgb(0, 190, 255));  
         }
 
         .blank2 {
             grid-area: blank2;
-            background-color: #ccc;
+            background-color: lightblue;
+            background-image: -webkit-linear-gradient(120deg, rgb(0, 138, 255), rgb(0, 132, 255), rgb(0, 128, 255)); 
+            background-image: -moz-linear-gradient(120deg, rgb(0, 138, 255), rgb(0, 132, 255), rgb(0, 128, 255)); 
+            background-image: -o-linear-gradient(120deg, rgb(0, 138, 255), rgb(0, 132, 255), rgb(0, 128, 255)); 
+            background-image: -ms-linear-gradient(120deg, rgb(0, 138, 255), rgb(0, 132, 255), rgb(0, 128, 255)); 
+            background-image: linear-gradient(120deg, rgb(0, 138, 255), rgb(0, 132, 255), rgb(0, 128, 255)); 
         }
 
-        // .swap {
-        //     grid-column: 5 / 7;
-        // }
-
-        .absCross {
-            //grid-area: absCoss;
-            grid-column: 4 / 5;
-            background-color: gray;
-            color: white;
-        }
-
-        // .doubleMatrix {
-        //     width: 100%;
-        //     display: flex;
-        //     flex-flow: row nowrap;
-        //     justify-content: center;
-        // }
 
         .doubleMatrix, .singleMatrix {
             display: flex;
@@ -1011,8 +1031,13 @@ export default {
             width: 700px;
         }
 
-        #first_By3, #sec_By3 {
+         #first_By3, #sec_By3 {
             width: 300px;
+            background-image: -webkit-linear-gradient(120deg, rgb(67, 152, 230), rgb(153, 153, 230));
+            background-image: -moz-linear-gradient(120deg, rgb(67, 152, 230), rgb(153, 153, 230));
+            background-image: -o-linear-gradient(120deg, rgb(67, 152, 230),rgb(153, 153, 230));
+            background-image: -ms-linear-gradient(120deg, rgb(67, 152, 230),rgb(153, 153, 230));
+            background-image: linear-gradient(120deg, rgb(67, 152, 230),rgb(153, 153, 230));
         }
 
 

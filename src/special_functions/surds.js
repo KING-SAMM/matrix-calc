@@ -1,7 +1,7 @@
 import {square} from './squares.js'
 
 export function simplify_surd(x) {
-    var surd
+    let surd
     if (x == 1) {
         surd = [1, "", 1]
         return surd
@@ -11,9 +11,9 @@ export function simplify_surd(x) {
         let quotient
         surd = [1, "√", x]   // Original surd
 
-        for (var j = 2; j < (x); j++) {
+        for (let j = 2; j < (x); j++) {
             quotient = x/j
-            for (var i = 1; i < (x); i++) {
+            for (let i = 1; i < (x); i++) {
                 // If x contains a perfect square, simplify the surd
                 if (quotient === square(i)) {
                     surd = [i, "√", j]

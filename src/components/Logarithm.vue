@@ -1,179 +1,516 @@
 <template>
-    <v-container class="basic w3-animate-opacity">
-        <!--Answer Panel-->
-        <!-- <span class="item item-header" id="currentValue">0</span> -->
-        <!--
-        /* For Debuging */
+    <v-container class="grid"> 
         <section class="answerPanel">
-           <table>
-               <tbody>
-                   <tr><td v-html="expression"></td><td>currentExpr: {{ currentExpr }}</td><td>currentOpr: {{ currentOpr }}</td></tr>
-                   <tr><td> currentNumber: {{ currentNumber }}</td><td>previousNumber: {{ previousNumber }}</td><td>currentDigit: {{ currentDigit }}</td></tr>
-                   <tr><td> Ansexpression: {{ Ansexpression }}</td><td> {{ answer || "0" }}</td><td>previousOpr: {{ previousOpr }}</td></tr>
-                   <tr><td> AnsexpHolder: {{ AnsexpressionHolder }}</td><td> Factl: {{ factorial }}</td><td> cNL: {{ currentNumLength }} cNLHolder: {{ currentNumberLengthHolder }}</td></tr>
-                   <tr><td> DELcNFLog:{{dELETcurrentNumForLog}} </td><td> logCNHolder: {{ logOfCurrentNumberHolder }}</td></tr> 
-               </tbody>
-           </table> 
+            <!-- Mode -->
+            <span class="mode">{{ mode }}</span>
+
+            <!-- Logarithm Answer -->
+            <table id="twoBy2B" class="table w3-animate-opacity w3-card-4 w3-black w3-centered tr td" v-show="showLogarithm">
+                <tbody>
+                    <tr>
+                        <td><p><span class="log">log</span><sub class="base">{{ base }}</sub><span class="num"> {{ num }}</span><span  class="logEqual"> {{ logEqual }} </span> <span class="logAns">{{ logAns }}</span></p></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- Antilogarithm Answer -->
+             <table id="twoBy2B" class="table w3-animate-opacity w3-card-4 w3-black w3-centered tr td" v-show="showAntiLogarithm">
+                <tbody>
+                    <tr>
+                        <td><p><span class="log">log</span><sup>-1</sup><sub class="base">{{ base }}</sub><span class="num"> {{ logAns }}</span><span  class="logEqual"> {{ logEqual }} </span> <span class="logAns">{{ num }}</span></p></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- Natural Logarithm Answer -->
+            <table id="twoBy2B" class="table w3-animate-opacity w3-card-4 w3-black w3-centered tr td" v-show="showNaturalLogarithm">
+                <tbody>
+                    <tr>
+                        <td><p><span class="log">log</span><sub class="base">{{ natLogBase }}</sub><span class="num"> {{ natLogNum }}</span><span  class="logEqual"> {{ logEqual }} </span> <span class="logAns">{{ natLogAns }}</span></p></td>
+                    </tr>
+                </tbody>
+            </table>
+
+             <!-- Inverse Natural Logarithm Answer -->
+            <table id="twoBy2B" class="table w3-animate-opacity w3-card-4 w3-black w3-centered tr td" v-show="showInverseNaturalLogarithm">
+                <tbody>
+                    <tr>
+                        <td><p><span class="log">log</span><sup>-1</sup><sub class="base">{{ natLogBase }}</sub><span class="num"> {{ natLogAns }}</span><span  class="logEqual"> {{ logEqual }} </span> <span class="logAns">{{ natLogNum }}</span></p></td>
+                    </tr>
+                </tbody>
+            </table>
         </section>
-        -->
 
-        <section class="answerPanel">
-            <input type="text" placeholder="Logarithms" v-html="expression">
-            
-            <div>{{ answer || "0" }}</div> 
+        <section class="method"><span id="method">{{ method }}</span></section>
+        
+        <section class="matrix">
+            <!-- Logarithm inputs -->
+            <table id="twoBy2" class="w3-animate-zoom w3-card-4 w3-black w3-centered tr" v-show="showLogarithm">
+                <tbody>
+                    <tr><td><input :type="type" v-model.number="num" v-on:keyup="getLogarithm()" size="4" class="entry" placeholder="Number"></td></tr>
+                    <tr><td><input :type="type" v-model.number="base" v-on:keyup="getLogarithm()" size="4" class="entry" placeholder="Base"></td></tr>
+                </tbody>
+            </table>
+
+            <!-- Antilogarithm Inputs -->
+            <table id="twoBy2" class="w3-animate-zoom w3-card-4 w3-black w3-centered tr" v-show="showAntiLogarithm">
+                <tbody>
+                    <tr><td><input :type="type" v-model.number="logAns" v-on:keyup="getAntiLogarithm()" size="4" class="entry" placeholder="Logarithm"></td></tr>
+                    <tr><td><input :type="type" v-model.number="base" v-on:keyup="getAntiLogarithm()" size="4" class="entry" placeholder="Base"></td></tr>
+                </tbody>
+            </table>
+
+            <!-- Natural Logarithm Inputs -->
+            <table id="twoBy2" class="w3-animate-zoom w3-card-4 w3-black w3-centered tr" v-show="showNaturalLogarithm">
+                <tbody>
+                    <tr><td><input :type="type" v-model.number="natLogNum" v-on:keyup="getNaturalLogarithm()" size="4" class="entry" placeholder="Number"></td></tr>
+                    <tr><td><input :type="type" v-model.number="natLogBase" v-on:keyup="getNaturalLogarithm()" size="4" class="entry" placeholder="e"></td></tr>
+                </tbody>
+            </table>
+
+            <!-- Inverse Natural Logarithm Inputs -->
+            <table id="twoBy2" class="w3-animate-zoom w3-card-4 w3-black w3-centered tr" v-show="showInverseNaturalLogarithm">
+                <tbody>
+                    <tr><td><input :type="type" v-model.number="natLogAns" v-on:keyup="getInverseNaturalLogarithm()" size="4" class="entry" placeholder="Natural Log"></td></tr>
+                    <tr><td><input :type="type" v-model.number="natLogBase" v-on:keyup="getInverseNaturalLogarithm()" size="4" class="entry" placeholder="e"></td></tr>
+                </tbody>
+            </table>
         </section>
 
-        <section class="buttons">
-            <!--Control-->
-            <button class="w3-btn">Shift</button>
-            <button class="w3-btn">mode</button>
-            <button class="w3-btn"><v-icon class="white--text">arrow_back</v-icon></button>
-            <button class="w3-btn"><v-icon class="white--text">arrow_forward</v-icon></button>
-            <button class="w3-btn" v-on:click="backspace()"><v-icon class="white--text">backspace</v-icon></button>
-            <button class="w3-btn" v-on:click="clear()">C</button>
-            
+        <section class="buttons w3-animate-bottom w3-small">
+            <!--<aside class=""> -->
+            <div class="blank1"></div>    
+           
+            <button id="detBtn" class="logmode w3-btn" v-on:click="getLogarithm()"> log </button>
+            <button id="detBtn" class="antilogmode w3-btn" v-on:click="getAntiLogarithm()"> antilog </button>
+            <button id="trnBtn" class="natlogmode w3-btn" v-on:click="getNaturalLogarithm()">natural log</button>
+            <button id="trnBtn" class="natantilogmode w3-btn" v-on:click="getInverseNaturalLogarithm()">inverse natural log</button>
+            <button id="clrBtn" class="clear w3-btn" v-on:click="clear()">Clear</button>
 
-            <!--Trigonometic Functions-->
-            <button class="w3-btn" v-on:click="log1('log₁()')">log₁</button>
-            <button class="w3-btn" v-on:click="log2('log₂()')">log₂</button>
-            <button class="w3-btn" v-on:click="log3('log₃()')">log₃</button>
-            <button class="w3-btn" v-on:click="log4('log₄()')">log₄</button>
-            <button class="w3-btn" v-on:click="log5('log₅()')">log₅</button>
-            <button class="w3-btn" v-on:click="log6('log₆()')">log₆</button>
-        
-            <!--Inverse Trigonometric Functions-->
-            <button class="w3-btn" v-on:click="log7('log₇()')">log₇</button>
-            <button class="w3-btn" v-on:click="log8('log₈()')">log₈</button>
-            <button class="w3-btn" v-on:click="log9('log₉()')">log₉</button>
-            <button class="w3-btn" v-on:click="log10('log₁₀()')">log₁₀</button>
-            <button class="w3-btn" v-on:click="log11('log₁₁()')">log₁₁</button>
-            <button class="w3-btn" v-on:click="log12('log₁₂()')">log₁₂</button>
+            <div class="blank2"></div>
 
-            <!--Hyperbolic Functions-->
-            <button class="w3-btn" v-on:click="alog1('alog1()')">alog1</button>
-            <button class="w3-btn" v-on:click="alog2('alog2()')">alog2</button>
-            <button class="w3-btn" v-on:click="alog3('alog3()')">alog3</button>
-            <button class="w3-btn" v-on:click="alog4('alog4()')">alog4</button>
-            <button class="w3-btn" v-on:click="alog5('alog5()')">alog5</button>
-            <button class="w3-btn" v-on:click="alog6('alog6()')">alog6</button>
-        
-            <!--Inverse Hyperbolic Functions-->
-            <button class="w3-btn" v-on:click="alog7('alog7()')">alog7</button>
-            <button class="w3-btn" v-on:click="alog8('alog8()')">alog8</button>
-            <button class="w3-btn" v-on:click="alog9('alog9()')">alog9</button>
-            <button class="w3-btn" v-on:click="alog10('alog10()')">alog10</button>
-            <button class="w3-btn" v-on:click="ln('ln()')">ln</button>
-            <button class="w3-btn" v-on:click="aln('aln()')">aln</button>
-
-            <!--Numbers-->    
-            <button class="w3-btn num" v-on:click="append('1')"><strong>1</strong></button>
-            <button class="w3-btn num" v-on:click="append('2')"><strong>2</strong></button>
-            <button class="w3-btn num" v-on:click="append('3')"><strong>3</strong></button>
-            <button class="w3-btn num" v-on:click="append('4')"><strong>4</strong></button>
-            <button class="w3-btn num" v-on:click="append('5')"><strong>5</strong></button>
-            <button class="w3-btn num" v-on:click="append('6')"><strong>6</strong></button>
-
-            <!--Numbers1-->
-            <button class="w3-btn num" v-on:click="append('7')"><strong>7</strong></button>
-            <button class="w3-btn num" v-on:click="append('8')"><strong>8</strong></button>
-            <button class="w3-btn num" v-on:click="append('9')"><strong>9</strong></button>
-            <button class="w3-btn num zero" v-on:click="append('0')"><strong>0</strong></button>
-            <button class="w3-btn" v-on:click="openParenthesis('(')">(</button>
-            <button class="w3-btn" v-on:click="closeParenthesis(')')">)</button>
-
-            <!--Operator-->
-            <button class="w3-btn" v-on:click="dot()"><strong>.</strong></button>
-            <button class="w3-btn plusTimesDivideMultiply add" v-on:click="plus('+')"><strong>+</strong></button>
-            <button class="w3-btn plusTimesDivideMultiply subtract" v-on:click="minus('−')"><strong>−</strong></button>
-            <button class="w3-btn plusTimesDivideMultiply" v-on:click="times('×')"><strong>×</strong></button>
-            <button class="w3-btn plusTimesDivideMultiply" v-on:click="divide('÷')"><strong>÷</strong></button>
-            <button class="w3-btn" v-on:click="equal"><strong>=</strong></button> 
-        </section> 
+            <!-- </aside> -->
+        </section>
+        <section class="bottomSpace"></section>
     </v-container>
 </template>
 
 <script>
+import {log, antilog, ln, aln} from '../special_functions/logarithm.js'
+
 export default {
-    name: 'Matrixmxn',
+    name: 'Logarithm',
     data() {
         return {
+            num: "",
+            base: "",
+            logAns: "",
+            logEqual: "",
+            natLogNum: "",
+            natLogBase: "",
+            natLogAns: "",
+            type: "number",
+            method: "",
+            mode: "logarithm",
+            showLogarithm: true,
+            showAntiLogarithm: false,
+            showNaturalLogarithm: false,
+            showInverseNaturalLogarithm: false,
+            showAnsMatrix: true,
+            showDiv: false
+        }
+    },
 
+    methods: {
+        getLogarithm() {
+            this.mode = "logarithm"
+
+            // Clear out natural log and inverse natural log variables
+            this.natLogAns = ""
+            this.natLogNum = ""
+            this.natLogBase = ""
+
+             // Display current mode UI
+            this.showLogarithm = true
+            this.showAntiLogarithm = false
+            this.showNaturalLogarithm = false
+            this.showInverseNaturalLogarithm = false
+
+            if (this.method == `natural log of ${this.natLogNum} to base ${this.natLogBase}`
+            || this.method == `inverse natural log of ${this.natLogAns} to base ${this.natLogBase}`) {
+                //Don't carry over values from natural log and natural antilog modes
+                this.method = ""
+                this.natLogAns = ""
+                this.natLogNum = ""
+                this.natLogBase = ""
+            } else
+
+            if (this.num === "" && this.base === "") { // If any input is missing...
+                // ...show message and do nothing
+                this.method = "Enter number and base"
+                this.logAns = ""
+                this.logEqual = ""
+                this.base = ""
+            } else if (this.num === "" && this.base !== "") {
+                this.logAns = ""
+                this.method = "Enter number"
+            } else if (this.num !== "" && this.base === "") {
+                this.logAns = ""
+                this.method = "Enter base"
+            } else {
+                // Convert numeric string to number and assign to holding variable
+                this.NUM = eval(this.num)
+                this.BASE = eval(this.base)
+               
+                let logArr = [this.NUM, this.BASE]
+
+                // Compute determinant
+                this.logAns = log(logArr)
+                this.logEqual = "="
+
+                this.method = `log of ${this.num} to base ${this.base}`
+            }
+        },
+
+        getAntiLogarithm() {
+            this.mode = "Anti logarithm"
+
+            // Clear out natural log and inverse natural log variables
+            this.natLogAns = ""
+            this.natLogNum = ""
+            this.natLogBase = ""
+
+             // Display current mode UI
+            this.showLogarithm = false
+            this.showAntiLogarithm = true
+            this.showNaturalLogarithm = false
+            this.showInverseNaturalLogarithm = false
+
+            if (this.method == `natural log of ${this.natLogNum} to base ${this.natLogBase}` 
+            || this.method == `inverse natural log of ${this.natLogAns} to base ${this.natLogBase}`) {
+                //Don't carry over values from natural log and natural antilog modes
+                this.method = ""
+                this.natLogAns = ""
+                this.natLogNum = ""
+                this.natLogBase = ""
+            } else
+
+            if (this.logAns === "" && this.base === "") { // If any input is missing...
+                // ...show message and do nothing
+                this.method = "Enter logarithm and base"
+                this.num = ""
+                this.logEqual = ""
+                this.base = ""
+            } else if (this.logAns === "" && this.base !== "") {
+                this.num = ""
+                this.method = "Enter logarithm"
+            } else if (this.logAns !== "" && this.base === "") {
+                this.num = ""
+                this.method = "Enter base"
+            } else {
+                // Convert numeric string to number and assign to holding variable
+                this.LOGANS = eval(this.logAns)
+                this.BASE = eval(this.base)
+               
+                let antilogArr = [this.BASE, this.LOGANS]
+
+                // Compute antilogarithm
+                this.num = antilog(antilogArr)
+                this.logEqual = "="
+           
+                this.method = `antilog of ${this.logAns} to base ${this.base}`
+            }
+        },
+
+        getNaturalLogarithm() {
+            this.mode = "Natural logarithm"
+
+            // Clear out log and antilog variables
+            this.num = ""
+            this.logAns = ""
+            this.base = ""
+
+             // Display current mode UI
+            this.showLogarithm = false
+            this.showAntiLogarithm = false
+            this.showNaturalLogarithm = true
+            this.showInverseNaturalLogarithm = false
+
+            if(this.method == `log of ${this.num} to base ${this.base}` 
+            || this.method == `antilog of ${this.logAns} to base ${this.base}`) 
+            {
+                //Don't carry over values from log and antilog modes
+                this.method = ""
+                this.base = ""
+                this.logAns = ""
+                this.num = ""
+            }
+
+            this.natLogBase = "e"
+
+            if (this.natLogNum === "") { // If number is missing...
+                // ...show message and do nothing
+                this.method = "Enter number"
+                this.natLogAns = ""
+                this.logEqual = ""
+            } else {       
+                // Convert numeric string to number and assign to holding variable
+                this.NATLOGNUM = eval(this.natLogNum)
+
+                // Compute determinant
+                this.natLogAns = ln(this.NATLOGNUM)
+                this.logEqual = "="
+               
+                this.method = `natural log of ${this.natLogNum} to base ${this.natLogBase}`
+            }
+        },
+
+        getInverseNaturalLogarithm() {
+            this.mode = "Inverse Natural logarithm"
+
+            // Clear out log and antilog variables
+            this.num = ""
+            this.logAns = ""
+            this.base = ""
+
+            // Display current mode UI
+            this.showLogarithm = false
+            this.showAntiLogarithm = false
+            this.showNaturalLogarithm = false
+            this.showInverseNaturalLogarithm = true
+
+            if(this.method == `log of ${this.num} to base ${this.base}` 
+            || this.method == `antilog of ${this.logAns} to base ${this.base}`) 
+            {
+                //Don't carry over values from log and antilog modes
+                this.method = ""
+                this.base = ""
+                this.logAns = ""
+                this.num = ""
+            }
+
+            this.natLogBase = "e"
+
+            if (this.natLogAns === "") { // If nat log answer is missing...
+                // ...show message and do nothing
+                this.method = "Enter natural Logarithm"
+                this.natLogNum = ""
+                this.logEqual = ""
+            } else {   
+                // Convert numeric string to number and assign to holding variable
+                this.NATLOGANS = eval(this.natLogAns)
+
+                // Compute Inverse natural logarithm
+                this.natLogNum = aln(this.NATLOGANS)
+                this.logEqual = "="
+ 
+                this.method = `inverse natural log of ${this.natLogAns} to base ${this.natLogBase}`
+            }
+        },
+
+        clear() {
+            this.num = ""
+            this.base = ""
+            this.logAns = ""
+            this.logEqual = ""
+            this.method = ""
+            this.natLogNum = ""
+            this.natLogAns = ""
+            this.natLogBase = ""
         }
     }
 }
 </script>
 
-<style lang="scss" scoped>
+
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<style scoped lang="scss">
+// Default styling for mobile 
+    
     *{
-        margin: 0;
+        margin-top: 0;
         padding: 0;
-        font-family: 'Computer Modern','Times New Roman','LaTeX','Cambria';
+        
     }
-    .basic {
+
+    // Main grid
+    .grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        grid-template-rows: 110px 15px 20px 160px auto 45px;
+        grid-template-areas: 
+        "answerPanel answerPanel answerPanel"
+        "method method method"
+        "scalar scalar scalar"
+        "matrix matrix matrix"
+        "blank1 buttons blank2"
+        "bottomSpace bottomSpace bottomSpace";
+    
+    }
+
+    .answerPanel {
         display: grid;
         grid-template-columns: 1fr;
-        grid-auto-rows: minmax(250px, auto);
+        grid-template-rows: 90px auto;
         grid-template-areas: 
-        "answerPanel"
-        "buttons";
-        background-image: -webkit-linear-gradient(120deg, rgb(0, 128, 255), rgb(0, 148, 255), rgb(0, 188, 255),rgb(0, 204, 255));
-        margin-top: -13%;
-        margin-bottom: 0%;
-        //-webkit-overflow-scrolling: none;
-    }
-
-     .answerPanel {
-        display: grid;
-        //grid-template-columns: repeat(6, 1fr);
-        grid-template-rows: 150px 70px;
-        // grid-column: 1/7;
-        // grid-row: 1/4;
-        /* background-color: #ccc; */
+        "mode"
+        "table";
+        grid-area: answerPanel;
+        margin-top: 0%;
+        margin-left:-4px;
+        margin-right:-4px;
+        align-items:center;
+        justify-content: center;
+        // grid-row-start: 1;
+        // grid-row-end: 3;
         background-image: -webkit-linear-gradient(120deg, rgb(0, 204, 255), lightblue, rgb(77, 255, 210));
+        
+        /* background-color: #ccc; */
+        padding: 15px;
     }
 
-    .answerPanel > input {
-        font-size: 28px;
-        border: transparent;
-        padding: 10px;
+    
+    .table {
+        grid-area: table;
+        margin-top: 10px;
+    }
+    .mode {
+        grid-area: mode;
+        margin-bottom: 10px;
+        align-items: center;
+    }
+
+    .method {
+        grid-area: method;
+        margin-left:-4px;
+        margin-right:-4px;
+        font-size: 12px;
+        color: white;
+        background-color: indigo;
+    }
+
+    .matrix {
+        grid-area: matrix;
+        margin-left:-4px;
+        margin-right:-4px;
+        background-image: -webkit-linear-gradient(120deg, rgb(0, 128, 255), rgb(0, 148, 255), rgb(0, 188, 255),rgb(0, 204, 255));
+        
+        /*background-color: #ccc; */
+         // rgb(252, 213, 105);
     }
     
-    .answerPanel > div {
+
+    // Button as subgrid
+    .buttons {
+        display: grid;
+        grid-template-columns:2fr repeat(3, 1fr) 2fr; 
+        grid-template-rows: auto auto;
+        grid-template-areas: 
+        "logmode logmode antilogmode antilogmode clear"
+        "natlogmode natlogmode natantilogmode natantilogmode clear";
+        grid-area: buttons;
+        background-image: -webkit-linear-gradient(120deg, rgb(0, 128, 255), rgb(0, 188, 255)); 
+        vertical-align: bottom;
+        margin-left:-4px;
+        margin-right:-4px;
+    }
+
+    .bottomSpace {
+        grid-area: bottomSpace;
+        margin-bottom: -20%;
+        margin-left:-4px;
+        margin-right:-4px;
+        //background-color: blue;
+        background-image: -webkit-linear-gradient(120deg, rgb(0, 128, 255), rgb(0, 148, 255), rgb(0, 188, 255),rgb(0, 204, 255));
+    }
+
+    .clear {
+        grid-area: clear;
+        background-color: rgba(0, 128, 255, 0.6);
+        color: white;
+    }
+
+    .log {
         font-size: 25px;
     }
 
-    .buttons {
-        display: grid;
-        grid-template-columns: repeat(6, 1fr);
-        grid-template-rows: repeat(8, 60px);
-        //grid-template-areas: buttons;
-        //justify-content:flex-start;
-        color: #fff;
-        // margin-bottom: 0%;
+    .num, .logEqual, .logAns {
+        font-size: 20px;
     }
 
-    .w3-btn {
-        background-color: transparent;
-        //color: white;
-        font-size: 22px;
-        padding: 0 5px;
-        //justify-content:flex-end;
-        border: 1px solid rgba(255, 255, 255, 0.3);
+    .mode {
+        font-size: 16px;
+        font-weight: 600;
+        color: #999;
+        margin-top: 5px;
     }
 
-    .w3-btn {
-        align-items: center;
-        justify-content: center;
-        //color: black;
+    .answer {
+        grid-area: answer;
+        background-color: rgba(0, 128, 255, 0.6);
+        color: white;
     }
 
-    // .answerPanel, .buttons {
-    //     margin-left: -3%;
-    //     margin-right: 0px;
-    // }
+    .matMultiply {
+        grid-area: matMultiply;
+        background-color: rgba(0, 128, 255, 0.6);
+        color: white;
+    }
 
-    .plusTimesDivideMultiply {
-        background-color: indigo;
+    #method {
+        color: white;
+    }
+
+    .logmode, .antilogmode, .natlogmode, .natantilogmode {
+        background-color: inherit;
+        color: white;
+        font-size: 14px;
+    }
+
+    .modeBtn {
+        background-color: #fd0356;
+        color: white;
+    }
+
+    div.blank1 {
+        background-color: inherit;
+        background-image: -webkit-linear-gradient(120deg, rgb(0, 200, 255), rgb(0, 190, 255), rgb(0, 176, 255));
+        background-image: -moz-linear-gradient(120deg, rgb(0, 200, 255), rgb(0, 190, 255), rgb(0, 176, 255)); 
+        background-image: -o-linear-gradient(120deg, rgb(0, 200, 255), rgb(0, 190, 255), rgb(0, 176, 255)); 
+        background-image: -ms-linear-gradient(120deg, rgb(0, 200, 255), rgb(0, 190, 255), rgb(0, 176, 255)); 
+        background-image: linear-gradient(120deg, rgb(0, 200, 255), rgb(0, 190, 255), rgb(0, 176, 255));  
+    }
+
+    div.blank2 {
+        background-color: inherit;
+        background-image: -webkit-linear-gradient(120deg,  rgb(0, 138, 255), rgb(0, 132, 255), rgb(0, 128, 255), rgb(0, 168, 255)); 
+        background-image: -moz-linear-gradient(120deg, rgb(0, 138, 255), rgb(0, 132, 255), rgb(0, 128, 255), rgb(0, 168, 255)); 
+        background-image: -o-linear-gradient(120deg, rgb(0, 138, 255), rgb(0, 132, 255), rgb(0, 128, 255), rgb(0, 168, 255)); 
+        background-image: -ms-linear-gradient(120deg, rgb(0, 138, 255), rgb(0, 132, 255), rgb(0, 128, 255), rgb(0, 168, 255)); 
+        background-image: linear-gradient(120deg, rgb(0, 138, 255), rgb(0, 132, 255), rgb(0, 128, 255), rgb(0, 168, 255)); 
+    }
+
+    .value{
+        font-size: 12px;
+        font-weight: 100;
+    }
+
+
+    input {
+        margin: 5px;
+        padding: 5px 5px 5px 5px;
+        width: 90%;   //55px;
+        border: 0;
+        text-align: center;
+        font-size: 10px;
+        border-radius: 4px;
+        color: #ffffff;
+        background-color: #000000;
+    }
+
+    input:focus, input.selectScalar { 
+        color: #000000;
+        background-color: #ffffff;
     }
 
     // Remove scrollbar from number input fields
@@ -182,208 +519,524 @@ export default {
         -webkit-appearance: none;
         margin: 0;
     }
-
     
-    // Galaxy S5
-    @media screen and (min-device-width: 360px) and (max-device-height: 640px) and (orientation: portrait) and (-webkit-device-pixel-ratio: 3.0)
+    #twoBy2 {
+        width: 180px;
+        float: center;
+        margin-left: auto;
+        margin-right: auto;
+        border-radius: 5px;
+        margin-top: 16px !important;
+        background-image: -webkit-linear-gradient(120deg, rgb(67, 152, 230), rgb(153, 153, 230));
+        background-image: -moz-linear-gradient(120deg, rgb(67, 152, 230), rgb(153, 153, 230));
+        background-image: -o-linear-gradient(120deg, rgb(67, 152, 230),rgb(153, 153, 230));
+        background-image: -ms-linear-gradient(120deg, rgb(67, 152, 230),rgb(153, 153, 230));
+        background-image: linear-gradient(120deg, rgb(67, 152, 230),rgb(153, 153, 230));
+    }
+
+    #twoBy2B {
+        width: 180px;
+        height: 90px;
+        opacity: 1;
+        float: center;
+        margin-left: auto;
+        margin-right: auto;
+        margin-top: 0 !important;
+        margin-bottom: 10px;
+        border-radius: 5px;
+        background-image: -webkit-linear-gradient(120deg, rgb(34, 116, 192), rgb(121, 121, 206));
+        background-image: -moz-linear-gradient(120deg, rgb(34, 116, 192), rgb(121, 121, 206));
+        background-image: -o-linear-gradient(120deg, rgb(34, 116, 192),rgb(121, 121, 206));
+        background-image: -ms-linear-gradient(120deg, rgb(34, 116, 192),rgb(121, 121, 206));
+        background-image: linear-gradient(120deg, rgb(34, 116, 192),rgb(121, 121, 206));
+    }
+
+    // iPhone 5/5E
+     @media screen and (min-device-width: 320px) and (max-device-height: 568px) and (orientation: portrait) and (-webkit-device-pixel-ratio: 2)
     {
-        .basic {
-            grid-template-rows: minmax(140px, auto);
-            //grid-template: minmax(250px, auto);
-            margin-top: -13%;
-            margin-bottom: 0%;
-        }
-  
-        .answerPanel {
-            grid-template-rows: 90px 45px;
-            grid-template-columns: 330px;
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            grid-template-rows: 115px 15px 20px 125px auto;
+            grid-template-areas: 
+            "answerPanel answerPanel answerPanel"
+            "method method method"
+            "scalar scalar scalar"
+            "matrix matrix matrix"
+            "buttons buttons buttons";
+          
         }
 
-        .answerPanel > input {
-            font-size: 28px;
+        .answerPanel, .scalar, .method, .matrix, .buttons {
+            margin-left: -5%;
+            margin-right: -5%;
         }
-        
-        .answerPanel > div {
-            font-size: 25px;
+
+        .answerPanel {
+            margin-top: -25%;
         }
 
         .buttons {
-            grid-template-columns: repeat(6, 1fr);
-            grid-template-rows: repeat(8, 52px);
-            color: #fff;
-        }
-
-        button > .w3-btn {
-            font-size: 22px;
-            padding: 0 5px;
+            margin-bottom: -5%;
         }
     }
 
-    // Galaxy S5 (Landscape)
-    @media screen and (min-device-width: 640px) and (max-device-height: 360px) and (orientation: landscape) and (-webkit-device-pixel-ratio: 3.0)
+    // Pixel 2
+    @media screen and (min-device-width: 411px) and (max-device-height: 731px) and (orientation: portrait) and (-webkit-device-pixel-ratio: 2.6)
     {
-        .basic {
-            grid-template-rows: minmax(100px, auto);
-            //grid-template: minmax(250px, auto);
-            margin-top: -13%;
-            margin-bottom: 0%;
-        }
-  
-        .answerPanel {
-            grid-template-rows: 60px 40px;
-            grid-template-columns: 560px;
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            grid-template-rows: 200px 15px 20px 140px auto;
+            grid-template-areas: 
+            "answerPanel answerPanel answerPanel"
+            "method method method"
+            "scalar scalar scalar"
+            "matrix matrix matrix"
+            "buttons buttons buttons";
         }
 
-        .answerPanel > input {
-            font-size: 24px;
-        }
-        
-        .answerPanel > div {
-            font-size: 20px;
+        .answerPanel, .scalar, .method, .matrix, .buttons {
+            margin-left: -6%;
+            margin-right: -10%;
         }
 
         .buttons {
-            grid-template-columns: repeat(12, 1fr);
-            grid-template-rows: repeat(4, 48px);
-            color: #fff;
-        }
-
-        button > .w3-btn {
-            font-size: 18px;
-            padding: 0 5px;
+            margin-bottom: -5%;
         }
     }
 
     // Pixel 2 XL
-    @media screen and (min-device-width: 411px) and (max-device-height: 823px) and (orientation: portrait) and (-webkit-device-pixel-ratio: 3.5)
+     @media screen and (min-device-width: 411px) and (max-device-height: 823px) and (orientation: portrait) and (-webkit-device-pixel-ratio: 3.5)
     {
-        .basic {
-            grid-auto-rows: minmax(250px, auto);
-            margin-top: -13%;
-            margin-bottom: 0%;
-        }
-  
-        .answerPanel {
-            grid-template-rows: 150px 70px;
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            grid-template-rows: 265px 15px 20px 140px auto 15px;
+            grid-template-areas: 
+            "answerPanel answerPanel answerPanel"
+            "method method method"
+            "scalar scalar scalar"
+            "matrix matrix matrix"
+            "buttons buttons buttons"
+            "bottomSpace bottomSpace bottomSpace";
         }
 
-        .answerPanel > input {
-            font-size: 28px;
-        }
-        
-        .answerPanel > div {
-            font-size: 25px;
+        .answerPanel, .scalar, .method, .matrix, .buttons, .bottomSpace {
+            margin-left: -5%;
+            margin-right: -5%;
         }
 
         .buttons {
-            grid-template-columns: repeat(6, 1fr);
-            grid-template-rows: repeat(8, 60px);
-            color: #fff;
-        }
-
-        button > .w3-btn {
-            font-size: 22px;
-            padding: 0 5px;
+             div.blank1, div.blank2 {
+                display: none;
+            }
+            display: grid;
+            grid-template-columns:repeat(3, 1fr); 
+            grid-template-rows: auto;
+            grid-template-areas: 
+            "logmode antilogmode clear"
+            "natlogmode natantilogmode clear";
+            grid-area: buttons;
         }
     }
 
-    // Pixel 2 XL (Landscape)
-    @media screen and (min-device-width: 823px) and (max-device-height: 411px) and (orientation: landscape) and (-webkit-device-pixel-ratio: 3.5)
+    // iPhone 5/5E (Landscape)
+     @media screen and (min-device-width: 320px) and (max-device-height: 568px) and (orientation: landscape) and (-webkit-device-pixel-ratio: 2)
     {
-        .basic {
-            grid-template-columns: auto 350px;
-            grid-template-rows: repeat(8, 48.3px);
-            // margin-top: 0px;
-            // margin-bottom: 0px;
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            grid-template-rows: 60px 15px 20px 50px auto;
+            grid-template-areas: 
+            "answerPanel answerPanel answerPanel"
+            "method method method"
+            "scalar scalar scalar"
+            "matrix matrix matrix"
+            "buttons buttons buttons";
         }
-  
-        .answerPanel {
-            grid-column: 1/2;
-            grid-row: 1/9;
-            grid-template-rows: 220px auto;
+    }
+          
+        
+
+    // iPhone 6/7/8
+     @media screen and (min-device-width: 375px) and (max-device-height: 667px) and (orientation: portrait) and (-webkit-device-pixel-ratio: 2)
+    {
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            grid-template-rows: 170px 15px 20px 165px auto;
+            grid-template-areas: 
+            "answerPanel answerPanel answerPanel"
+            "method method method"
+            "scalar scalar scalar"
+            "matrix matrix matrix"
+            "buttons buttons buttons";
         }
 
-        .answerPanel > input {
-            font-size: 28px;
-        }
-        
-        .answerPanel > div {
-            font-size: 25px;
+        .answerPanel, .scalar, .method, .matrix, .buttons {
+            margin-left: -5%;
+            margin-right: -5%;
         }
 
         .buttons {
-            grid-column: 2/8;
-            grid-row: 1/9;
-            grid-template-columns: repeat(6, 1fr);
-            grid-template-rows: repeat(8, 48.3px);
-            color: #fff;
+             div.blank1, div.blank2 {
+                display: none;
+            }
+            display: grid;
+            grid-template-columns:repeat(3, 1fr); 
+            grid-template-rows: auto;
+            grid-template-areas: 
+            "logmode antilogmode clear"
+            "natlogmode natantilogmode clear";
+            grid-area: buttons;
+            margin-bottom: -5%;
+        }
+    }
+
+    // iPhone 6/7/8 (Landscape)
+    @media screen and (min-device-width: 375px) and (max-device-height: 667px) and (orientation: landscape) and (-webkit-device-pixel-ratio: 2)
+    {
+        .grid {
+            grid-template-rows: 170px 15px 20px 165px auto;
+            grid-template-areas: 
+            "answerPanel answerPanel answerPanel"
+            "method method method"
+            "scalar scalar scalar"
+            "matrix matrix matrix"
+            "buttons buttons buttons";
+        }
+
+        .buttons {
+            margin-bottom: -5%;
+        }
+    }
+
+
+    // iPhone 6/7/8 plus
+    @media screen and (min-device-width: 414px) and (max-device-height: 736px) and (orientation: portrait) and (-webkit-device-pixel-ratio: 2)
+    {
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            grid-template-rows: 200px 15px 20px 140px auto;
+            grid-template-areas: 
+            "answerPanel answerPanel answerPanel"
+            "method method method"
+            "scalar scalar scalar"
+            "matrix matrix matrix"
+            "buttons buttons buttons";
+        }
+
+        .answerPanel, .scalar, .method, .matrix, .buttons {
+            margin-left: -6%;
+            margin-right: -10%;
+        }
+
+        .buttons {
+            margin-bottom: -5%;
         }
     }
 
     // iPhone X
-    @media screen and (min-device-width: 375px) and (max-device-height: 812px) and (orientation: portrait) and (-webkit-device-pixel-ratio: 3.0)
+     @media screen and (min-device-width: 375px) and (max-device-height: 812px) and (orientation: portrait) and (-webkit-device-pixel-ratio: 3)
     {
-        .basic {
-            grid-auto-rows: minmax(240px, auto);
-            margin-top: -13%;
-            margin-bottom: 0%;
-        }
-  
-        .answerPanel {
-            grid-template-rows: 150px 70px;
-        }
-
-        .answerPanel > input {
-            font-size: 28px;
-        }
-        
-        .answerPanel > div {
-            font-size: 25px;
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            grid-template-rows: 240px 15px 20px 140px auto 15px;
+            grid-template-areas: 
+            "answerPanel answerPanel answerPanel"
+            "method method method"
+            "scalar scalar scalar"
+            "matrix matrix matrix"
+            "buttons buttons buttons"
+            "bottomSpace bottomSpace bottomSpace";
         }
 
+        .answerPanel, .scalar, .method, .matrix, .buttons, .bottomSpace {
+            margin-left: -5%;
+            margin-right: -5%;
+        }
+
+               // Button as subgrid
         .buttons {
-            grid-template-columns: repeat(6, 1fr);
-            grid-template-rows: repeat(8, 60px);
-            color: #fff;
-        }
-
-        button > .w3-btn {
-            font-size: 22px;
-            padding: 0 5px;
+            div.blank1, div.blank2 {
+                display: none;
+            }
+            display: grid;
+            grid-template-columns:repeat(3, 1fr); 
+            grid-template-rows: auto;
+            grid-template-areas: 
+            "logmode antilogmode clear"
+            "natlogmode natantilogmode clear";
+            grid-area: buttons;
+            background-image: -webkit-linear-gradient(120deg, rgb(0, 128, 255), rgb(0, 188, 255)); 
+            vertical-align: bottom;
+            // margin-left:-4px;
+            // margin-right:-4px;
         }
     }
 
     // iPhone X (Landscape)
-    @media screen and (min-device-width: 812px) and (max-device-height: 375px) and (orientation: landscape) and (-webkit-device-pixel-ratio: 3.0)
+     @media screen and (min-device-width: 812px) and (max-device-height: 375px) and (orientation: landscape) and (-webkit-device-pixel-ratio: 3)
     {
-        .basic {
-            grid-template-columns: auto 350px;
-            grid-template-rows: repeat(8, 43.5px);
-            // margin-top: 0px;
-            // margin-bottom: 0px;
-        }
-  
-        .answerPanel {
-            grid-column: 1/2;
-            grid-row: 1/9;
-            grid-template-rows: 220px auto;
+        .grid {
+            grid-template-rows: 80px 10px 15px 60px auto;
+            grid-template-areas: 
+            "answerPanel answerPanel answerPanel"
+            "method method method"
+            "scalar scalar scalar"
+            "matrix matrix matrix"
+            "buttons buttons buttons";
         }
 
-        .answerPanel > input {
-            font-size: 28px;
+        .matrix > #twoBy2 {
+            width: 180px;
         }
-        
-        .answerPanel > div {
-            font-size: 25px;
+    }
+
+    // Samsung Galaxy S5
+     @media screen and (min-device-width: 360px) and (max-device-height: 640px) and (orientation: portrait) and (-webkit-device-pixel-ratio: 3)
+    {
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            grid-template-rows: 145px 15px 20px 160px auto;
+            grid-template-areas: 
+            "answerPanel answerPanel answerPanel"
+            "method method method"
+            "scalar scalar scalar"
+            "matrix matrix matrix"
+            "buttons buttons buttons";
+        }
+
+        .answerPanel, .scalar, .method, .matrix, .buttons, .bottomSpace {
+            margin-left: -5%;
+            margin-right: -5%;
         }
 
         .buttons {
-            grid-column: 2/8;
-            grid-row: 1/9;
-            grid-template-columns: repeat(6, 1fr);
-            grid-template-rows: repeat(8, 43.5px);
-            color: #fff;
+             div.blank1, div.blank2 {
+                display: none;
+            }
+            display: grid;
+            grid-template-columns:repeat(3, 1fr); 
+            grid-template-rows: auto;
+            grid-template-areas: 
+            "logmode antilogmode clear"
+            "natlogmode natantilogmode clear";
+            grid-area: buttons;
+            margin-bottom: -5%;
         }
+    }
+
+    // Samsung Galaxy S5 (Landscape)
+     @media screen and (min-device-width: 360px) and (max-device-height: 640px) and (orientation: landscape) and (-webkit-device-pixel-ratio: 3)
+    {
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            grid-template-rows: 70px 15px 20px 110px auto;
+            grid-template-areas: 
+            "answerPanel answerPanel answerPanel"
+            "method method method"
+            "scalar scalar scalar"
+            "matrix matrix matrix"
+            "buttons buttons buttons";
+        }
+
+        .answerPanel, .scalar, .method, .matrix, .buttons, .bottomSpace {
+            margin-left: -5%;
+            margin-right: -5%;
+        }
+        
+        .buttons {
+            margin-bottom: -5%;
+        }
+    }
+
+
+    // iPad
+     @media screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: portrait)
+    {
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            grid-template-rows: 280px 20px 30px 230px auto 125px;
+            grid-template-areas: 
+            "answerPanel answerPanel answerPanel"
+            "method method method"
+            "scalar scalar scalar"
+            "matrix matrix matrix"
+            "buttons buttons buttons"
+            "bottomSpace bottomSpace bottomSpace";
+        }
+
+        .matrix > #twoBy2 {
+            width: 210px;
+        }
+
+        .answerPanel, .scalar, .method, .matrix, .buttons, .bottomSpace {
+            margin-left: -5%;
+            margin-right: -5%;
+        }
+
+        .bottomSpace {
+            margin-bottom: -5%;
+        }
+    }
+
+    // iPad (Landscape)
+     @media screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: landscape)
+    {
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            grid-template-rows: 200px 20px 30px 190px auto;
+            grid-template-areas: 
+            "answerPanel answerPanel answerPanel"
+            "method method method"
+            "scalar scalar scalar"
+            "matrix matrix matrix"
+            "buttons buttons buttons"
+           // "bottomSpace bottomSpace bottomSpace";
+        }
+
+        .matrix > #twoBy2 {
+            width: 245px;
+        }
+
+        .answerPanel, .method, .matrix, .buttons, .bottomSpace {
+            margin-left: -5%;
+            margin-right: -5%;
+        }
+
+        .buttons {
+            margin-bottom: -5%;
+        }
+    }
+
+    // // iPad Pro
+
+
+    // Styling for large screens
+     @media screen and (min-width: 736px)
+    {
+        input {
+            width: 70%;
+            font-size: 12px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            grid-template-rows: 250px 20px 30px 190px auto;
+            grid-template-areas: 
+            "answerPanel answerPanel answerPanel"
+            "method method method"
+            "scalar scalar scalar"
+            "matrix matrix matrix"
+            "buttons buttons buttons";
+             background-color: skyblue;
+             
+        }
+
+        .buttons {
+            margin-bottom: -9%;
+        }
+
+         .answerPanel {
+            display: grid;
+            grid-template-columns: 1fr;
+            grid-template-rows: 90px auto;
+            grid-template-areas: 
+            "mode"
+            "table";
+            grid-area: answerPanel;
+            margin-top: 0%;
+            margin-left:-4px;
+            margin-right:-4px;
+            align-items:center;
+            justify-content: center;
+            background-image: -webkit-linear-gradient(120deg, rgb(0, 204, 255), lightblue, rgb(77, 255, 210));
+            padding: 15px;
+        }
+
+        
+        .table {
+            grid-area: table;
+            margin-top: 10px;
+        }
+        .mode {
+            grid-area: mode;
+            margin-bottom: 10px;
+            align-items: center;
+        }
+                
+        #twoBy2 {
+            width: 26%;
+            float: center;
+            margin-left: 37%;
+            margin-right: 37%;
+            border-radius: 5px;
+            margin-top: 16px !important;
+            background-image: -webkit-linear-gradient(120deg, rgb(67, 152, 230), rgb(153, 153, 230));
+            background-image: -moz-linear-gradient(120deg, rgb(67, 152, 230), rgb(153, 153, 230));
+            background-image: -o-linear-gradient(120deg, rgb(67, 152, 230),rgb(153, 153, 230));
+            background-image: -ms-linear-gradient(120deg, rgb(67, 152, 230),rgb(153, 153, 230));
+            background-image: linear-gradient(120deg, rgb(67, 152, 230),rgb(153, 153, 230));
+        }
+
+        #twoBy2B {
+            width: 30%;
+            float: center;
+            margin-left: 35%;
+            margin-right: 35%;
+            border-radius: 5px;
+            margin-bottom: 0px;
+            margin-top: 6px !important;
+            background-image: -webkit-linear-gradient(120deg, rgb(38, 140, 235), rgb(132, 117, 217));
+            background-image: -moz-linear-gradient(120deg, rgb(38, 140, 235), rgb(132, 117, 217));
+            background-image: -o-linear-gradient(120deg, rgb(38, 140, 235), rgb(132, 117, 217));
+            background-image: -ms-linear-gradient(120deg, rgb(38, 140, 235), rgb(132, 117, 217));
+            background-image: linear-gradient(120deg, rgb(38, 140, 235), rgb(132, 117, 217));
+        }
+
+        .buttons {
+            display: grid;
+            grid-template-columns:2fr repeat(3, 1fr) 2fr;
+            grid-template-areas: 
+            "blank1 logmode antilogmode clear blank2"
+            "blank1 natlogmode natantilogmode clear blank2";
+        }
+
+        .blank1 {
+            grid-area: blank1;
+            background-color: lightblue;
+            background-image: -webkit-linear-gradient(120deg, rgb(0, 158, 255), rgb(0, 178, 255), rgb(0, 190, 255));
+            background-image: -moz-linear-gradient(120deg, rgb(0, 158, 255), rgb(0, 178, 255), rgb(0, 190, 255)); 
+            background-image: -o-linear-gradient(120deg, rgb(0, 158, 255), rgb(0, 178, 255), rgb(0, 190, 255)); 
+            background-image: -ms-linear-gradient(120deg, rgb(0, 158, 255), rgb(0, 178, 255), rgb(0, 190, 255)); 
+            background-image: linear-gradient(120deg, rgb(0, 158, 255), rgb(0, 178, 255), rgb(0, 190, 255));  
+        }
+
+        .blank2 {
+            grid-area: blank2;
+            background-color: lightblue;
+            background-image: -webkit-linear-gradient(120deg, rgb(0, 190, 255), rgb(0, 108, 255), rgb(0, 108, 255)); 
+            background-image: -moz-linear-gradient(120deg, rgb(0, 190, 255), rgb(0, 108, 255), rgb(0, 108, 255)); 
+            background-image: -o-linear-gradient(120deg, rgb(0, 190, 255), rgb(0, 108, 255), rgb(0, 108, 255)); 
+            background-image: -ms-linear-gradient(120deg, rgb(0, 190, 255), rgb(0, 108, 255), rgb(0, 108, 255)); 
+            background-image: linear-gradient(120deg, rgb(0, 190, 255), rgb(0, 108, 255), rgb(0, 108, 255)); 
+        }
+
+        .grid {
+            margin-top: -70px;
+            margin-right: 35px;
+            margin-bottom: 0;
+        }
+
     }
 
 </style>

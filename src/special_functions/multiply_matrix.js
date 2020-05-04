@@ -1,6 +1,6 @@
 
 export function scalarMultiply(arr){
-    var num
+    let num
     return arr *= num
 }
 

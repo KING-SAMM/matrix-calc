@@ -31,7 +31,7 @@
 
 <script>
 export default {
-    name: 'Nav',
+    name: 'NSNav',
     data() {
         return {
             drawer: false
